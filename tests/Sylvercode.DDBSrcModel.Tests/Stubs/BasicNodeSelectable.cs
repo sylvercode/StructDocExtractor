@@ -2,7 +2,8 @@
 
 public readonly struct BasicNodeSelectable(string id, string[] data)
 {
-    public BasicNodeSelectable() : this(id: "", data: []) { }
+    public BasicNodeSelectable() : this(id: "") { }
+    public BasicNodeSelectable(string id) : this(id, data: []) { }
 
     public readonly string Id = id;
     public readonly string[] Data = data;

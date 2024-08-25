@@ -26,13 +26,13 @@ public abstract partial class BaseExtractor<ExtractionData, DataSelectable> wher
         public IStructDataStack<DataSelectable> GetStructDataStack()
         {
             ICollection<DataSelectable> result = [];
-            for (ExtractionTask? t = task.ParentTaskInfo?.ParentTask; t is not null; t = t?.ParentTaskInfo?.ParentTask)
+            for (ExtractionTask? t = task; t is not null; t = t?.ParentTaskInfo?.ParentTask)
             {
                 if (t?.TaskResult is null)
                     continue;
-
-                if (t.TaskResult.DataSelectable is not null)
-                    result.Add((DataSelectable)t.TaskResult.DataSelectable);
+                var eq = EqualityComparer<DataSelectable>.Default;
+                if (!eq.Equals((DataSelectable?)t.TaskResult.DataSelectable, default))
+                    result.Add((DataSelectable)t.TaskResult.DataSelectable!);
             }
             return new BaseStructDataStack<DataSelectable>(result.Reverse());
         }
