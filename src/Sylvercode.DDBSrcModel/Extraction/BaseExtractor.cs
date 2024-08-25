@@ -7,7 +7,6 @@ namespace Sylvercode.DDBSrcModel.Extraction;
 
 public abstract partial class BaseExtractor<ExtractionData, DataSelectable>(ISrcNodeFactoryProvider<DataSelectable> defaultNodeFactoryProvider) where ExtractionData : notnull
 {
-
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
 
     public bool HasPendingTask => _pendingTacks.First is not null;
