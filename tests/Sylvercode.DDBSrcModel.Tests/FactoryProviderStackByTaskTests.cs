@@ -13,7 +13,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
     public readonly SrcNodeFactoryProvider<BasicNodeSelectable> ANodeFactoryProvider1 = new();
     public readonly SrcNodeFactoryProvider<BasicNodeSelectable> ANodeFactoryProvider2 = new();
 
-    public ExtractionTask NewTask(BasicProcessTaskResult? taskResult = null)
+    public static ExtractionTask NewTask(BasicProcessTaskResult? taskResult = null)
     {
         ExtractionTask result = new(DefaultTaskValue);
         if (taskResult is not null)
