@@ -27,7 +27,7 @@ public partial class ExtractionTaskTests_ProcessResult
         // Given
         ExtractionTask task = new(TaskData);
         EventLogger eventLogger = new();
-        task.ResultSets += eventLogger.OnEventRaised;
+        task.ResultSetted += eventLogger.OnEventRaised;
         BasicProcessTaskResult processResult = new()
         {
             DataSelectable = DataSelectableValue,

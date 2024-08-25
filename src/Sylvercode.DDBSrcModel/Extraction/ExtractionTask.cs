@@ -15,9 +15,9 @@ public class ExtractionTask(object extractionData, ParentTaskInfo? parentTaskInf
 
     public ExtractionTaskResult? TaskResult { get; private set; }
 
-    public delegate void ResultSetsEventHandler(ExtractionTask sender);
-    public event ResultSetsEventHandler? ResultSets;
-    protected void OnResultSets() => ResultSets?.Invoke(this);
+    public delegate void ResultSettedEventHandler(ExtractionTask sender);
+    public event ResultSettedEventHandler? ResultSetted;
+    protected void OnResultSetted() => ResultSetted?.Invoke(this);
 
     public void ProcessResult(IProcessTaskResult processTaskResult)
     {
@@ -25,6 +25,6 @@ public class ExtractionTask(object extractionData, ParentTaskInfo? parentTaskInf
 
         ChildrenTaskInfo = new(this, processTaskResult.SubTasksExtractionData);
 
-        OnResultSets();
+        OnResultSetted();
     }
 }

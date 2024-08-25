@@ -28,7 +28,7 @@ public class ChildrenTaskInfo
     private void NewChildTask(object childData, int nextTaskIndex)
     {
         ExtractionTask subTask = new(childData, new ParentTaskInfo(_task, nextTaskIndex));
-        subTask.ResultSets += SubTaskResulSetted;
+        subTask.ResultSetted += SubTaskResulSetted;
 
         _childrenTasks.Add(subTask);
         _pendingSubTaskIndex.Add(nextTaskIndex);
