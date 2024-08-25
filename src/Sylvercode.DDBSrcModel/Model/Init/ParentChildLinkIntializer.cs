@@ -1,3 +1,4 @@
+
 namespace Sylvercode.DDBSrcModel.Model.Init;
 
 public class ParentChildLinkIntializer<P, C>(P parent) :
@@ -7,12 +8,14 @@ public class ParentChildLinkIntializer<P, C>(P parent) :
 {
     private readonly List<C> _childrens = [];
 
-
     public void AddChild(ISrcNodeIntializer child)
     {
         child.CheckParentTypeOrThrow(parent);
         _childrens.Add(parent.CastAsChildTypeOrThrow(child));
     }
+
+    public IEnumerable<C> ChildrenToAdd()
+        => _childrens;
 
     public void InitializeParentChildLink()
     {
