@@ -3,18 +3,18 @@ using Sylvercode.DDBSrcModel.Model.Init;
 
 namespace Sylvercode.DDBSrcModel.Extraction;
 
-public class ChildrenTaskInfo
+public class ChildrenTaskInfo(ExtractionTask task)
 {
-    private readonly ExtractionTask _task;
-    private readonly IParentChildLinkIntializer? ChildLinker;
+    public ExtractionTask Task { get; } = task;
+    public IParentChildLinkIntializer? ChildLinker { get; }
     private readonly List<ExtractionTask> _childrenTasks = [];
     public IReadOnlyList<ExtractionTask> ChildrenTasks => _childrenTasks.AsReadOnly();
     private readonly HashSet<int> _pendingSubTaskIndex = [];
+    public IReadOnlyList<int> PendingSubTaskIndex => _pendingSubTaskIndex.ToList().AsReadOnly();
 
-    public ChildrenTaskInfo(ExtractionTask task, IEnumerable<object> childrenData)
+    public ChildrenTaskInfo(ExtractionTask task, IEnumerable<object> childrenData) : this(task)
     {
-        _task = task;
-        if (task?.TaskResult?.SrcNode is ISrcNodeHolderInitializer holder)
+        if (Task.TaskResult?.SrcNode is ISrcNodeHolderInitializer holder)
             ChildLinker = holder.NewParentChildLinkIntializer();
 
         int nextTaskIndex = 0;
@@ -27,7 +27,7 @@ public class ChildrenTaskInfo
 
     private void NewChildTask(object childData, int nextTaskIndex)
     {
-        ExtractionTask subTask = new(childData, new ParentTaskInfo(_task, nextTaskIndex));
+        ExtractionTask subTask = new(childData, new ParentTaskInfo(Task, nextTaskIndex));
         subTask.ResultSetted += SubTaskResulSetted;
 
         _childrenTasks.Add(subTask);
