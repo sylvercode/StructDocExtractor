@@ -2,6 +2,5 @@
 
 ## Tests For
 
-- ChildrenTaskInfo
 - TaskContext
 - BaseExtractor
