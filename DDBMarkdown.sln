@@ -5,17 +5,9 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDBFetcher", "src\Sylvercode.DDBFetcher\Sylvercode.DDBFetcher.csproj", "{E42C5376-B34E-48A1-A0C8-3E1454BFF093}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDBSeletor", "src\Sylvercode.DDBSeletor\Sylvercode.DDBSeletor.csproj", "{E0A75E29-69E6-439B-A080-1928746EEE8E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDBAngleSource", "src\Sylvercode.DDBAngleSource\Sylvercode.DDBAngleSource.csproj", "{6DD5BF21-BD29-4D44-8D1E-30A3CCEBFDD9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDBSrcModel", "src\Sylvercode.DDBSrcModel\Sylvercode.DDBSrcModel.csproj", "{BB6467FD-228D-448C-8010-80151C9DFEAE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{7DD327A8-8077-48C0-AB26-892B6BAC2D6B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDBFetcher.Tests", "tests\Sylvercode.DDBFetcher.Tests\Sylvercode.DDBFetcher.Tests.csproj", "{349FD765-FB83-485F-85F6-C6F81847D764}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.DDBSrcModel.Tests", "tests\Sylvercode.DDBSrcModel.Tests\Sylvercode.DDBSrcModel.Tests.csproj", "{C50523EF-4AA8-44B0-8D0E-F0CC4CEB50A9}"
 EndProject
@@ -24,26 +16,7 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E42C5376-B34E-48A1-A0C8-3E1454BFF093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E42C5376-B34E-48A1-A0C8-3E1454BFF093}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E42C5376-B34E-48A1-A0C8-3E1454BFF093}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E42C5376-B34E-48A1-A0C8-3E1454BFF093}.Release|Any CPU.Build.0 = Release|Any CPU
-		{349FD765-FB83-485F-85F6-C6F81847D764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{349FD765-FB83-485F-85F6-C6F81847D764}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{349FD765-FB83-485F-85F6-C6F81847D764}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{349FD765-FB83-485F-85F6-C6F81847D764}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E0A75E29-69E6-439B-A080-1928746EEE8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E0A75E29-69E6-439B-A080-1928746EEE8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E0A75E29-69E6-439B-A080-1928746EEE8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E0A75E29-69E6-439B-A080-1928746EEE8E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6DD5BF21-BD29-4D44-8D1E-30A3CCEBFDD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6DD5BF21-BD29-4D44-8D1E-30A3CCEBFDD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6DD5BF21-BD29-4D44-8D1E-30A3CCEBFDD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6DD5BF21-BD29-4D44-8D1E-30A3CCEBFDD9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BB6467FD-228D-448C-8010-80151C9DFEAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BB6467FD-228D-448C-8010-80151C9DFEAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB6467FD-228D-448C-8010-80151C9DFEAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,11 +26,10 @@ Global
 		{C50523EF-4AA8-44B0-8D0E-F0CC4CEB50A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C50523EF-4AA8-44B0-8D0E-F0CC4CEB50A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{E42C5376-B34E-48A1-A0C8-3E1454BFF093} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
-		{349FD765-FB83-485F-85F6-C6F81847D764} = {7DD327A8-8077-48C0-AB26-892B6BAC2D6B}
-		{E0A75E29-69E6-439B-A080-1928746EEE8E} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
-		{6DD5BF21-BD29-4D44-8D1E-30A3CCEBFDD9} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
 		{BB6467FD-228D-448C-8010-80151C9DFEAE} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
 		{C50523EF-4AA8-44B0-8D0E-F0CC4CEB50A9} = {7DD327A8-8077-48C0-AB26-892B6BAC2D6B}
 	EndGlobalSection
