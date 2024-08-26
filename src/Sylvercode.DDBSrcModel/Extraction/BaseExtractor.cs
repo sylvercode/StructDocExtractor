@@ -35,7 +35,9 @@ public abstract partial class BaseExtractor<ExtractionData, DataSelectable>(ISrc
     {
         ExtractionTask curTask = GetNextTask();
 
-        ProcessTaskResult<ExtractionData, DataSelectable> result = ProcessTask(new TaskContext(curTask, defaultNodeFactoryProvider));
+        IProcessTaskResult<ExtractionData, DataSelectable> result =
+            ProcessTask(new TaskContext(curTask, defaultNodeFactoryProvider));
+
         curTask.ProcessResult(result);
 
         IReadOnlyList<ExtractionTask> subTask = curTask.ChildrenTaskInfo!.ChildrenTasks;
@@ -70,5 +72,21 @@ public abstract partial class BaseExtractor<ExtractionData, DataSelectable>(ISrc
             _pendingTacks.AddLast(task);
     }
 
-    protected abstract ProcessTaskResult<ExtractionData, DataSelectable> ProcessTask(TaskContext taskContext);
+    protected virtual IProcessTaskResult<ExtractionData, DataSelectable> ProcessTask(TaskContext taskContext)
+    {
+        ISrcNodeFactoryProvider<DataSelectable> factoryProvider =
+            taskContext.GetNodeFactoryProvider();
+
+        DataSelectable selectable = GetSelectable(taskContext);
+
+        ISrcNodeFactory? factory = factoryProvider.GetFactoryForStack(taskContext.GetStructDataStack(selectable));
+        IProcessTaskResult result = factory.NewNode(taskContext.ExtractionData);
+
+        return (IProcessTaskResult<ExtractionData, DataSelectable>)result;
+    }
+
+    protected virtual DataSelectable GetSelectable(TaskContext taskContext)
+    {
+        throw new NotImplementedException();
+    }
 }
