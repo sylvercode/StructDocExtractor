@@ -11,7 +11,7 @@ public class ExtractionTask(object extractionData, ParentTaskInfo? parentTaskInf
 
     public ParentTaskInfo? ParentTaskInfo { get; } = parentTaskInfo;
 
-    public ChildrenTaskInfo? ChildrenTaskInfo { get; private set; }
+    public IChildrenTaskInfo? ChildrenTaskInfo { get; private set; }
 
     public ExtractionTaskResult? TaskResult { get; private set; }
 
@@ -24,8 +24,13 @@ public class ExtractionTask(object extractionData, ParentTaskInfo? parentTaskInf
         if (processTaskResult is not null)
             TaskResult = new(processTaskResult);
 
-        ChildrenTaskInfo = new(this, processTaskResult?.SubTasksExtractionData);
+        ChildrenTaskInfo = NewChildrenTaskInfo(this, processTaskResult?.SubTasksExtractionData);
 
         OnResultSetted();
+    }
+
+    private IChildrenTaskInfo NewChildrenTaskInfo(ExtractionTask task, IEnumerable<object>? childrenData)
+    {
+        return new NodeHolderChildrenTaskInfo(task, childrenData);
     }
 }

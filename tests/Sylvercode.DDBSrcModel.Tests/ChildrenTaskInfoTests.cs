@@ -34,7 +34,7 @@ public class ChildrenTaskInfoTests_ctor
         ExtractionTask task = NewTask(NewTaskResult(new BasicSrcNode()));
 
         // When
-        ChildrenTaskInfo result = new(task, []);
+        NodeHolderChildrenTaskInfo result = new(task, []);
 
         // Then
         Assert.Equal(result.Task, task);
@@ -50,7 +50,7 @@ public class ChildrenTaskInfoTests_ctor
         ExtractionTask task = NewTask(NewTaskResult(new BasicSrcBloc()));
 
         // When
-        ChildrenTaskInfo result = new(task, []);
+        NodeHolderChildrenTaskInfo result = new(task, []);
 
         // Then
         Assert.Equal(result.Task, task);
@@ -66,7 +66,7 @@ public class ChildrenTaskInfoTests_ctor
         ExtractionTask task = NewTask(NewTaskResult(new BasicSrcBloc()));
 
         // When
-        ChildrenTaskInfo result = new(task, [DefaultTaskValue1]);
+        NodeHolderChildrenTaskInfo result = new(task, [DefaultTaskValue1]);
 
         // Then
         var childTask = Assert.Single(result.ChildrenTasks);
@@ -81,15 +81,15 @@ public class ChildrenTaskInfoTests_ctor
         ExtractionTask task = NewTask(NewTaskResult(new BasicSrcBloc()));
 
         // When
-        ChildrenTaskInfo result = new(task, [DefaultTaskValue1, DefaultTaskValue2]);
+        NodeHolderChildrenTaskInfo result = new(task, [DefaultTaskValue1, DefaultTaskValue2]);
 
         // Then
         Assert.Collection(result.ChildrenTasks,
             t => Assert.Equal(DefaultTaskValue1, t.ExtractionData),
             t => Assert.Equal(DefaultTaskValue2, t.ExtractionData));
         Assert.Equal(2, result.PendingSubTaskIndex.Count);
-        Assert.Contains(0, result.PendingSubTaskIndex);
-        Assert.Contains(1, result.PendingSubTaskIndex);
+        Assert.Contains([0], result.PendingSubTaskIndex);
+        Assert.Contains([1], result.PendingSubTaskIndex);
     }
 }
 
@@ -120,7 +120,7 @@ public class ChildrenTaskInfoTests_SubTaskResulSetted
     {
         // Given
         ExtractionTask parentTask = NewTask(NewTaskResult(new BasicSrcBloc()));
-        ChildrenTaskInfo childrenTaskInfo = new(parentTask, [DefaultTaskValue1, DefaultTaskValue2]);
+        NodeHolderChildrenTaskInfo childrenTaskInfo = new(parentTask, [DefaultTaskValue1, DefaultTaskValue2]);
         ExtractionTask childTask = childrenTaskInfo.ChildrenTasks[0];
         BasicSrcNode resultNode = new();
 
@@ -138,7 +138,7 @@ public class ChildrenTaskInfoTests_SubTaskResulSetted
         // Given
         BasicSrcBloc parentNode = new BasicSrcBloc();
         ExtractionTask parentTask = NewTask(NewTaskResult(parentNode));
-        ChildrenTaskInfo childrenTaskInfo = new(parentTask, [DefaultTaskValue1]);
+        NodeHolderChildrenTaskInfo childrenTaskInfo = new(parentTask, [DefaultTaskValue1]);
         ExtractionTask childTask = childrenTaskInfo.ChildrenTasks[0];
         BasicSrcNode resultNode = new();
 

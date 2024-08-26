@@ -39,6 +39,7 @@ public partial class ExtractionTaskTests_ProcessResult
 
         // Then
         Assert.NotNull(task.TaskResult);
+        Assert.NotNull(task.TaskResult.SrcNode);
         Assert.Equal(BasicSrcNode.DefaultId, task.TaskResult.SrcNode.Id);
         Assert.Equal(task.TaskResult.DataSelectable, DataSelectableValue);
         Assert.Same(task.TaskResult.NodeFactoryProvider, NodeFactoryProviderValue);

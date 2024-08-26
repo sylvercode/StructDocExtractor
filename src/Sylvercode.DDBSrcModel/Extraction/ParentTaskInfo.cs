@@ -1,7 +1,7 @@
 namespace Sylvercode.DDBSrcModel.Extraction;
 
-public class ParentTaskInfo(ExtractionTask parentTask, int siblingSubTaskIndex)
+public class ParentTaskInfo(ExtractionTask parentTask, int[] siblingSubTaskIndex)
 {
     public ExtractionTask ParentTask => parentTask;
-    public int SiblingSubTaskIndex => siblingSubTaskIndex;
+    public int[] SiblingSubTaskIndex => siblingSubTaskIndex;
 }
