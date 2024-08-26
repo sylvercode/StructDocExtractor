@@ -12,18 +12,17 @@ public interface IProcessTaskResult
     public IEnumerable<object> ExtraTasksExtractionData { get; }
 }
 
-public interface IProcessTaskResult<out TExtractionData> : IProcessTaskResult
-{
-    new public IEnumerable<TExtractionData> SubTasksExtractionData { get; }
-    IEnumerable<object> IProcessTaskResult.SubTasksExtractionData => SubTasksExtractionData.OfType<object>();
-    new public IEnumerable<TExtractionData> ExtraTasksExtractionData { get; }
-    IEnumerable<object> IProcessTaskResult.ExtraTasksExtractionData => ExtraTasksExtractionData.OfType<object>();
-}
-
-public interface IProcessTaskResult<TExtractionData, TDataSelectable> : IProcessTaskResult<TExtractionData>
+public interface IProcessTaskResult<TExtractionData, TDataSelectable> : IProcessTaskResult
 {
     new public TDataSelectable? DataSelectable { get; }
     object? IProcessTaskResult.DataSelectable => DataSelectable;
-    new public ISrcNodeFactoryProvider<TDataSelectable>? NodeFactoryProvider { get; }
+
+    new public ISrcNodeFactoryProvider<TExtractionData, TDataSelectable>? NodeFactoryProvider { get; }
     object? IProcessTaskResult.NodeFactoryProvider => NodeFactoryProvider;
+
+    new public IEnumerable<TExtractionData> SubTasksExtractionData { get; }
+    IEnumerable<object> IProcessTaskResult.SubTasksExtractionData => SubTasksExtractionData.OfType<object>();
+
+    new public IEnumerable<TExtractionData> ExtraTasksExtractionData { get; }
+    IEnumerable<object> IProcessTaskResult.ExtraTasksExtractionData => ExtraTasksExtractionData.OfType<object>();
 }

@@ -46,7 +46,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
             new(NewTask(), DefaultNodeFactoryProvider);
 
         // When
-        ISrcNodeFactoryProvider<BasicNodeSelectable> result = provider.GetActiveSrcNodeFactoryProvider();
+        ISrcNodeFactoryProvider<string, BasicNodeSelectable> result = provider.GetActiveSrcNodeFactoryProvider();
 
         // Then
         Assert.Same(DefaultNodeFactoryProvider, result);
@@ -61,7 +61,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
 
 
         // When
-        ISrcNodeFactoryProvider<BasicNodeSelectable> result = provider.GetActiveSrcNodeFactoryProvider();
+        ISrcNodeFactoryProvider<string, BasicNodeSelectable> result = provider.GetActiveSrcNodeFactoryProvider();
 
         // Then
         Assert.Same(ANodeFactoryProvider1, result);
@@ -79,7 +79,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
 
 
         // When
-        ISrcNodeFactoryProvider<BasicNodeSelectable> result = provider.GetActiveSrcNodeFactoryProvider();
+        ISrcNodeFactoryProvider<string, BasicNodeSelectable> result = provider.GetActiveSrcNodeFactoryProvider();
 
         // Then
         Assert.Same(ANodeFactoryProvider1, result);

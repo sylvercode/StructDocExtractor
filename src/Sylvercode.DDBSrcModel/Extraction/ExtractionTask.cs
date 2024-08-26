@@ -19,11 +19,12 @@ public class ExtractionTask(object extractionData, ParentTaskInfo? parentTaskInf
     public event ResultSettedEventHandler? ResultSetted;
     protected void OnResultSetted() => ResultSetted?.Invoke(this);
 
-    public void ProcessResult(IProcessTaskResult processTaskResult)
+    public void ProcessResult(IProcessTaskResult? processTaskResult)
     {
-        TaskResult = new(processTaskResult);
+        if (processTaskResult is not null)
+            TaskResult = new(processTaskResult);
 
-        ChildrenTaskInfo = new(this, processTaskResult.SubTasksExtractionData);
+        ChildrenTaskInfo = new(this, processTaskResult?.SubTasksExtractionData);
 
         OnResultSetted();
     }

@@ -12,13 +12,13 @@ public class ChildrenTaskInfo(ExtractionTask task)
     private readonly HashSet<int> _pendingSubTaskIndex = [];
     public IReadOnlyList<int> PendingSubTaskIndex => _pendingSubTaskIndex.ToList().AsReadOnly();
 
-    public ChildrenTaskInfo(ExtractionTask task, IEnumerable<object> childrenData) : this(task)
+    public ChildrenTaskInfo(ExtractionTask task, IEnumerable<object>? childrenData) : this(task)
     {
         if (Task.TaskResult?.SrcNode is ISrcNodeHolderInitializer holder)
             ChildLinker = holder.NewParentChildLinkIntializer();
 
         int nextTaskIndex = 0;
-        foreach (var data in childrenData)
+        foreach (var data in childrenData ?? [])
         {
             NewChildTask(data, nextTaskIndex);
             nextTaskIndex++;

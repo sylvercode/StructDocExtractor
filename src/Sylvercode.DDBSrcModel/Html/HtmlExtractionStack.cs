@@ -5,20 +5,21 @@ using Sylvercode.DDBSrcModel.StructDocStack;
 
 namespace Sylvercode.DDBSrcModel.Html;
 
-public class HtmlExtractionStack(ISrcNodeFactoryProvider<HtmlNodeSelectable> defaulSrcNodeFactoryProvider)
-    : ISrcNodeFactoryProviderStack<HtmlNodeSelectable>
+public class HtmlExtractionStack<TExtractionData>(
+    ISrcNodeFactoryProvider<TExtractionData, HtmlNodeSelectable> defaulSrcNodeFactoryProvider)
+    : ISrcNodeFactoryProviderStack<TExtractionData, HtmlNodeSelectable>
 {
     public class Entry
     {
         public int Depth { get; private set; }
         public HtmlNodeSelectable? NodeSelectable { get; private set; }
         public ISrcNode? SrcNode { get; private set; }
-        public ISrcNodeFactoryProvider<HtmlNodeSelectable>? SrcNodeFactoryProvider { get; private set; }
+        public ISrcNodeFactoryProvider<TExtractionData, HtmlNodeSelectable>? SrcNodeFactoryProvider { get; private set; }
     }
 
     private readonly Stack<Entry> m_Stack = [];
 
-    public ISrcNodeFactoryProvider<HtmlNodeSelectable> DefaulSrcNodeFactoryProvider => defaulSrcNodeFactoryProvider;
+    public ISrcNodeFactoryProvider<TExtractionData, HtmlNodeSelectable> DefaulSrcNodeFactoryProvider => defaulSrcNodeFactoryProvider;
 
     public IStructDataStack<HtmlNodeSelectable> AsStructDataStack()
     {
@@ -40,6 +41,6 @@ public class HtmlExtractionStack(ISrcNodeFactoryProvider<HtmlNodeSelectable> def
         );
     }
 
-    public ISrcNodeFactoryProvider<HtmlNodeSelectable> GetActiveSrcNodeFactoryProvider() =>
+    public ISrcNodeFactoryProvider<TExtractionData, HtmlNodeSelectable> GetActiveSrcNodeFactoryProvider() =>
         m_Stack.First(entry => entry.SrcNodeFactoryProvider is not null)?.SrcNodeFactoryProvider ?? DefaulSrcNodeFactoryProvider;
 }

@@ -38,14 +38,16 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
     {
         ExtractionTask curTask = GetNextTask();
 
-        IProcessTaskResult<TExtractionData, TDataSelectable> result =
+        IProcessTaskResult<TExtractionData, TDataSelectable>? result =
             ProcessTask(new TaskContext(curTask, defaultNodeFactoryProvider));
 
         curTask.ProcessResult(result);
 
         IReadOnlyList<ExtractionTask> subTask = curTask.ChildrenTaskInfo!.ChildrenTasks;
         AddTasks(subTask, asNext: true);
-        AddTasks(result.ExtraTasksExtractionData, asNext: false);
+
+        if (result is not null)
+            AddTasks(result.ExtraTasksExtractionData, asNext: false);
 
         return curTask;
     }
@@ -75,20 +77,21 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
             _pendingTacks.AddLast(task);
     }
 
-    protected virtual IProcessTaskResult<TExtractionData, TDataSelectable> ProcessTask(TaskContext taskContext)
+    protected virtual IProcessTaskResult<TExtractionData, TDataSelectable>?
+        ProcessTask(TaskContext taskContext)
     {
         ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> factoryProvider =
             taskContext.GetNodeFactoryProvider();
 
-        TDataSelectable selectable = GetSelectable(taskContext);
+        TDataSelectable selectable = GetDataSelectable(taskContext);
 
-        ISrcNodeFactory<TExtractionData, TDataSelectable>? factory = factoryProvider.GetFactoryForStack(taskContext.GetStructDataStack(selectable));
-        IProcessTaskResult<TExtractionData, TDataSelectable> result = factory.NewNode(taskContext.ExtractionData);
+        ISrcNodeFactory<TExtractionData, TDataSelectable>? factory =
+            factoryProvider.GetFactoryForStack(taskContext.GetStructDataStack(selectable));
 
-        return result;
+        return factory?.NewNode(taskContext.ExtractionData);
     }
 
-    protected virtual TDataSelectable GetSelectable(TaskContext taskContext)
+    protected virtual TDataSelectable GetDataSelectable(TaskContext taskContext)
     {
         throw new NotImplementedException();
     }
