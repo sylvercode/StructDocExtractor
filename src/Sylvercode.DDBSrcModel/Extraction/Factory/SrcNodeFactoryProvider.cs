@@ -3,20 +3,20 @@ using Sylvercode.DDBSrcModel.StructDocStack.Score;
 
 namespace Sylvercode.DDBSrcModel.Extraction.Factory;
 
-public class SrcNodeFactoryProvider<N> : ISrcNodeFactoryProvider<N>
+public class SrcNodeFactoryProvider<TExtractionData, TDataSelectable> : ISrcNodeFactoryProvider<TExtractionData, TDataSelectable>
 {
-    private readonly struct NodeFactoryEntry(ISrcNodeFactory factory, IStackScoreCalculator<N> scoreCalculator)
+    private readonly struct NodeFactoryEntry(ISrcNodeFactory<TExtractionData, TDataSelectable> factory, IStackScoreCalculator<TDataSelectable> scoreCalculator)
     {
-        public readonly ISrcNodeFactory Factory = factory;
-        public readonly IStackScoreCalculator<N> ScoreCalculator = scoreCalculator;
+        public readonly ISrcNodeFactory<TExtractionData, TDataSelectable> Factory = factory;
+        public readonly IStackScoreCalculator<TDataSelectable> ScoreCalculator = scoreCalculator;
     }
 
     private readonly List<NodeFactoryEntry> factories = [];
 
-    public ISrcNodeFactory? GetFactoryForStack(IStructDataStack<N> staskEntries)
+    public ISrcNodeFactory<TExtractionData, TDataSelectable>? GetFactoryForStack(IStructDataStack<TDataSelectable> staskEntries)
     {
         StackedNodesScore bestScore = new();
-        ISrcNodeFactory? result = null;
+        ISrcNodeFactory<TExtractionData, TDataSelectable>? result = null;
         foreach (var entry in factories)
         {
             StackedNodesScore factoryScore = entry.ScoreCalculator.Calculate(staskEntries);
@@ -30,6 +30,6 @@ public class SrcNodeFactoryProvider<N> : ISrcNodeFactoryProvider<N>
         return result;
     }
 
-    public void AddFactory(ISrcNodeFactory factory, IStackScoreCalculator<N> scoreCalculator)
+    public void AddFactory(ISrcNodeFactory<TExtractionData, TDataSelectable> factory, IStackScoreCalculator<TDataSelectable> scoreCalculator)
         => factories.Add(new(factory, scoreCalculator));
 }

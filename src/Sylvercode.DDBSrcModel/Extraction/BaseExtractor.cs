@@ -3,7 +3,9 @@ using Sylvercode.DDBSrcModel.Model;
 
 namespace Sylvercode.DDBSrcModel.Extraction;
 
-public abstract partial class BaseExtractor<ExtractionData, DataSelectable>(ISrcNodeFactoryProvider<DataSelectable> defaultNodeFactoryProvider) where ExtractionData : notnull
+public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
+        ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider)
+        where TExtractionData : notnull
 {
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
 
@@ -24,7 +26,8 @@ public abstract partial class BaseExtractor<ExtractionData, DataSelectable>(ISrc
 
     private ExtractionTask GetNextTask()
     {
-        var firstListNode = _pendingTacks.First ?? throw new InvalidOperationException("No task to process");
+        var firstListNode = _pendingTacks.First
+                            ?? throw new InvalidOperationException("No task to process");
 
         _pendingTacks.Remove(firstListNode);
 
@@ -35,7 +38,7 @@ public abstract partial class BaseExtractor<ExtractionData, DataSelectable>(ISrc
     {
         ExtractionTask curTask = GetNextTask();
 
-        IProcessTaskResult<ExtractionData, DataSelectable> result =
+        IProcessTaskResult<TExtractionData, TDataSelectable> result =
             ProcessTask(new TaskContext(curTask, defaultNodeFactoryProvider));
 
         curTask.ProcessResult(result);
@@ -54,14 +57,14 @@ public abstract partial class BaseExtractor<ExtractionData, DataSelectable>(ISrc
             AddTask(data, asNext);
     }
 
-    public void AddTasks(IEnumerable<ExtractionData> extractionDatas, bool asNext = false)
+    public void AddTasks(IEnumerable<TExtractionData> extractionDatas, bool asNext = false)
     {
         var iterable = asNext ? extractionDatas.Reverse() : extractionDatas;
         foreach (var data in iterable)
             AddTask(data, asNext);
     }
 
-    public void AddTask(ExtractionData data, bool asNext = false)
+    public void AddTask(TExtractionData data, bool asNext = false)
         => AddTask(new ExtractionTask(data), asNext);
 
     private void AddTask(ExtractionTask task, bool asNext = false)
@@ -72,20 +75,20 @@ public abstract partial class BaseExtractor<ExtractionData, DataSelectable>(ISrc
             _pendingTacks.AddLast(task);
     }
 
-    protected virtual IProcessTaskResult<ExtractionData, DataSelectable> ProcessTask(TaskContext taskContext)
+    protected virtual IProcessTaskResult<TExtractionData, TDataSelectable> ProcessTask(TaskContext taskContext)
     {
-        ISrcNodeFactoryProvider<DataSelectable> factoryProvider =
+        ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> factoryProvider =
             taskContext.GetNodeFactoryProvider();
 
-        DataSelectable selectable = GetSelectable(taskContext);
+        TDataSelectable selectable = GetSelectable(taskContext);
 
-        ISrcNodeFactory? factory = factoryProvider.GetFactoryForStack(taskContext.GetStructDataStack(selectable));
-        IProcessTaskResult result = factory.NewNode(taskContext.ExtractionData);
+        ISrcNodeFactory<TExtractionData, TDataSelectable>? factory = factoryProvider.GetFactoryForStack(taskContext.GetStructDataStack(selectable));
+        IProcessTaskResult<TExtractionData, TDataSelectable> result = factory.NewNode(taskContext.ExtractionData);
 
-        return (IProcessTaskResult<ExtractionData, DataSelectable>)result;
+        return result;
     }
 
-    protected virtual DataSelectable GetSelectable(TaskContext taskContext)
+    protected virtual TDataSelectable GetSelectable(TaskContext taskContext)
     {
         throw new NotImplementedException();
     }

@@ -19,7 +19,7 @@ public partial class ExtractionTaskTests_ProcessResult
 
     public const string TaskData = nameof(TaskData);
     public readonly BasicNodeSelectable DataSelectableValue = new();
-    public readonly SrcNodeFactoryProvider<BasicNodeSelectable> NodeFactoryProviderValue = new();
+    public readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> NodeFactoryProviderValue = new();
 
     [Fact]
     public void WithNoChildResult_ResulIsSetAnEventSend()

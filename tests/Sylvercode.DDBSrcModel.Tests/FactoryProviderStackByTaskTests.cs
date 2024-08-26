@@ -9,9 +9,9 @@ namespace Sylvercode.DDBSrcModel.Tests;
 public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
 {
     public const string DefaultTaskValue = nameof(DefaultTaskValue);
-    public readonly SrcNodeFactoryProvider<BasicNodeSelectable> DefaultNodeFactoryProvider = new();
-    public readonly SrcNodeFactoryProvider<BasicNodeSelectable> ANodeFactoryProvider1 = new();
-    public readonly SrcNodeFactoryProvider<BasicNodeSelectable> ANodeFactoryProvider2 = new();
+    public readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> DefaultNodeFactoryProvider = new();
+    public readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> ANodeFactoryProvider1 = new();
+    public readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> ANodeFactoryProvider2 = new();
 
     public static ExtractionTask NewTask(BasicProcessTaskResult? taskResult = null)
     {
@@ -42,7 +42,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
     public void NoActiveProvider_ReturnsDefault()
     {
         // Given
-        FactoryProviderStackByTask<BasicNodeSelectable> provider =
+        FactoryProviderStackByTask<string, BasicNodeSelectable> provider =
             new(NewTask(), DefaultNodeFactoryProvider);
 
         // When
@@ -56,7 +56,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
     public void TaskWithActiveProvider_ReturnsThatProvider()
     {
         // Given
-        FactoryProviderStackByTask<BasicNodeSelectable> provider =
+        FactoryProviderStackByTask<string, BasicNodeSelectable> provider =
             new(NewTask(NewTaskResult(providerId: 1)), DefaultNodeFactoryProvider);
 
 
@@ -74,7 +74,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
         var parentTask = NewTask(NewTaskResult(providerId: 1, [DefaultTaskValue]));
         var childTask = parentTask.ChildrenTaskInfo!.ChildrenTasks[0];
         childTask.ProcessResult(NewTaskResult());
-        FactoryProviderStackByTask<BasicNodeSelectable> provider =
+        FactoryProviderStackByTask<string, BasicNodeSelectable> provider =
             new(childTask, DefaultNodeFactoryProvider);
 
 

@@ -10,7 +10,7 @@ public class BaseExtractorTests_ExtractAll
 {
     public class MockExtractor() : BaseExtractor<string, BasicNodeSelectable>(NodeFactoryProviderValue)
     {
-        public static readonly SrcNodeFactoryProvider<BasicNodeSelectable> NodeFactoryProviderValue = new();
+        public static readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> NodeFactoryProviderValue = new();
 
         public delegate ProcessTaskResult<string, BasicNodeSelectable> OnProcessTask(TaskContext taskContext);
         private readonly Queue<OnProcessTask> _onProcessTaskQueue = [];

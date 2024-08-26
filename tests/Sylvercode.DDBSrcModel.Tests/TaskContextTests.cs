@@ -10,7 +10,7 @@ namespace Sylvercode.DDBSrcModel.Tests;
 
 public class TaskContextTests_GetSrcNodeStack
 {
-    public readonly SrcNodeFactoryProvider<BasicNodeSelectable> DefaultNodeFactoryProvider = new();
+    public readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> DefaultNodeFactoryProvider = new();
 
     public const string DefaultTaskValue = nameof(DefaultTaskValue);
     public const string DefaultTaskValue1 = nameof(DefaultTaskValue1);
@@ -87,7 +87,7 @@ public class TaskContextTests_GetSrcNodeStack
 
 public class TaskContextTests_GetStructDataStack
 {
-    public readonly SrcNodeFactoryProvider<BasicNodeSelectable> DefaultNodeFactoryProvider = new();
+    public readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> DefaultNodeFactoryProvider = new();
 
     public const string DefaultTaskValue = nameof(DefaultTaskValue);
     public const string DefaultTaskValue1 = nameof(DefaultTaskValue1);

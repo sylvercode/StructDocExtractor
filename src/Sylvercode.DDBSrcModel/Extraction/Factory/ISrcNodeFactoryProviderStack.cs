@@ -1,7 +1,19 @@
 namespace Sylvercode.DDBSrcModel.Extraction.Factory;
 
-public interface ISrcNodeFactoryProviderStack<N>
+
+public interface ISrcNodeFactoryProviderStack<TDataSelectable>
 {
-    public ISrcNodeFactoryProvider<N> DefaulSrcNodeFactoryProvider { get; }
-    public ISrcNodeFactoryProvider<N> GetActiveSrcNodeFactoryProvider();
+    ISrcNodeFactoryProvider<TDataSelectable> DefaulSrcNodeFactoryProvider { get; }
+    ISrcNodeFactoryProvider<TDataSelectable> GetActiveSrcNodeFactoryProvider();
+}
+
+public interface ISrcNodeFactoryProviderStack<TExtractionData, TDataSelectable>
+    : ISrcNodeFactoryProviderStack<TDataSelectable>
+{
+    new ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> DefaulSrcNodeFactoryProvider { get; }
+    ISrcNodeFactoryProvider<TDataSelectable> ISrcNodeFactoryProviderStack<TDataSelectable>.DefaulSrcNodeFactoryProvider
+        => DefaulSrcNodeFactoryProvider;
+    new ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> GetActiveSrcNodeFactoryProvider();
+    ISrcNodeFactoryProvider<TDataSelectable> ISrcNodeFactoryProviderStack<TDataSelectable>.GetActiveSrcNodeFactoryProvider()
+        => GetActiveSrcNodeFactoryProvider();
 }
