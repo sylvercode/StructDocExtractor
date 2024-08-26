@@ -6,6 +6,6 @@ using Sylvercode.DDBSrcModel.Model;
 using Sylvercode.DDBSrcModel.Tests.Stubs;
 
 public class BasicProcessTaskResult(ISrcNode? node = null)
-    : BaseExtractor<string, BasicNodeSelectable>.ProcessTaskResult(node ?? new BasicSrcNode())
+    : ProcessTaskResult<string, BasicNodeSelectable>(node ?? new BasicSrcNode())
 {
 }

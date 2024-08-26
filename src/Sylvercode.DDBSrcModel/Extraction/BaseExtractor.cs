@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Diagnostics.CodeAnalysis;
-using Sylvercode.DDBSrcModel.Factory;
+using Sylvercode.DDBSrcModel.Extraction.Factory;
 using Sylvercode.DDBSrcModel.Model;
 
 namespace Sylvercode.DDBSrcModel.Extraction;
@@ -37,12 +35,12 @@ public abstract partial class BaseExtractor<ExtractionData, DataSelectable>(ISrc
     {
         ExtractionTask curTask = GetNextTask();
 
-        ProcessTaskResult result = ProcessTask(new TaskContext(curTask, defaultNodeFactoryProvider));
+        ProcessTaskResult<ExtractionData, DataSelectable> result = ProcessTask(new TaskContext(curTask, defaultNodeFactoryProvider));
         curTask.ProcessResult(result);
 
         IReadOnlyList<ExtractionTask> subTask = curTask.ChildrenTaskInfo!.ChildrenTasks;
         AddTasks(subTask, asNext: true);
-        AddTasks(result.OtherTasksExtractionData, asNext: false);
+        AddTasks(result.ExtraTasksExtractionData, asNext: false);
 
         return curTask;
     }
@@ -72,5 +70,5 @@ public abstract partial class BaseExtractor<ExtractionData, DataSelectable>(ISrc
             _pendingTacks.AddLast(task);
     }
 
-    protected abstract ProcessTaskResult ProcessTask(TaskContext taskContext);
+    protected abstract ProcessTaskResult<ExtractionData, DataSelectable> ProcessTask(TaskContext taskContext);
 }

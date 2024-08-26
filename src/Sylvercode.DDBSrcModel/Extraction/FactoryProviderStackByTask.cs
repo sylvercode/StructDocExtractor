@@ -1,4 +1,4 @@
-using Sylvercode.DDBSrcModel.Factory;
+using Sylvercode.DDBSrcModel.Extraction.Factory;
 
 namespace Sylvercode.DDBSrcModel.Extraction;
 

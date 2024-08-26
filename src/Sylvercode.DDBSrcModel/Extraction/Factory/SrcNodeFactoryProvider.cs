@@ -1,7 +1,7 @@
 using Sylvercode.DDBSrcModel.StructDocStack;
 using Sylvercode.DDBSrcModel.StructDocStack.Score;
 
-namespace Sylvercode.DDBSrcModel.Factory;
+namespace Sylvercode.DDBSrcModel.Extraction.Factory;
 
 public class SrcNodeFactoryProvider<N> : ISrcNodeFactoryProvider<N>
 {

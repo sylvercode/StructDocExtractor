@@ -1,6 +1,6 @@
 using Sylvercode.DDBSrcModel.StructDocStack;
 
-namespace Sylvercode.DDBSrcModel.Factory;
+namespace Sylvercode.DDBSrcModel.Extraction.Factory;
 
 public interface ISrcNodeFactoryProvider<N>
 {

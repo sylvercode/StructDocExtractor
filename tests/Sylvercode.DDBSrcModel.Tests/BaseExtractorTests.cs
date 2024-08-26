@@ -1,5 +1,5 @@
 ﻿using Sylvercode.DDBSrcModel.Extraction;
-using Sylvercode.DDBSrcModel.Factory;
+using Sylvercode.DDBSrcModel.Extraction.Factory;
 using Sylvercode.DDBSrcModel.Model;
 using Sylvercode.DDBSrcModel.Tests.Extraction;
 using Sylvercode.DDBSrcModel.Tests.Stubs;
@@ -12,13 +12,13 @@ public class BaseExtractorTests_ExtractAll
     {
         public static readonly SrcNodeFactoryProvider<BasicNodeSelectable> NodeFactoryProviderValue = new();
 
-        public delegate ProcessTaskResult OnProcessTask(TaskContext taskContext);
+        public delegate ProcessTaskResult<string, BasicNodeSelectable> OnProcessTask(TaskContext taskContext);
         private readonly Queue<OnProcessTask> _onProcessTaskQueue = [];
         public void AddOnProcessTaskAction(OnProcessTask action)
             => _onProcessTaskQueue.Enqueue(action);
         public bool HasOnProcessTask => _onProcessTaskQueue.Count > 0;
 
-        protected override ProcessTaskResult ProcessTask(TaskContext taskContext)
+        protected override ProcessTaskResult<string, BasicNodeSelectable> ProcessTask(TaskContext taskContext)
         {
             if (!_onProcessTaskQueue.TryDequeue(out OnProcessTask? nextAction))
                 throw new InvalidOperationException("No Next action in queue.");
@@ -48,7 +48,7 @@ public class BaseExtractorTests_ExtractAll
         if (childData is not null)
             taskResult.SubTasksExtractionData.AddRange(childData);
         if (otherData is not null)
-            taskResult.OtherTasksExtractionData.AddRange(otherData);
+            taskResult.ExtraTasksExtractionData.AddRange(otherData);
         return taskResult;
     }
 

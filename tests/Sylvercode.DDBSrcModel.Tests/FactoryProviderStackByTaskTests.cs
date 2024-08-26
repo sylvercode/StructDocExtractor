@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualBasic;
 using Sylvercode.DDBSrcModel.Extraction;
-using Sylvercode.DDBSrcModel.Factory;
+using Sylvercode.DDBSrcModel.Extraction.Factory;
 using Sylvercode.DDBSrcModel.Tests.Extraction;
 using Sylvercode.DDBSrcModel.Tests.Stubs;
 

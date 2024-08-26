@@ -1,4 +1,4 @@
-namespace Sylvercode.DDBSrcModel.Factory;
+namespace Sylvercode.DDBSrcModel.Extraction.Factory;
 
 public interface ISrcNodeFactoryProviderStack<N>
 {

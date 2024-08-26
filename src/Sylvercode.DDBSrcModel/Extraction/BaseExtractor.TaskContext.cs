@@ -1,4 +1,4 @@
-using Sylvercode.DDBSrcModel.Factory;
+using Sylvercode.DDBSrcModel.Extraction.Factory;
 using Sylvercode.DDBSrcModel.Model;
 using Sylvercode.DDBSrcModel.Model.Utils;
 using Sylvercode.DDBSrcModel.StructDocStack;

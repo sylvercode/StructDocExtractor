@@ -1,4 +1,5 @@
-﻿using Sylvercode.DDBSrcModel.Factory;
+﻿using Sylvercode.DDBSrcModel.Extraction;
+using Sylvercode.DDBSrcModel.Extraction.Factory;
 using Sylvercode.DDBSrcModel.StructDocStack.Score;
 using Sylvercode.DDBSrcModel.Tests.Stubs;
 
@@ -6,7 +7,7 @@ namespace Sylvercode.DDBSrcModel.Tests;
 
 public class SrcNodeFactoryProvider_GetFactoryForStack
 {
-    public class FakeFactory(string name) : ISrcNodeFactory<BasicNodeSelectable>
+    public class FakeFactory(string name) : ISrcNodeFactory
     {
         public const string Factory1Name = nameof(Factory1Name);
         public const string Factory2Name = nameof(Factory2Name);
@@ -15,6 +16,11 @@ public class SrcNodeFactoryProvider_GetFactoryForStack
 
         public static readonly FakeFactory FakeFactory1 = new(Factory1Name);
         public static readonly FakeFactory FakeFactory2 = new(Factory2Name);
+
+        public IProcessTaskResult NewNode(object data)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public static SrcNodeFactoryProvider<BasicNodeSelectable> NewProvider(StackedNodesScore? FactoryOneScore = null, StackedNodesScore? FactoryTwoScore = null)
