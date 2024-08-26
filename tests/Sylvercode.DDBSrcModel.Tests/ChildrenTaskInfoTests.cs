@@ -88,8 +88,8 @@ public class ChildrenTaskInfoTests_ctor
             t => Assert.Equal(DefaultTaskValue1, t.ExtractionData),
             t => Assert.Equal(DefaultTaskValue2, t.ExtractionData));
         Assert.Equal(2, result.PendingSubTaskIndex.Count);
-        Assert.Contains([0], result.PendingSubTaskIndex);
-        Assert.Contains([1], result.PendingSubTaskIndex);
+        Assert.Contains(0, result.PendingSubTaskIndex);
+        Assert.Contains(1, result.PendingSubTaskIndex);
     }
 }
 
