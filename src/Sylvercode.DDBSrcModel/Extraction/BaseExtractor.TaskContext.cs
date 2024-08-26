@@ -23,9 +23,13 @@ public abstract partial class BaseExtractor<ExtractionData, DataSelectable> wher
             return new SrcNodeStack(result.Reverse());
         }
 
-        public IStructDataStack<DataSelectable> GetStructDataStack()
+        public IStructDataStack<DataSelectable> GetStructDataStack(params DataSelectable[] extraSelectableStack)
         {
             ICollection<DataSelectable> result = [];
+
+            foreach (var selectable in extraSelectableStack.Reverse())
+                result.Add(selectable);
+
             for (ExtractionTask? t = task; t is not null; t = t?.ParentTaskInfo?.ParentTask)
             {
                 if (t?.TaskResult is null)
@@ -37,7 +41,7 @@ public abstract partial class BaseExtractor<ExtractionData, DataSelectable> wher
             return new BaseStructDataStack<DataSelectable>(result.Reverse());
         }
 
-        public ISrcNodeFactoryProviderStack<DataSelectable> GetNodeFactoryProvider()
-            => new FactoryProviderStackByTask<DataSelectable>(task, defaultNodeFactoryProvider);
+        public ISrcNodeFactoryProvider<DataSelectable> GetNodeFactoryProvider()
+            => new FactoryProviderStackByTask<DataSelectable>(task, defaultNodeFactoryProvider).GetActiveSrcNodeFactoryProvider();
     }
 }

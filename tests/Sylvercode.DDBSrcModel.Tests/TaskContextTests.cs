@@ -93,6 +93,8 @@ public class TaskContextTests_GetStructDataStack
     public const string DefaultTaskValue1 = nameof(DefaultTaskValue1);
     public const string DefaultTaskValue2 = nameof(DefaultTaskValue2);
     public const string DefaultSelectableValue1 = nameof(DefaultSelectableValue1);
+    public const string DefaultSelectableValue2 = nameof(DefaultSelectableValue2);
+    public const string DefaultSelectableValue3 = nameof(DefaultSelectableValue3);
 
     public static ExtractionTask NewTask(BasicProcessTaskResult? taskResult = null)
     {
@@ -195,6 +197,35 @@ public class TaskContextTests_GetStructDataStack
 
         // Then
         Assert.Collection(result,
+                          e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(1, childSelectable), e),
+                          e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(0, parentSelectable), e));
+    }
+
+    [Fact]
+    public void WithTwoNodesAndTwoExtra_ReturnsFourNodes()
+    {
+        // Given
+        BasicSrcBloc parentNode = new();
+        BasicNodeSelectable parentSelectable = new(BasicSrcNode.DefaultId);
+        ExtractionTask taskNode = NewTask(NewTaskResult(parentNode, parentSelectable, [DefaultTaskValue1]));
+
+        BasicSrcNode childNode = new(DefaultTaskValue1);
+        ExtractionTask childTask = taskNode.ChildrenTaskInfo!.ChildrenTasks[0];
+        BasicNodeSelectable childSelectable = new(DefaultSelectableValue1);
+        childTask.ProcessResult(NewTaskResult(childNode, childSelectable));
+
+        BaseExtractor<string, BasicNodeSelectable>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
+
+        BasicNodeSelectable extra1 = new(DefaultSelectableValue2);
+        BasicNodeSelectable extra2 = new(DefaultSelectableValue3);
+
+        // When
+        IStructDataStack<BasicNodeSelectable> result = context.GetStructDataStack(extra1, extra2);
+
+        // Then
+        Assert.Collection(result,
+                          e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(3, extra2), e),
+                          e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(2, extra1), e),
                           e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(1, childSelectable), e),
                           e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(0, parentSelectable), e));
     }
