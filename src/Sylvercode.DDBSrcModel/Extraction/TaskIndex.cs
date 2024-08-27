@@ -16,7 +16,11 @@ public readonly struct TaskIndex : IComparable<TaskIndex>, IReadOnlyList<int>, I
     public TaskIndex(int index) : this([index])
     { }
 
-    public TaskIndex(TaskIndex? parent, int index = 0) : this([.. parent?._indexes ?? [], index])
+    public TaskIndex(TaskIndex parent) : this(parent, 0)
+    { }
+
+    public TaskIndex(TaskIndex? parent, TaskIndex task)
+        : this([.. parent?._indexes ?? [], .. task._indexes])
     { }
 
     public static implicit operator TaskIndex(int value) => new(value);

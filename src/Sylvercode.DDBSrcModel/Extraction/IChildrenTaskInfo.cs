@@ -9,4 +9,6 @@ public interface IChildrenTaskInfo
     IReadOnlyList<TaskIndex> PendingSubTaskIndex { get; }
 
     bool HasPendingSubTaskIndex { get; }
+
+    void RegisterGrandChildTaskResultSet(ExtractionTask task, TaskIndex taskIndex);
 }

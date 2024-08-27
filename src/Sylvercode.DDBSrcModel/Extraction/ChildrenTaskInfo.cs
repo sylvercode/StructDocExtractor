@@ -16,25 +16,6 @@ public class ChildrenTaskInfo(ExtractionTask task) : IChildrenTaskInfo
 
     public ChildrenTaskInfo(ExtractionTask task, IEnumerable<object>? childrenData) : this(task)
     {
-        /*
-        if (childrenData is not null)
-        {
-            if (Task.TaskResult?.SrcNode is null)
-            {
-                if (Task.ParentTaskInfo is not null)
-                {
-                    TaskIndex myIndex = Task.ParentTaskInfo.SiblingSubTaskIndex;
-                    ExtractionTask parentTask = task;
-                    for (int i = 0; i < myIndex.Length; i++)
-                        parentTask = parentTask.ParentTaskInfo!.ParentTask;
-                }
-            }
-            else
-            {
-
-            }
-        }
-        */
         TaskIndex nextTaskIndex = new();
         foreach (var data in childrenData ?? [])
         {
@@ -48,18 +29,26 @@ public class ChildrenTaskInfo(ExtractionTask task) : IChildrenTaskInfo
         ExtractionTask subTask = new(childData, new ParentTaskInfo(Task, nextTaskIndex));
         _childrenTasks.Add(subTask);
 
-        LisentChildTaskResultSet(subTask, nextTaskIndex);
+        RegisterChildTaskResultSet(subTask, nextTaskIndex);
     }
 
     protected virtual void SubTaskResulSetted(ExtractionTask subTask)
     {
         TaskIndex taskIndex = subTask.ParentTaskInfo!.SiblingSubTaskIndex;
-        _pendingSubTaskIndex.Remove(taskIndex);
+        if (!_pendingSubTaskIndex.Remove(taskIndex))
+            throw new InvalidOperationException($"Unknow subtask: {taskIndex}");
     }
 
-    protected void LisentChildTaskResultSet(ExtractionTask task, TaskIndex taskIndex)
+    protected virtual void RegisterChildTaskResultSet(ExtractionTask task, TaskIndex taskIndex)
     {
         task.ResultSetted += SubTaskResulSetted;
         _pendingSubTaskIndex.Add(taskIndex);
+    }
+
+    public virtual void RegisterGrandChildTaskResultSet(ExtractionTask task, TaskIndex taskIndex)
+    {
+        RegisterChildTaskResultSet(
+            task,
+            new TaskIndex(Task.ParentTaskInfo?.SiblingSubTaskIndex, taskIndex));
     }
 }
