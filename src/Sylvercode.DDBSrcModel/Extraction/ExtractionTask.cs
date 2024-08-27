@@ -19,18 +19,13 @@ public class ExtractionTask(object extractionData, ParentTaskInfo? parentTaskInf
     public event ResultSettedEventHandler? ResultSetted;
     protected void OnResultSetted() => ResultSetted?.Invoke(this);
 
-    public void ProcessResult(IProcessTaskResult? processTaskResult)
+    public void ProcessResult(IProcessTaskResult? processTaskResult, IChildrenTaskInfoFactory childrenTaskInfoFactory)
     {
         if (processTaskResult is not null)
             TaskResult = new(processTaskResult);
 
-        ChildrenTaskInfo = NewChildrenTaskInfo(this, processTaskResult?.SubTasksExtractionData);
+        ChildrenTaskInfo = childrenTaskInfoFactory.NewChildrenTaskInfo(this, processTaskResult?.SubTasksExtractionData);
 
         OnResultSetted();
-    }
-
-    private IChildrenTaskInfo NewChildrenTaskInfo(ExtractionTask task, IEnumerable<object>? childrenData)
-    {
-        return new NodeHolderChildrenTaskInfo(task, childrenData);
     }
 }

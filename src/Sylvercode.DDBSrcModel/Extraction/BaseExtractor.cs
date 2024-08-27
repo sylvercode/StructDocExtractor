@@ -4,10 +4,12 @@ using Sylvercode.DDBSrcModel.Model;
 namespace Sylvercode.DDBSrcModel.Extraction;
 
 public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
-        ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider)
+        ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider,
+        IChildrenTaskInfoFactory? childrenTaskInfoFactory = null)
         where TExtractionData : notnull
 {
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
+    private readonly IChildrenTaskInfoFactory _childrenTaskInfoFactory = childrenTaskInfoFactory ?? ChildrenTaskInfoFactory.Default;
 
     public bool HasPendingTask => _pendingTacks.First is not null;
 
@@ -41,7 +43,7 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
         IProcessTaskResult<TExtractionData, TDataSelectable>? result =
             ProcessTask(new TaskContext(curTask, defaultNodeFactoryProvider));
 
-        curTask.ProcessResult(result);
+        curTask.ProcessResult(result, _childrenTaskInfoFactory);
 
         IReadOnlyList<ExtractionTask> subTask = curTask.ChildrenTaskInfo!.ChildrenTasks;
         AddTasks(subTask, asNext: true);

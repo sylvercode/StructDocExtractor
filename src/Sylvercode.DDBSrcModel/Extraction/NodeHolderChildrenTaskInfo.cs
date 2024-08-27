@@ -5,19 +5,12 @@ namespace Sylvercode.DDBSrcModel.Extraction;
 
 public class NodeHolderChildrenTaskInfo : ChildrenTaskInfo
 {
-    public NodeHolderChildrenTaskInfo(ExtractionTask task, IEnumerable<object>? childrenData) : base(task)
+    public NodeHolderChildrenTaskInfo(ExtractionTask task, IEnumerable<object>? childrenData) : base(task, childrenData)
     {
         if (Task.TaskResult?.SrcNode is not ISrcNodeHolderInitializer holder)
             throw new InvalidOperationException($"{nameof(task)} result node is not {nameof(ISrcNodeHolderInitializer)}");
 
         ChildLinker = holder.NewParentChildLinkIntializer();
-
-        TaskIndex nextTaskIndex = new();
-        foreach (var data in childrenData ?? [])
-        {
-            NewChildTask(data, nextTaskIndex);
-            nextTaskIndex = nextTaskIndex.Increment();
-        }
     }
 
     public IParentChildLinkIntializer ChildLinker { get; }

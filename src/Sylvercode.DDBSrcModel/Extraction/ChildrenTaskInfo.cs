@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Sylvercode.DDBSrcModel.Extraction;
 
-public abstract class ChildrenTaskInfo(ExtractionTask task) : IChildrenTaskInfo
+public class ChildrenTaskInfo(ExtractionTask task) : IChildrenTaskInfo
 {
     public ExtractionTask Task { get; } = task;
 
@@ -16,24 +16,30 @@ public abstract class ChildrenTaskInfo(ExtractionTask task) : IChildrenTaskInfo
 
     public ChildrenTaskInfo(ExtractionTask task, IEnumerable<object>? childrenData) : this(task)
     {
+        /*
         if (childrenData is not null)
         {
             if (Task.TaskResult?.SrcNode is null)
             {
                 if (Task.ParentTaskInfo is not null)
                 {
-                    /*
                     TaskIndex myIndex = Task.ParentTaskInfo.SiblingSubTaskIndex;
                     ExtractionTask parentTask = task;
                     for (int i = 0; i < myIndex.Length; i++)
                         parentTask = parentTask.ParentTaskInfo!.ParentTask;
-                    */
                 }
             }
             else
             {
 
             }
+        }
+        */
+        TaskIndex nextTaskIndex = new();
+        foreach (var data in childrenData ?? [])
+        {
+            NewChildTask(data, nextTaskIndex);
+            nextTaskIndex = nextTaskIndex.Increment();
         }
     }
 

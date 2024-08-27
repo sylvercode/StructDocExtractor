@@ -15,7 +15,7 @@ public class ChildrenTaskInfoTests_ctor
     {
         ExtractionTask result = new(DefaultTaskValue);
         if (taskResult is not null)
-            result.ProcessResult(taskResult);
+            result.ProcessResult(taskResult, ChildrenTaskInfoFactory.Default);
         return result;
     }
 
@@ -34,11 +34,10 @@ public class ChildrenTaskInfoTests_ctor
         ExtractionTask task = NewTask(NewTaskResult(new BasicSrcNode()));
 
         // When
-        NodeHolderChildrenTaskInfo result = new(task, []);
+        ChildrenTaskInfo result = new(task, []);
 
         // Then
         Assert.Equal(result.Task, task);
-        Assert.Null(result.ChildLinker);
         Assert.Empty(result.ChildrenTasks);
         Assert.Empty(result.PendingSubTaskIndex);
     }
@@ -71,7 +70,7 @@ public class ChildrenTaskInfoTests_ctor
         // Then
         var childTask = Assert.Single(result.ChildrenTasks);
         Assert.Equal(DefaultTaskValue1, childTask.ExtractionData);
-        Assert.Single(result.PendingSubTaskIndex, 0);
+        Assert.Single(result.PendingSubTaskIndex, new TaskIndex(0));
     }
 
     [Fact]
@@ -103,7 +102,7 @@ public class ChildrenTaskInfoTests_SubTaskResulSetted
     {
         ExtractionTask result = new(DefaultTaskValue);
         if (taskResult is not null)
-            result.ProcessResult(taskResult);
+            result.ProcessResult(taskResult, ChildrenTaskInfoFactory.Default);
         return result;
     }
 
@@ -125,10 +124,10 @@ public class ChildrenTaskInfoTests_SubTaskResulSetted
         BasicSrcNode resultNode = new();
 
         // When
-        childTask.ProcessResult(NewTaskResult(resultNode));
+        childTask.ProcessResult(NewTaskResult(resultNode), ChildrenTaskInfoFactory.Default);
 
         // Then
-        Assert.Single(childrenTaskInfo.PendingSubTaskIndex, 1);
+        Assert.Single(childrenTaskInfo.PendingSubTaskIndex, new TaskIndex(1));
         Assert.Single(childrenTaskInfo.ChildLinker!.ChildrenToAdd(), resultNode);
     }
 
@@ -143,7 +142,7 @@ public class ChildrenTaskInfoTests_SubTaskResulSetted
         BasicSrcNode resultNode = new();
 
         // When
-        childTask.ProcessResult(NewTaskResult(resultNode));
+        childTask.ProcessResult(NewTaskResult(resultNode), ChildrenTaskInfoFactory.Default);
 
         // Then
         Assert.Empty(childrenTaskInfo.PendingSubTaskIndex);
