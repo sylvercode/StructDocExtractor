@@ -28,7 +28,7 @@ public partial class ExtractionTaskTests_ProcessResult
         ExtractionTask task = new(TaskData);
         EventLogger eventLogger = new();
         task.ResultSetted += eventLogger.OnEventRaised;
-        BasicProcessTaskResult processResult = new()
+        BasicProcessTaskResult processResult = new(new BasicSrcNode())
         {
             DataSelectable = DataSelectableValue,
             NodeFactoryProvider = NodeFactoryProviderValue

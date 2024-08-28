@@ -3,9 +3,9 @@ using Sylvercode.DDBSrcModel.Model;
 
 namespace Sylvercode.DDBSrcModel.Extraction;
 
-public class ProcessTaskResult<TExtractionData, TDataSelectable>(ISrcNode srcNode) : IProcessTaskResult<TExtractionData, TDataSelectable>
+public class ProcessTaskResult<TExtractionData, TDataSelectable>(ISrcNode? srcNode) : IProcessTaskResult<TExtractionData, TDataSelectable>
 {
-    public ISrcNode SrcNode => srcNode;
+    public ISrcNode? SrcNode => srcNode;
 
     public TDataSelectable? DataSelectable { get; set; }
 
