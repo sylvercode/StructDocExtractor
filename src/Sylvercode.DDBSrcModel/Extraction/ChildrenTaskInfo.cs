@@ -39,16 +39,10 @@ public class ChildrenTaskInfo(ExtractionTask task) : IChildrenTaskInfo
             throw new InvalidOperationException($"Unknow subtask: {taskIndex}");
     }
 
-    protected virtual void RegisterChildTaskResultSet(ExtractionTask task, TaskIndex taskIndex)
+    public virtual void RegisterChildTaskResultSet(ExtractionTask task, TaskIndex taskIndex)
     {
         task.ResultSetted += SubTaskResulSetted;
-        _pendingSubTaskIndex.Add(taskIndex);
-    }
-
-    public virtual void RegisterGrandChildTaskResultSet(ExtractionTask task, TaskIndex taskIndex)
-    {
-        RegisterChildTaskResultSet(
-            task,
-            new TaskIndex(Task.ParentTaskInfo?.SiblingSubTaskIndex, taskIndex));
+        if (!_pendingSubTaskIndex.Add(taskIndex))
+            throw new InvalidOperationException($"Duplicated subtask: {taskIndex}");
     }
 }
