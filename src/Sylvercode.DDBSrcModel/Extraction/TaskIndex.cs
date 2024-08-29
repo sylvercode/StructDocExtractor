@@ -85,4 +85,7 @@ public readonly struct TaskIndex : IComparable<TaskIndex>, IReadOnlyList<int>, I
 
     public static bool operator >=(TaskIndex left, TaskIndex right)
         => left.CompareTo(right) >= 0;
+
+    public override string ToString()
+        => string.Join(".", _indexes);
 }

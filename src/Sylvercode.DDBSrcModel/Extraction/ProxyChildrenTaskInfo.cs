@@ -8,11 +8,18 @@ public class ProxyChildrenTaskInfo(
         = task.ParentTaskInfo?.ParentTask?.ChildrenTaskInfo
         ?? throw new ArgumentException($"{nameof(task)} has no parent task info whith children info.");
 
-    public override void RegisterChildTaskResultSet(ExtractionTask task, TaskIndex taskIndex)
+    public override void AddPendingSubTaskIndex(TaskIndex taskIndex)
     {
-        base.RegisterChildTaskResultSet(task, taskIndex);
-        _parentChildrenTaskInfo.RegisterChildTaskResultSet(
-            task,
-            new TaskIndex(Task.ParentTaskInfo?.SiblingSubTaskIndex, taskIndex));
+        base.AddPendingSubTaskIndex(taskIndex);
+        _parentChildrenTaskInfo.AddPendingSubTaskIndex(GetIndexForParent(taskIndex));
+    }
+
+    private TaskIndex GetIndexForParent(TaskIndex nextTaskIndex) 
+        => new(Task.ParentTaskInfo!.SiblingSubTaskIndex, nextTaskIndex);
+
+    public override void OnSubTaskResulSetted(TaskIndex taskIndex, ExtractionTask subTask)
+    {
+        base.OnSubTaskResulSetted(taskIndex, subTask);
+        _parentChildrenTaskInfo.OnSubTaskResulSetted(GetIndexForParent(taskIndex), subTask);
     }
 }

@@ -27,22 +27,23 @@ public class ChildrenTaskInfo(ExtractionTask task) : IChildrenTaskInfo
     protected void NewChildTask(object childData, TaskIndex nextTaskIndex)
     {
         ExtractionTask subTask = new(childData, new ParentTaskInfo(Task, nextTaskIndex));
+        subTask.ResultSetted += OnChildTaskResulSetted;
         _childrenTasks.Add(subTask);
-
-        RegisterChildTaskResultSet(subTask, nextTaskIndex);
+        AddPendingSubTaskIndex(nextTaskIndex);
     }
 
-    protected virtual void SubTaskResulSetted(ExtractionTask subTask)
+    public virtual void AddPendingSubTaskIndex(TaskIndex taskIndex)
     {
-        TaskIndex taskIndex = subTask.ParentTaskInfo!.SiblingSubTaskIndex;
+        if (!_pendingSubTaskIndex.Add(taskIndex))
+            throw new InvalidOperationException($"Duplicated subtask: {taskIndex}");
+    }
+
+    public virtual void OnSubTaskResulSetted(TaskIndex taskIndex, ExtractionTask subTask)
+    {
         if (!_pendingSubTaskIndex.Remove(taskIndex))
             throw new InvalidOperationException($"Unknow subtask: {taskIndex}");
     }
 
-    public virtual void RegisterChildTaskResultSet(ExtractionTask task, TaskIndex taskIndex)
-    {
-        task.ResultSetted += SubTaskResulSetted;
-        if (!_pendingSubTaskIndex.Add(taskIndex))
-            throw new InvalidOperationException($"Duplicated subtask: {taskIndex}");
-    }
+    protected virtual void OnChildTaskResulSetted(ExtractionTask subTask)
+        => OnSubTaskResulSetted(subTask.ParentTaskInfo!.SiblingSubTaskIndex, subTask);
 }

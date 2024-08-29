@@ -10,5 +10,7 @@ public interface IChildrenTaskInfo
 
     bool HasPendingSubTaskIndex { get; }
 
-    void RegisterChildTaskResultSet(ExtractionTask task, TaskIndex taskIndex);
+    void AddPendingSubTaskIndex(TaskIndex taskIndex);
+
+    void OnSubTaskResulSetted(TaskIndex taskIndex, ExtractionTask subTask);
 }
