@@ -43,7 +43,7 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
         IProcessTaskResult<TExtractionData, TDataSelectable>? result =
             ProcessTask(new TaskContext(curTask, defaultNodeFactoryProvider));
 
-        curTask.ProcessResult(result, _childrenTaskInfoFactory);
+        curTask.SetResult(result, _childrenTaskInfoFactory);
 
         IReadOnlyList<ExtractionTask> subTask = curTask.ChildrenTaskInfo!.ChildrenTasks;
         AddTasks(subTask, asNext: true);

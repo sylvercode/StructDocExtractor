@@ -17,7 +17,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
     {
         ExtractionTask result = new(DefaultTaskValue);
         if (taskResult is not null)
-            result.ProcessResult(taskResult, ChildrenTaskInfoFactory.Default);
+            result.SetResult(taskResult, ChildrenTaskInfoFactory.Default);
         return result;
     }
 
@@ -73,7 +73,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
         // Given
         var parentTask = NewTask(NewTaskResult(providerId: 1, [DefaultTaskValue]));
         var childTask = parentTask.ChildrenTaskInfo!.ChildrenTasks[0];
-        childTask.ProcessResult(NewTaskResult(), ChildrenTaskInfoFactory.Default);
+        childTask.SetResult(NewTaskResult(), ChildrenTaskInfoFactory.Default);
         FactoryProviderStackByTask<string, BasicNodeSelectable> provider =
             new(childTask, DefaultNodeFactoryProvider);
 

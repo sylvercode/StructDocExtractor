@@ -15,7 +15,7 @@ public class ProxyChildrenTaskInfoTests_ctor
     {
         ExtractionTask result = new(DefaultTaskValue);
         if (taskResult is not null)
-            result.ProcessResult(taskResult, ChildrenTaskInfoFactory.Default);
+            result.SetResult(taskResult, ChildrenTaskInfoFactory.Default);
         return result;
     }
 
@@ -68,7 +68,7 @@ public class ProxyChildrenTaskInfoTests_RegisterChildTaskResultSet
     {
         ExtractionTask result = new(extractionData, parentTaskInfo);
         if (taskResult is not null)
-            result.ProcessResult(taskResult, ChildrenTaskInfoFactory.Default);
+            result.SetResult(taskResult, ChildrenTaskInfoFactory.Default);
         return result;
     }
 
@@ -89,7 +89,7 @@ public class ProxyChildrenTaskInfoTests_RegisterChildTaskResultSet
         ExtractionTask childTask = parentTask.ChildrenTaskInfo!.ChildrenTasks[0];
 
         // When
-        childTask.ProcessResult(NewTaskResult(null, [DefaultTaskValue2]), ChildrenTaskInfoFactory.Default);
+        childTask.SetResult(NewTaskResult(null, [DefaultTaskValue2]), ChildrenTaskInfoFactory.Default);
 
         // Then
         Assert.IsType<ProxyChildrenTaskInfo>(childTask.ChildrenTaskInfo);
@@ -104,13 +104,13 @@ public class ProxyChildrenTaskInfoTests_RegisterChildTaskResultSet
         // Given
         ExtractionTask parentTask = NewTask(taskResult: NewTaskResult(new BasicSrcRootBlock(DefaultTaskValue), [DefaultTaskValue1]));
         ExtractionTask childTask = parentTask.ChildrenTaskInfo!.ChildrenTasks[0];
-        childTask.ProcessResult(NewTaskResult(null, [DefaultTaskValue2, DefaultTaskValue3]), ChildrenTaskInfoFactory.Default);
+        childTask.SetResult(NewTaskResult(null, [DefaultTaskValue2, DefaultTaskValue3]), ChildrenTaskInfoFactory.Default);
         ExtractionTask grandChildTask0 = childTask.ChildrenTaskInfo!.ChildrenTasks[0];
         ExtractionTask grandChildTask1 = childTask.ChildrenTaskInfo!.ChildrenTasks[1];
 
         // When
-        grandChildTask0.ProcessResult(NewTaskResult(null, [DefaultTaskValue4]), ChildrenTaskInfoFactory.Default);
-        grandChildTask1.ProcessResult(NewTaskResult(null, [DefaultTaskValue5]), ChildrenTaskInfoFactory.Default);
+        grandChildTask0.SetResult(NewTaskResult(null, [DefaultTaskValue4]), ChildrenTaskInfoFactory.Default);
+        grandChildTask1.SetResult(NewTaskResult(null, [DefaultTaskValue5]), ChildrenTaskInfoFactory.Default);
 
         // Then
         Assert.IsType<ProxyChildrenTaskInfo>(grandChildTask0.ChildrenTaskInfo);

@@ -35,7 +35,7 @@ public partial class ExtractionTaskTests_ProcessResult
         };
 
         // When
-        task.ProcessResult(processResult, ChildrenTaskInfoFactory.Default);
+        task.SetResult(processResult, ChildrenTaskInfoFactory.Default);
 
         // Then
         Assert.NotNull(task.TaskResult);
@@ -58,7 +58,7 @@ public partial class ExtractionTaskTests_ProcessResult
         processResult.SubTasksExtractionData.Add("Data2");
 
         // When
-        task.ProcessResult(processResult, ChildrenTaskInfoFactory.Default);
+        task.SetResult(processResult, ChildrenTaskInfoFactory.Default);
 
         // Then
         Assert.NotNull(task.ChildrenTaskInfo);
