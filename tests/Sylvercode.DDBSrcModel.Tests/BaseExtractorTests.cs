@@ -35,7 +35,7 @@ public class BaseExtractorTests_ExtractAll
     {
         ExtractionTask result = new(DefaultTaskValue);
         if (taskResult is not null)
-            result.ProcessResult(taskResult, ChildrenTaskInfoFactory.Default);
+            result.SetResult(taskResult, ChildrenTaskInfoFactory.Default);
         return result;
     }
 

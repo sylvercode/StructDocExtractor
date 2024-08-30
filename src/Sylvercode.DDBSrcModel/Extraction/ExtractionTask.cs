@@ -19,10 +19,9 @@ public class ExtractionTask(object extractionData, ParentTaskInfo? parentTaskInf
     public event ResultSettedEventHandler? ResultSetted;
     protected void OnResultSetted() => ResultSetted?.Invoke(this);
 
-    public void ProcessResult(IProcessTaskResult? processTaskResult, IChildrenTaskInfoFactory childrenTaskInfoFactory)
+    public void SetResult(IProcessTaskResult? processTaskResult, IChildrenTaskInfoFactory childrenTaskInfoFactory)
     {
-        if (processTaskResult is not null)
-            TaskResult = new(processTaskResult);
+        TaskResult = processTaskResult is not null ? new(processTaskResult) : new();
 
         ChildrenTaskInfo = childrenTaskInfoFactory.NewChildrenTaskInfo(this, processTaskResult?.SubTasksExtractionData);
 
