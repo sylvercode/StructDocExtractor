@@ -1,6 +1,9 @@
 namespace Sylvercode.DDBSrcModel.Extraction;
 
-public class ExtractionTask(object extractionData, ParentTaskInfo? parentTaskInfo = null)
+public class ExtractionTask(
+    object extractionData,
+    ParentTaskInfo? parentTaskInfo = null)
+    : IExtractionTask
 {
     public class ResultSetsEventArgs(ExtractionTask task)
     {
@@ -8,20 +11,19 @@ public class ExtractionTask(object extractionData, ParentTaskInfo? parentTaskInf
     }
 
     public object ExtractionData { get; } = extractionData;
-
     public ParentTaskInfo? ParentTaskInfo { get; } = parentTaskInfo;
-
     public IChildrenTaskInfo? ChildrenTaskInfo { get; private set; }
-
     public ExtractionTaskResult? TaskResult { get; private set; }
 
-    public delegate void ResultSettedEventHandler(ExtractionTask sender);
-    public event ResultSettedEventHandler? ResultSetted;
+    public event IExtractionTask.ResultSettedEventHandler? ResultSetted;
     protected void OnResultSetted() => ResultSetted?.Invoke(this);
 
-    public void SetResult(IProcessTaskResult? processTaskResult, IChildrenTaskInfoFactory childrenTaskInfoFactory)
+    public void SetResult(
+        IProcessTaskResult? processTaskResult,
+        IChildrenTaskInfoFactory childrenTaskInfoFactory)
     {
-        TaskResult = processTaskResult is not null ? new(processTaskResult) : new();
+        TaskResult = processTaskResult is not null ? new ExtractionTaskResult(processTaskResult)
+                                                   : new ExtractionTaskResult();
 
         ChildrenTaskInfo = childrenTaskInfoFactory.NewChildrenTaskInfo(this, processTaskResult?.SubTasksExtractionData);
 
