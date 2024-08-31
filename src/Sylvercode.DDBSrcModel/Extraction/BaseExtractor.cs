@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Sylvercode.DDBSrcModel.Extraction.Factory;
 using Sylvercode.DDBSrcModel.Model;
 
@@ -6,26 +7,40 @@ namespace Sylvercode.DDBSrcModel.Extraction;
 
 public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
         ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider,
-        ILogger logger,
         IChildrenTaskInfoFactory? childrenTaskInfoFactory = null,
-        BaseExtractorOption option = default)
+        IDataPreviewProvider<TExtractionData>? dataPreviewProvider = null,
+        BaseExtractorOption option = default,
+        ILogger<BaseExtractor<TExtractionData, TDataSelectable>>? logger = null)
         where TExtractionData : notnull
 {
-    private ILogger Logger => logger;
-    private readonly LinkedList<ExtractionTask> _pendingTacks = [];
-    private readonly IChildrenTaskInfoFactory _childrenTaskInfoFactory = childrenTaskInfoFactory ?? ChildrenTaskInfoFactory.Default;
+    private readonly IChildrenTaskInfoFactory _childrenTaskInfoFactory = childrenTaskInfoFactory
+                                                                         ?? ChildrenTaskInfoFactory.Default;
+    private readonly IDataPreviewProvider<TExtractionData> _dataPreviewProvider = dataPreviewProvider
+                                                                                  ?? new ToStringPreviewProvider<TExtractionData>();
 
+    private readonly ILogger _logger = ((ILogger?)logger) ?? NullLogger.Instance;
+
+    private readonly LinkedList<ExtractionTask> _pendingTacks = [];
     public bool HasPendingTask => _pendingTacks.First is not null;
 
     public IEnumerable<ISrcNode> ExtractAll()
     {
+        ExtractionResult.ExtractionSummery summery = new();
         LinkedList<ISrcNode> result = [];
         while (HasPendingTask)
         {
-            ExtractionTask task = ProcessNextTask();
+            ExtractionTask task = GetNextTask();
+            IProcessTaskResult taskResult = ProcessTask(task);
 
-            if (task.TaskResult?.SrcNode?.IsRoot ?? false)
-                result.AddLast(task.TaskResult.SrcNode);
+            summery.CountTaskResult(taskResult.ResultType);
+
+            if (task.ParentTaskInfo?.ParentTask is null)
+            {
+                if (taskResult.SrcNode is not null)
+                    result.AddLast(taskResult.SrcNode);
+                else if (taskResult.ResultType is TaskResultType.Success or TaskResultType.Warning)
+                    LogRootTaskWithNoNodeResultOnSuccessOrWarning(_dataPreviewProvider.GetPreview((TExtractionData)task.ExtractionData));
+            }
         }
         return result;
     }
@@ -40,22 +55,45 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
         return firstListNode.Value;
     }
 
-    private ExtractionTask ProcessNextTask()
+    private IProcessTaskResult ProcessTask(ExtractionTask task)
     {
-        ExtractionTask curTask = GetNextTask();
+        IProcessTaskResult<TExtractionData, TDataSelectable>? result = null;
+        TaskContext taskContext = new(task, defaultNodeFactoryProvider);
 
-        IProcessTaskResult<TExtractionData, TDataSelectable> result =
-            ProcessTask(new TaskContext(curTask, defaultNodeFactoryProvider));
+        using (_logger.BeginScope(new List<KeyValuePair<string, object?>>(){
+            new("TaskIndex", taskContext.TaskIndex),
+            new("DataSelectableStack", taskContext.GetStructDataStack().ToString())
+        }))
+        {
+            try
+            {
+                result = ProcessTask(taskContext);
 
-        curTask.SetResult(result, _childrenTaskInfoFactory);
+                LogProcessTaskResult(
+                    result.ResultType,
+                    result.DataSelectable?.ToString(),
+                    result.SrcNode?.DebugName,
+                    result.NodeFactoryProvider?.DebugName);
 
-        IReadOnlyList<ExtractionTask> subTask = curTask.ChildrenTaskInfo!.ChildrenTasks;
-        AddTasks(subTask, asNext: true);
+                task.SetResult(result, _childrenTaskInfoFactory);
 
-        if (result is not null)
-            AddTasks(result.ExtraTasksExtractionData, asNext: false);
+                IReadOnlyList<ExtractionTask> subTask = task.ChildrenTaskInfo!.ChildrenTasks;
+                LogChildrenTaskCount(subTask.Count);
+                AddTasks(subTask, asNext: true);
 
-        return curTask;
+                LogExtraTaskCount(subTask.Count);
+                AddTasks(result.ExtraTasksExtractionData, asNext: false);
+            }
+            catch (Exception ex)
+            {
+                LogExceptionCatch(option.ExceptionCatchLogLevel, ex);
+                if (!option.ContinueOnException)
+                    throw;
+                result = ProcessTaskResult<TExtractionData, TDataSelectable>.Error;
+            }
+        }
+
+        return result;
     }
 
     private void AddTasks(IEnumerable<ExtractionTask> extractionDatas, bool asNext = false)
@@ -73,10 +111,12 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
     }
 
     public void AddTask(TExtractionData data, bool asNext = false)
-        => AddTask(new ExtractionTask(data), asNext);
+        => AddTask(new ExtractionTask(data, logger: _logger), asNext);
 
     private void AddTask(ExtractionTask task, bool asNext = false)
     {
+        LogTaskAdded(_dataPreviewProvider.GetPreview((TExtractionData)task.ExtractionData),
+                     asNext ? "Next" : "Last");
         if (asNext)
             _pendingTacks.AddFirst(task);
         else
@@ -86,31 +126,75 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
     protected virtual IProcessTaskResult<TExtractionData, TDataSelectable>
         ProcessTask(TaskContext taskContext)
     {
+        LogTraceProcessBegin();
+
         ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> factoryProvider =
             taskContext.GetNodeFactoryProvider();
+        LogFactoryProviderInUse(factoryProvider.DebugName);
 
         TDataSelectable selectable = GetDataSelectable(taskContext);
+        LogDataSelectableGot(selectable?.ToString());
 
         ISrcNodeFactory<TExtractionData, TDataSelectable>? factory =
             factoryProvider.GetFactoryForStack(taskContext.GetStructDataStack(selectable));
-
+        LogNoNodeFactoryFound(option.MissingNodeFactoryLogLevel, selectable?.ToString());
         if (factory is null)
-        {
-            if (Logger.IsEnabled(option.MissingNodeFactoryLogLevel))
-                LogNoNodeFactoryFound(option.MissingNodeFactoryLogLevel, taskContext.GetStructDataStack(selectable).ToString());
             return ProcessTaskResult<TExtractionData, TDataSelectable>.ErrorOrSkipped(option.MissingNodeFactoryAsError);
-        }
 
         return factory.NewNode(taskContext.ExtractionData);
     }
 
     protected virtual TDataSelectable GetDataSelectable(TaskContext taskContext)
     {
+        // TODO: Implement this method
         throw new NotImplementedException();
     }
 
     [LoggerMessage(
-       Message = "No factory found for `{dataStack}`",
-       SkipEnabledCheck = true)]
-    private partial void LogNoNodeFactoryFound(LogLevel level, string? dataStack);
+       Message = "No factory found for `{dataSelectable}`.")]
+    private partial void LogNoNodeFactoryFound(LogLevel level, string? dataSelectable);
+
+    [LoggerMessage(
+        Level = LogLevel.Debug,
+        Message = "Data selectable `{DataSelectable}`.")]
+    private partial void LogDataSelectableGot(string? dataSelectable);
+
+    [LoggerMessage(
+        Level = LogLevel.Debug,
+        Message = "Factory provider `{FactoryProviderName}` in use.")]
+    private partial void LogFactoryProviderInUse(string factoryProviderName);
+
+    [LoggerMessage(
+        Level = LogLevel.Trace,
+        Message = "Begin process task.")]
+    private partial void LogTraceProcessBegin();
+
+    [LoggerMessage(
+        Message = "Exception cath while processing task.")]
+    private partial void LogExceptionCatch(LogLevel level, Exception ex);
+
+    [LoggerMessage(
+        Level = LogLevel.Trace,
+        Message = "Process task result: {ResultType}, DataSelectable: {DataSelectable}, SrcNode: {SrcNode}, NodeFactoryProvider: {NodeFactoryProvider}")]
+    private partial void LogProcessTaskResult(TaskResultType resultType, string? dataSelectable, string? srcNode, string? nodeFactoryProvider);
+
+    [LoggerMessage(
+        Level = LogLevel.Debug,
+        Message = "Children task count: {Count}")]
+    private partial void LogChildrenTaskCount(int count);
+
+    [LoggerMessage(
+        Level = LogLevel.Debug,
+        Message = "Extra task count: {Count}")]
+    private partial void LogExtraTaskCount(int count);
+
+    [LoggerMessage(
+        Level = LogLevel.Trace,
+        Message = "Task added for `{DataPreview}` as {NextOrLast}")]
+    private partial void LogTaskAdded(string dataPreview, string nextOrLast);
+
+    [LoggerMessage(
+        Level = LogLevel.Warning,
+        Message = "No node result on success or warning for `{DataPreview}`.")]
+    private partial void LogRootTaskWithNoNodeResultOnSuccessOrWarning(string dataPreview);
 }

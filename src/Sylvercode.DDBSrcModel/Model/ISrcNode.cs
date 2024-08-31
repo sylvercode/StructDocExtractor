@@ -7,6 +7,8 @@ public interface ISrcNode
 
     bool IsRoot { get; }
     bool IsLeaf { get; }
+
+    string DebugName => $"{GetType().Name}({Id})";
 }
 
 public interface ISrcNode<out P> : ISrcNode

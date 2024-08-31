@@ -1,4 +1,5 @@
-﻿using Sylvercode.DDBSrcModel.Extraction;
+﻿using Microsoft.Extensions.Logging.Abstractions;
+using Sylvercode.DDBSrcModel.Extraction;
 using Sylvercode.DDBSrcModel.Extraction.Factory;
 using Sylvercode.DDBSrcModel.Model;
 using Sylvercode.DDBSrcModel.Tests.Extraction;
@@ -12,13 +13,13 @@ public class BaseExtractorTests_ExtractAll
     {
         public static readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> NodeFactoryProviderValue = new();
 
-        public delegate ProcessTaskResult<string, BasicNodeSelectable>? OnProcessTask(TaskContext taskContext);
+        public delegate ProcessTaskResult<string, BasicNodeSelectable> OnProcessTask(TaskContext taskContext);
         private readonly Queue<OnProcessTask> _onProcessTaskQueue = [];
         public void AddOnProcessTaskAction(OnProcessTask action)
             => _onProcessTaskQueue.Enqueue(action);
         public bool HasOnProcessTask => _onProcessTaskQueue.Count > 0;
 
-        protected override IProcessTaskResult<string, BasicNodeSelectable>? ProcessTask(TaskContext taskContext)
+        protected override IProcessTaskResult<string, BasicNodeSelectable> ProcessTask(TaskContext taskContext)
         {
             if (!_onProcessTaskQueue.TryDequeue(out OnProcessTask? nextAction))
                 throw new InvalidOperationException("No Next action in queue.");
@@ -157,7 +158,7 @@ public class BaseExtractorTests_ExtractAll
         extractor.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcNode(ctx.ExtractionData)));
         extractor.AddOnProcessTaskAction(
-            ctx => null);
+            ctx => ProcessTaskResult<string, BasicNodeSelectable>.Skipped);
 
         // When
         IEnumerable<ISrcNode> result = extractor.ExtractAll();
