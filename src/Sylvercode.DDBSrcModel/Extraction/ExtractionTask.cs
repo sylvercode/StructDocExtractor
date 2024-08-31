@@ -5,11 +5,6 @@ public class ExtractionTask(
     ParentTaskInfo? parentTaskInfo = null)
     : IExtractionTask
 {
-    public class ResultSetsEventArgs(ExtractionTask task)
-    {
-        public ExtractionTask Task => task;
-    }
-
     public object ExtractionData { get; } = extractionData;
     public ParentTaskInfo? ParentTaskInfo { get; } = parentTaskInfo;
     public IChildrenTaskInfo? ChildrenTaskInfo { get; private set; }
