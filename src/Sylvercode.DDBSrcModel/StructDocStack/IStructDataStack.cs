@@ -14,6 +14,8 @@ public interface IStructDataStack<N> : IEnumerable<IStructDataStack<N>.Entry>
         {
             return $"{Depth}: {NodeSelectable}";
         }
+
+        public override string ToString() => NodeSelectable?.ToString() ?? string.Empty;
     }
 
     public Entry Peek();

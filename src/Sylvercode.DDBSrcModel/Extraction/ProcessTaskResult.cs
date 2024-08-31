@@ -9,6 +9,8 @@ public class ProcessTaskResult<TExtractionData, TDataSelectable>(TaskResultType 
 
     public static ProcessTaskResult<TExtractionData, TDataSelectable> Skipped { get; } = new(TaskResultType.Skipped, null);
 
+    public static ProcessTaskResult<TExtractionData, TDataSelectable> ErrorOrSkipped(bool asError) => asError ? Error : Skipped;
+
     public TaskResultType ResultType => resultType;
 
     public ISrcNode? SrcNode => srcNode;
