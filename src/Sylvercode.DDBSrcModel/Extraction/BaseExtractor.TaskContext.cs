@@ -11,6 +11,8 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable> wh
     {
         public TExtractionData ExtractionData => (TExtractionData)task.ExtractionData;
 
+        public TaskIndex? TaskIndex => task.ParentTaskInfo?.SiblingSubTaskIndex;
+
         public ISrcNodeStack GetSrcNodeStack()
         {
             ICollection<ISrcNode> result = [];
