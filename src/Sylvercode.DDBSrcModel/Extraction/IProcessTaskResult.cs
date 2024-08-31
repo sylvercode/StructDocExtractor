@@ -5,6 +5,7 @@ namespace Sylvercode.DDBSrcModel.Extraction;
 
 public interface IProcessTaskResult
 {
+    public TaskResultType ResultType { get; }
     public ISrcNode? SrcNode { get; }
     public object? DataSelectable { get; }
     public object? NodeFactoryProvider { get; }
