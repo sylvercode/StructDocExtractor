@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Sylvercode.DDBSrcModel.Extraction.Factory;
 using Sylvercode.DDBSrcModel.Model;
 
@@ -5,9 +6,12 @@ namespace Sylvercode.DDBSrcModel.Extraction;
 
 public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
         ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider,
-        IChildrenTaskInfoFactory? childrenTaskInfoFactory = null)
+        ILogger logger,
+        IChildrenTaskInfoFactory? childrenTaskInfoFactory = null,
+        BaseExtractorOption option = default)
         where TExtractionData : notnull
 {
+    private ILogger Logger => logger;
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
     private readonly IChildrenTaskInfoFactory _childrenTaskInfoFactory = childrenTaskInfoFactory ?? ChildrenTaskInfoFactory.Default;
 
@@ -40,7 +44,7 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
     {
         ExtractionTask curTask = GetNextTask();
 
-        IProcessTaskResult<TExtractionData, TDataSelectable>? result =
+        IProcessTaskResult<TExtractionData, TDataSelectable> result =
             ProcessTask(new TaskContext(curTask, defaultNodeFactoryProvider));
 
         curTask.SetResult(result, _childrenTaskInfoFactory);
@@ -79,7 +83,7 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
             _pendingTacks.AddLast(task);
     }
 
-    protected virtual IProcessTaskResult<TExtractionData, TDataSelectable>?
+    protected virtual IProcessTaskResult<TExtractionData, TDataSelectable>
         ProcessTask(TaskContext taskContext)
     {
         ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> factoryProvider =
@@ -90,11 +94,23 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
         ISrcNodeFactory<TExtractionData, TDataSelectable>? factory =
             factoryProvider.GetFactoryForStack(taskContext.GetStructDataStack(selectable));
 
-        return factory?.NewNode(taskContext.ExtractionData);
+        if (factory is null)
+        {
+            if (Logger.IsEnabled(option.MissingNodeFactoryLogLevel))
+                LogNoNodeFactoryFound(option.MissingNodeFactoryLogLevel, taskContext.GetStructDataStack(selectable).ToString());
+            return ProcessTaskResult<TExtractionData, TDataSelectable>.ErrorOrSkipped(option.MissingNodeFactoryAsError);
+        }
+
+        return factory.NewNode(taskContext.ExtractionData);
     }
 
     protected virtual TDataSelectable GetDataSelectable(TaskContext taskContext)
     {
         throw new NotImplementedException();
     }
+
+    [LoggerMessage(
+       Message = "No factory found for `{dataStack}`",
+       SkipEnabledCheck = true)]
+    private partial void LogNoNodeFactoryFound(LogLevel level, string? dataStack);
 }

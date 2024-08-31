@@ -23,4 +23,7 @@ public class BaseStructDataStack<N>() : IStructDataStack<N>
     public void Push(N Node) => _entries.Push(new IStructDataStack<N>.Entry(Count, Node));
 
     public IStructDataStack<N>.Entry Pop() => _entries.Pop();
+
+    public override string ToString() 
+        => string.Join(", ", "`" + _entries + "`");
 }
