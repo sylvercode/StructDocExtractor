@@ -10,5 +10,5 @@ public interface IExtractionTask
     public delegate void ResultSettedEventHandler(ExtractionTask sender);
     event ResultSettedEventHandler? ResultSetted;
 
-    void SetResult(IProcessTaskResult? processTaskResult, IChildrenTaskInfoFactory childrenTaskInfoFactory);
+    void SetResult(IProcessTaskResult processTaskResult, IChildrenTaskInfoFactory childrenTaskInfoFactory);
 }
