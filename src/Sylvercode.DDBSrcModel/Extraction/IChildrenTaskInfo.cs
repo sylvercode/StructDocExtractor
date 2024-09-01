@@ -12,5 +12,5 @@ public interface IChildrenTaskInfo
 
     void AddPendingSubTaskIndex(TaskIndex taskIndex);
 
-    void OnSubTaskResulSetted(TaskIndex taskIndex, ExtractionTask subTask);
+    void OnSubTaskResultSet(TaskIndex taskIndex, ExtractionTask subTask);
 }

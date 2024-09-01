@@ -15,9 +15,9 @@ public class NodeHolderChildrenTaskInfo : ChildrenTaskInfo
 
     public IParentChildLinkIntializer ChildLinker { get; }
 
-    public override void OnSubTaskResulSetted(TaskIndex taskIndex, ExtractionTask subTask)
+    public override void OnSubTaskResultSet(TaskIndex taskIndex, ExtractionTask subTask)
     {
-        base.OnSubTaskResulSetted(taskIndex, subTask);
+        base.OnSubTaskResultSet(taskIndex, subTask);
 
         ISrcNode? node = subTask.TaskResult?.SrcNode;
         if (node is ISrcNodeIntializer srcInit
