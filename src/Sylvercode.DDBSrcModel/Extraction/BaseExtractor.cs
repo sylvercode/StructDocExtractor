@@ -5,22 +5,34 @@ using Sylvercode.DDBSrcModel.Model;
 
 namespace Sylvercode.DDBSrcModel.Extraction;
 
-public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
-        ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider,
-        IChildrenTaskInfoFactory? childrenTaskInfoFactory = null,
-        IDataPreviewProvider<TExtractionData>? dataPreviewProvider = null,
-        BaseExtractorOption option = default,
-        ILogger<BaseExtractor<TExtractionData, TDataSelectable>>? logger = null)
-        where TExtractionData : notnull
+public abstract partial class BaseExtractor<TExtractionData, TDataSelectable> where TExtractionData : notnull
 {
-    private readonly IChildrenTaskInfoFactory _childrenTaskInfoFactory = childrenTaskInfoFactory
-                                                                         ?? ChildrenTaskInfoFactory.Default;
-    private readonly IDataPreviewProvider<TExtractionData> _dataPreviewProvider = dataPreviewProvider
-                                                                                  ?? new ToStringPreviewProvider<TExtractionData>();
+    private readonly IChildrenTaskInfoFactory _childrenTaskInfoFactory;
+    private readonly IDataPreviewProvider<TExtractionData> _dataPreviewProvider;
 
-    private readonly ILogger _logger = ((ILogger?)logger) ?? NullLogger.Instance;
+    private readonly ILoggerFactory _loggerFactory;
+    private readonly ILogger<BaseExtractor<TExtractionData, TDataSelectable>> _logger;
+
+    private readonly BaseExtractorOption option;
 
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
+    private readonly ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider;
+
+    public BaseExtractor(
+            ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider,
+            IChildrenTaskInfoFactory? childrenTaskInfoFactory = null,
+            IDataPreviewProvider<TExtractionData>? dataPreviewProvider = null,
+            BaseExtractorOption option = default,
+            ILoggerFactory? loggerFactory = null)
+    {
+        this.defaultNodeFactoryProvider = defaultNodeFactoryProvider;
+        this.option = option;
+        _childrenTaskInfoFactory = childrenTaskInfoFactory ?? ChildrenTaskInfoFactory.Default;
+        _dataPreviewProvider = dataPreviewProvider ?? new ToStringPreviewProvider<TExtractionData>();
+        _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
+        _logger = NullLoggerFactory.Instance.CreateLogger<BaseExtractor<TExtractionData, TDataSelectable>>();
+    }
+
     public bool HasPendingTask => _pendingTacks.First is not null;
 
     public IEnumerable<ISrcNode> ExtractAll()
@@ -111,7 +123,8 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
     }
 
     public void AddTask(TExtractionData data, bool asNext = false)
-        => AddTask(new ExtractionTask(data, logger: _logger), asNext);
+        => AddTask(new ExtractionTask(data, logger: _loggerFactory.CreateLogger<ExtractionTask>()),
+                   asNext);
 
     private void AddTask(ExtractionTask task, bool asNext = false)
     {
