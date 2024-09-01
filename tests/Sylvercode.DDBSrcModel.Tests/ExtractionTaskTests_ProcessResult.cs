@@ -22,12 +22,12 @@ public partial class ExtractionTaskTests_ProcessResult
     public readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> NodeFactoryProviderValue = new();
 
     [Fact]
-    public void WithNoChildResult_ResulIsSetAnEventSend()
+    public void WithNoChildResult_ResultIsSetAnEventSend()
     {
         // Given
         ExtractionTask task = new(TaskData);
         EventLogger eventLogger = new();
-        task.ResultSetted += eventLogger.OnEventRaised;
+        task.ResultSet += eventLogger.OnEventRaised;
         BasicProcessTaskResult processResult = new(new BasicSrcNode())
         {
             DataSelectable = DataSelectableValue,
