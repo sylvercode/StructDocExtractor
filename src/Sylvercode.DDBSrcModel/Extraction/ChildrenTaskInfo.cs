@@ -1,10 +1,14 @@
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Sylvercode.DDBSrcModel.Extraction;
 
-public class ChildrenTaskInfo(ExtractionTask task) : IChildrenTaskInfo
+public class ChildrenTaskInfo : IChildrenTaskInfo
 {
-    public ExtractionTask Task { get; } = task;
+    protected readonly ILogger _logger;
+
+    public ExtractionTask Task { get; }
 
     private readonly List<ExtractionTask> _childrenTasks = [];
     public IReadOnlyList<ExtractionTask> ChildrenTasks => _childrenTasks.AsReadOnly();
@@ -14,8 +18,20 @@ public class ChildrenTaskInfo(ExtractionTask task) : IChildrenTaskInfo
 
     public bool HasPendingSubTaskIndex => _pendingSubTaskIndex.Count > 0;
 
-    public ChildrenTaskInfo(ExtractionTask task, IEnumerable<object>? childrenData) : this(task)
+    public ChildrenTaskInfo(ExtractionTask task,
+                            IEnumerable<object>? childrenData,
+                            ILogger<ChildrenTaskInfo>? logger = null)
+        : this(task, childrenData, untypedLogger: logger)
     {
+    }
+
+    protected ChildrenTaskInfo(ExtractionTask task,
+                               IEnumerable<object>? childrenData,
+                               ILogger? untypedLogger = null)
+    {
+        Task = task;
+        _logger = untypedLogger ?? NullLogger.Instance;
+
         TaskIndex nextTaskIndex = new();
         foreach (var data in childrenData ?? [])
         {
