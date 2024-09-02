@@ -4,7 +4,7 @@ namespace Sylvercode.DDBSrcModel.Extraction;
 
 public class ProxyChildrenTaskInfo(ExtractionTask task,
                                    IEnumerable<object>? childrenData,
-                                   ILogger<ProxyChildrenTaskInfo>? logger)
+                                   ILogger<ProxyChildrenTaskInfo>? logger = null)
     : ChildrenTaskInfo(task, childrenData, untypedLogger: logger)
 {
     private readonly IChildrenTaskInfo _parentChildrenTaskInfo

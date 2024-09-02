@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Sylvercode.DDBSrcModel.Model.Init;
 
 namespace Sylvercode.DDBSrcModel.Model.Base;
@@ -16,6 +17,8 @@ public abstract class BaseSrcNode<P>(string id) :
     public virtual bool IsLeaf => true;
 
     public string Id { get; } = id;
+
+    public string NodeSnippet() => ((ISrcNode)this).DebugName;
 
     virtual protected void SetParent(P parent)
     {

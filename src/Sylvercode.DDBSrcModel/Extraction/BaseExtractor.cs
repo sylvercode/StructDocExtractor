@@ -10,7 +10,7 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
         IChildrenTaskInfoFactory? childrenTaskInfoFactory = null,
         IDataPreviewProvider<TExtractionData>? dataPreviewProvider = null,
         BaseExtractorOption option = default,
-        ILogger<BaseExtractor<TExtractionData, TDataSelectable>>? logger = null)
+        ILoggerFactory? loggerFactory = null)
         where TExtractionData : notnull
 {
     private readonly IChildrenTaskInfoFactory _childrenTaskInfoFactory = childrenTaskInfoFactory
@@ -18,7 +18,9 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
     private readonly IDataPreviewProvider<TExtractionData> _dataPreviewProvider = dataPreviewProvider
                                                                                   ?? new ToStringPreviewProvider<TExtractionData>();
 
-    private readonly ILogger _logger = ((ILogger?)logger) ?? NullLogger.Instance;
+    private readonly ILoggerFactory _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
+    private readonly ILogger _logger = loggerFactory is not null ? loggerFactory.CreateLogger<BaseExtractor<TExtractionData, TDataSelectable>>()
+                                                                 : NullLogger.Instance;
 
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
     public bool HasPendingTask => _pendingTacks.First is not null;
@@ -111,7 +113,7 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
     }
 
     public void AddTask(TExtractionData data, bool asNext = false)
-        => AddTask(new ExtractionTask(data, logger: _logger), asNext);
+        => AddTask(new ExtractionTask(data, logger: _loggerFactory.CreateLogger<ExtractionTask>()), asNext);
 
     private void AddTask(ExtractionTask task, bool asNext = false)
     {

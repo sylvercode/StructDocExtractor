@@ -9,7 +9,7 @@ public partial class ExtractionTask(
     ILogger<ExtractionTask>? logger = null)
     : IExtractionTask
 {
-    protected ILogger Logger { get; } = logger ?? NullLogger<ExtractionTask>.Instance;
+    protected readonly ILogger<ExtractionTask> logger = logger ?? NullLogger<ExtractionTask>.Instance;
 
     public object ExtractionData { get; } = extractionData;
     public ParentTaskInfo? ParentTaskInfo { get; } = parentTaskInfo;
@@ -23,9 +23,9 @@ public partial class ExtractionTask(
         IProcessTaskResult processTaskResult,
         IChildrenTaskInfoFactory childrenTaskInfoFactory)
     {
-        if (Logger.IsEnabled(LogLevel.Trace))
+        if (logger.IsEnabled(LogLevel.Trace))
             LogSetResult(TaskSnippet(true)); ;
-            
+
         TaskResult = new ExtractionTaskResult(processTaskResult);
 
         ChildrenTaskInfo = childrenTaskInfoFactory.NewChildrenTaskInfo(this, processTaskResult?.SubTasksExtractionData);
