@@ -1,10 +1,14 @@
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Sylvercode.DDBSrcModel.Extraction;
 
-public class ChildrenTaskInfo(ExtractionTask task) : IChildrenTaskInfo
+public partial class ChildrenTaskInfo : IChildrenTaskInfo
 {
-    public ExtractionTask Task { get; } = task;
+    protected readonly ILogger _logger;
+
+    public ExtractionTask Task { get; }
 
     private readonly List<ExtractionTask> _childrenTasks = [];
     public IReadOnlyList<ExtractionTask> ChildrenTasks => _childrenTasks.AsReadOnly();
@@ -14,8 +18,20 @@ public class ChildrenTaskInfo(ExtractionTask task) : IChildrenTaskInfo
 
     public bool HasPendingSubTaskIndex => _pendingSubTaskIndex.Count > 0;
 
-    public ChildrenTaskInfo(ExtractionTask task, IEnumerable<object>? childrenData) : this(task)
+    public ChildrenTaskInfo(ExtractionTask task,
+                            IEnumerable<object>? childrenData,
+                            ILogger<ChildrenTaskInfo>? logger = null)
+        : this(task, childrenData, untypedLogger: logger)
     {
+    }
+
+    protected ChildrenTaskInfo(ExtractionTask task,
+                               IEnumerable<object>? childrenData,
+                               ILogger? untypedLogger = null)
+    {
+        Task = task;
+        _logger = untypedLogger ?? NullLogger.Instance;
+
         TaskIndex nextTaskIndex = new();
         foreach (var data in childrenData ?? [])
         {
@@ -36,14 +52,32 @@ public class ChildrenTaskInfo(ExtractionTask task) : IChildrenTaskInfo
     {
         if (!_pendingSubTaskIndex.Add(taskIndex))
             throw new InvalidOperationException($"Duplicated subtask: {taskIndex}");
+
+        if (_logger.IsEnabled(LogLevel.Trace))
+            LogTaskAdded(Task.TaskSnippet(), taskIndex);
     }
 
     public virtual void OnSubTaskResultSet(TaskIndex taskIndex, ExtractionTask subTask)
     {
         if (!_pendingSubTaskIndex.Remove(taskIndex))
             throw new InvalidOperationException($"Unknown subtask: {taskIndex}");
+
+        if (_logger.IsEnabled(LogLevel.Trace))
+            LogTaskRemoved(Task.TaskSnippet(), taskIndex);
     }
 
     protected virtual void OnChildTaskResultSet(ExtractionTask subTask)
         => OnSubTaskResultSet(subTask.ParentTaskInfo!.SiblingSubTaskIndex, subTask);
+
+    [LoggerMessage(
+        Level = LogLevel.Trace,
+        Message = "{TaskSnippet}: removed subtask {subTaskIndex}.",
+        SkipEnabledCheck = true)]
+    private partial void LogTaskRemoved(string taskSnippet, TaskIndex subTaskIndex);
+
+    [LoggerMessage(
+        Level = LogLevel.Trace,
+        Message = "{TaskSnippet}: added subtask {subTaskIndex}.",
+        SkipEnabledCheck = true)]
+    private partial void LogTaskAdded(string taskSnippet, TaskIndex subTaskIndex);
 }

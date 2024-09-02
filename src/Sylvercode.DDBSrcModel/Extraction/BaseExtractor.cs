@@ -5,15 +5,20 @@ using Sylvercode.DDBSrcModel.Model;
 
 namespace Sylvercode.DDBSrcModel.Extraction;
 
-public abstract partial class BaseExtractor<TExtractionData, TDataSelectable> where TExtractionData : notnull
+public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
+        ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider,
+        IChildrenTaskInfoFactory? childrenTaskInfoFactory = null,
+        IDataPreviewProvider<TExtractionData>? dataPreviewProvider = null,
+        BaseExtractorOption option = default,
+        ILoggerFactory? loggerFactory = null)
+        where TExtractionData : notnull
 {
     private readonly IChildrenTaskInfoFactory _childrenTaskInfoFactory;
     private readonly IDataPreviewProvider<TExtractionData> _dataPreviewProvider;
 
-    private readonly ILoggerFactory _loggerFactory;
-    private readonly ILogger<BaseExtractor<TExtractionData, TDataSelectable>> _logger;
-
-    private readonly BaseExtractorOption option;
+    private readonly ILoggerFactory _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
+    private readonly ILogger _logger = loggerFactory is not null ? loggerFactory.CreateLogger<BaseExtractor<TExtractionData, TDataSelectable>>()
+                                                                 : NullLogger.Instance;
 
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
     private readonly ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider;
@@ -123,8 +128,7 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable> wh
     }
 
     public void AddTask(TExtractionData data, bool asNext = false)
-        => AddTask(new ExtractionTask(data, logger: _loggerFactory.CreateLogger<ExtractionTask>()),
-                   asNext);
+        => AddTask(new ExtractionTask(data, logger: _loggerFactory.CreateLogger<ExtractionTask>()), asNext);
 
     private void AddTask(ExtractionTask task, bool asNext = false)
     {

@@ -3,13 +3,13 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Sylvercode.DDBSrcModel.Extraction;
 
-public class ExtractionTask(
+public partial class ExtractionTask(
     object extractionData,
     ParentTaskInfo? parentTaskInfo = null,
-    ILogger? logger = null)
+    ILogger<ExtractionTask>? logger = null)
     : IExtractionTask
 {
-    protected ILogger Logger { get; } = logger ?? NullLogger.Instance;
+    protected readonly ILogger<ExtractionTask> logger = logger ?? NullLogger<ExtractionTask>.Instance;
 
     public object ExtractionData { get; } = extractionData;
     public ParentTaskInfo? ParentTaskInfo { get; } = parentTaskInfo;
@@ -23,10 +23,39 @@ public class ExtractionTask(
         IProcessTaskResult processTaskResult,
         IChildrenTaskInfoFactory childrenTaskInfoFactory)
     {
+        if (logger.IsEnabled(LogLevel.Trace))
+            LogSetResult(TaskSnippet(true)); ;
+
         TaskResult = new ExtractionTaskResult(processTaskResult);
 
         ChildrenTaskInfo = childrenTaskInfoFactory.NewChildrenTaskInfo(this, processTaskResult?.SubTasksExtractionData);
 
         OnResultSet();
     }
+
+    public string TaskSnippet(bool withParentSnippet = false)
+    {
+        var snippet = TaskResult?.DataSelectable?.ToString() ?? string.Empty;
+        if (ParentTaskInfo is null)
+            return string.IsNullOrEmpty(snippet) ? "<<root>>" : snippet;
+
+        var index = ParentTaskInfo.SiblingSubTaskIndex.ToString();
+        if (!string.IsNullOrEmpty(index) && !string.IsNullOrEmpty(snippet))
+            snippet += $"{index}:[{snippet}]";
+
+        if (withParentSnippet)
+        {
+            var parentSnippet = ParentTaskInfo.ParentTask.TaskSnippet();
+            if (!string.IsNullOrEmpty(parentSnippet))
+                snippet = $"{snippet} of {parentSnippet}";
+        }
+
+        return snippet;
+    }
+
+    [LoggerMessage(
+        Level = LogLevel.Trace,
+        Message = "Set Result for `{TaskSnippet}`.",
+        SkipEnabledCheck = true)]
+    private partial void LogSetResult(string taskSnippet);
 }
