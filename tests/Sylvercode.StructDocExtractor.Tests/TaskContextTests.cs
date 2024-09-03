@@ -37,7 +37,7 @@ public class TaskContextTests_GetSrcNodeStack
         // Given
         ExtractionTask task = NewTask();
 
-        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(task, DefaultNodeFactoryProvider);
+        ExtractorTaskSequencer<string, BasicNodeDiscriminator>.TaskContext context = new(task, DefaultNodeFactoryProvider);
 
         // When
         IStructDocNodeStack result = context.GetSrcNodeStack();
@@ -53,7 +53,7 @@ public class TaskContextTests_GetSrcNodeStack
         var node = new BasicSrcNode();
         ExtractionTask task = NewTask(NewTaskResult(node));
 
-        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(task, DefaultNodeFactoryProvider);
+        ExtractorTaskSequencer<string, BasicNodeDiscriminator>.TaskContext context = new(task, DefaultNodeFactoryProvider);
 
         // When
         IStructDocNodeStack result = context.GetSrcNodeStack();
@@ -72,7 +72,7 @@ public class TaskContextTests_GetSrcNodeStack
         ExtractionTask childTask = taskNode.ChildrenTaskInfo!.ChildrenTasks[0];
         childTask.SetResult(NewTaskResult(childNode), ChildrenTaskInfoFactory.Default);
 
-        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
+        ExtractorTaskSequencer<string, BasicNodeDiscriminator>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
 
         // When
         IStructDocNodeStack result = context.GetSrcNodeStack();
@@ -121,7 +121,7 @@ public class TaskContextTests_GetStructDataStack
         // Given
         ExtractionTask task = NewTask();
 
-        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(task, DefaultNodeFactoryProvider);
+        ExtractorTaskSequencer<string, BasicNodeDiscriminator>.TaskContext context = new(task, DefaultNodeFactoryProvider);
 
         // When
         IStructDataStack<BasicNodeDiscriminator> result = context.GetStructDataStack();
@@ -138,7 +138,7 @@ public class TaskContextTests_GetStructDataStack
         BasicNodeDiscriminator discriminator = new(BasicSrcNode.DefaultId);
         ExtractionTask task = NewTask(NewTaskResult(node, discriminator));
 
-        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(task, DefaultNodeFactoryProvider);
+        ExtractorTaskSequencer<string, BasicNodeDiscriminator>.TaskContext context = new(task, DefaultNodeFactoryProvider);
 
         // When
         IStructDataStack<BasicNodeDiscriminator> result = context.GetStructDataStack();
@@ -160,7 +160,7 @@ public class TaskContextTests_GetStructDataStack
         BasicNodeDiscriminator childDiscriminator = new(DefaultDiscriminatorValue1);
         childTask.SetResult(NewTaskResult(childNode, childDiscriminator), ChildrenTaskInfoFactory.Default);
 
-        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
+        ExtractorTaskSequencer<string, BasicNodeDiscriminator>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
 
         // When
         IStructDataStack<BasicNodeDiscriminator> result = context.GetStructDataStack();
@@ -189,7 +189,7 @@ public class TaskContextTests_GetStructDataStack
         BasicNodeDiscriminator childDiscriminator = new(DefaultDiscriminatorValue1);
         childTask.SetResult(NewTaskResult(childNode, childDiscriminator), ChildrenTaskInfoFactory.Default);
 
-        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
+        ExtractorTaskSequencer<string, BasicNodeDiscriminator>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
 
         // When
         IStructDataStack<BasicNodeDiscriminator> result = context.GetStructDataStack();
@@ -213,7 +213,7 @@ public class TaskContextTests_GetStructDataStack
         BasicNodeDiscriminator childDiscriminator = new(DefaultDiscriminatorValue1);
         childTask.SetResult(NewTaskResult(childNode, childDiscriminator), ChildrenTaskInfoFactory.Default);
 
-        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
+        ExtractorTaskSequencer<string, BasicNodeDiscriminator>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
 
         BasicNodeDiscriminator extra1 = new(DefaultDiscriminatorValue2);
         BasicNodeDiscriminator extra2 = new(DefaultDiscriminatorValue3);

@@ -6,7 +6,7 @@ using Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 
-public abstract partial class BaseExtractor<TExtractionData, TDataDiscriminator> where TExtractionData : notnull
+public abstract partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator> where TExtractionData : notnull
 {
     public class TaskContext(ExtractionTask task, IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider)
     {

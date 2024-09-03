@@ -6,9 +6,9 @@ using Sylvercode.StructDocExtractor.Tests.Stubs;
 
 namespace Sylvercode.StructDocExtractor.Tests;
 
-public class BaseExtractorTests_ExtractAll
+public class ExtractorTaskSequencerTests_ExtractAll
 {
-    public class MockExtractor() : BaseExtractor<string, BasicNodeDiscriminator>(NodeFactoryProviderValue)
+    public class MockExtractorTaskSequencer() : ExtractorTaskSequencer<string, BasicNodeDiscriminator>(NodeFactoryProviderValue)
     {
         public static readonly StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> NodeFactoryProviderValue = new();
 
@@ -59,7 +59,7 @@ public class BaseExtractorTests_ExtractAll
     public void NoTask_NothingProcessed()
     {
         // Given
-        MockExtractor extractor = new();
+        MockExtractorTaskSequencer extractor = new();
 
         // When
         IEnumerable<IStructDocNode> result = extractor.ExtractAll();
@@ -73,7 +73,7 @@ public class BaseExtractorTests_ExtractAll
     public void OneTaskGeneratingARoot_OneRootReturned()
     {
         // Given
-        MockExtractor extractor = new();
+        MockExtractorTaskSequencer extractor = new();
         extractor.AddTask(DefaultTaskValue);
         extractor.AddOnProcessTaskAction(ctx => NewTaskResult(new BasicSrcRootBlock(ctx.ExtractionData)));
 
@@ -89,7 +89,7 @@ public class BaseExtractorTests_ExtractAll
     public void OneTaskWithTwoSubTask_OneRootWithTwoChildrenReturned()
     {
         // Given
-        MockExtractor extractor = new();
+        MockExtractorTaskSequencer extractor = new();
         extractor.AddTask(DefaultTaskValue);
         extractor.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcRootBlock(ctx.ExtractionData),
@@ -115,7 +115,7 @@ public class BaseExtractorTests_ExtractAll
     public void OneTaskWithTwoSubTaskAndExtraTask_TwoRootReturned()
     {
         // Given
-        MockExtractor extractor = new();
+        MockExtractorTaskSequencer extractor = new();
         extractor.AddTask(DefaultTaskValue);
         extractor.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcRootBlock(ctx.ExtractionData),
@@ -152,7 +152,7 @@ public class BaseExtractorTests_ExtractAll
     public void OneTaskWithTwoSubTaskOneWithoutResult_OneRootWithOneChildrenReturned()
     {
         // Given
-        MockExtractor extractor = new();
+        MockExtractorTaskSequencer extractor = new();
         extractor.AddTask(DefaultTaskValue);
         extractor.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcRootBlock(ctx.ExtractionData),

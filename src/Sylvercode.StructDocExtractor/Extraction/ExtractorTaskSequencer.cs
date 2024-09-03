@@ -6,7 +6,7 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 
-public abstract partial class BaseExtractor<TExtractionData, TDataDiscriminator>(
+public abstract partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>(
         IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider,
         IDataDiscriminatorFactory<TExtractionData, TDataDiscriminator>? dataDiscriminatorFactory = null,
         IChildrenTaskInfoFactory? childrenTaskInfoFactory = null,
@@ -21,7 +21,7 @@ public abstract partial class BaseExtractor<TExtractionData, TDataDiscriminator>
                                                                                   ?? new ToStringPreviewProvider<TExtractionData>();
 
     private readonly ILoggerFactory _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
-    private readonly ILogger _logger = loggerFactory is not null ? loggerFactory.CreateLogger<BaseExtractor<TExtractionData, TDataDiscriminator>>()
+    private readonly ILogger _logger = loggerFactory is not null ? loggerFactory.CreateLogger<ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>>()
                                                                  : NullLogger.Instance;
 
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
