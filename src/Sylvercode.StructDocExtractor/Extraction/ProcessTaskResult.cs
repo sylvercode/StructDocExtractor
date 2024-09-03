@@ -11,7 +11,7 @@ public class ProcessTaskResult<TExtractionData, TDataDiscriminator>(TaskResultTy
 
     public TDataDiscriminator? DataDiscriminator { get; set; }
 
-    public ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator>? NodeFactoryProvider { get; set; }
+    public IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator>? NodeFactoryProvider { get; set; }
 
     public List<TExtractionData> SubTasksExtractionData { get; } = [];
     IEnumerable<TExtractionData> IProcessTaskResult<TExtractionData, TDataDiscriminator>.SubTasksExtractionData => SubTasksExtractionData;

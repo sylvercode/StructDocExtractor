@@ -9,7 +9,7 @@ namespace Sylvercode.StructDocExtractor.Tests;
 
 public class TaskContextTests_GetSrcNodeStack
 {
-    public readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> DefaultNodeFactoryProvider = new();
+    public readonly StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> DefaultNodeFactoryProvider = new();
 
     public const string DefaultTaskValue = nameof(DefaultTaskValue);
     public const string DefaultTaskValue1 = nameof(DefaultTaskValue1);
@@ -86,7 +86,7 @@ public class TaskContextTests_GetSrcNodeStack
 
 public class TaskContextTests_GetStructDataStack
 {
-    public readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> DefaultNodeFactoryProvider = new();
+    public readonly StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> DefaultNodeFactoryProvider = new();
 
     public const string DefaultTaskValue = nameof(DefaultTaskValue);
     public const string DefaultTaskValue1 = nameof(DefaultTaskValue1);

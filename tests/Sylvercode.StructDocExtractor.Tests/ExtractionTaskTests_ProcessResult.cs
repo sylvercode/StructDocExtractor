@@ -18,7 +18,7 @@ public partial class ExtractionTaskTests_ProcessResult
 
     public const string TaskData = nameof(TaskData);
     public readonly BasicNodeDiscriminator DataDiscriminatorValue = new();
-    public readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> NodeFactoryProviderValue = new();
+    public readonly StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> NodeFactoryProviderValue = new();
 
     [Fact]
     public void WithNoChildResult_ResultIsSetAnEventSend()

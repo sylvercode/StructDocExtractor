@@ -7,7 +7,7 @@ namespace Sylvercode.StructDocExtractor.Extraction;
 
 public abstract partial class BaseExtractor<TExtractionData, TDataDiscriminator> where TExtractionData : notnull
 {
-    public class TaskContext(ExtractionTask task, ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider)
+    public class TaskContext(ExtractionTask task, IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider)
     {
         public TExtractionData ExtractionData => (TExtractionData)task.ExtractionData;
 
@@ -43,7 +43,7 @@ public abstract partial class BaseExtractor<TExtractionData, TDataDiscriminator>
             return new BaseStructDataStack<TDataDiscriminator>(result.Reverse());
         }
 
-        public ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> GetNodeFactoryProvider()
+        public IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> GetNodeFactoryProvider()
             => new FactoryProviderStackByTask<TExtractionData, TDataDiscriminator>(task, defaultNodeFactoryProvider).GetActiveSrcNodeFactoryProvider();
     }
 }
