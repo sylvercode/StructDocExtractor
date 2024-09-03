@@ -5,9 +5,9 @@ using Sylvercode.StructDocExtractor.StructDataStack;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 
-public abstract partial class BaseExtractor<TExtractionData, TDataSelectable> where TExtractionData : notnull
+public abstract partial class BaseExtractor<TExtractionData, TDataDiscriminator> where TExtractionData : notnull
 {
-    public class TaskContext(ExtractionTask task, ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider)
+    public class TaskContext(ExtractionTask task, ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider)
     {
         public TExtractionData ExtractionData => (TExtractionData)task.ExtractionData;
 
@@ -25,25 +25,25 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable> wh
             return new StructDocNodeStack(result.Reverse());
         }
 
-        public IStructDataStack<TDataSelectable> GetStructDataStack(params TDataSelectable[] extraSelectableStack)
+        public IStructDataStack<TDataDiscriminator> GetStructDataStack(params TDataDiscriminator[] extraDiscriminatorStack)
         {
-            ICollection<TDataSelectable> result = [];
+            ICollection<TDataDiscriminator> result = [];
 
-            foreach (var selectable in extraSelectableStack.Reverse())
-                result.Add(selectable);
+            foreach (var discriminator in extraDiscriminatorStack.Reverse())
+                result.Add(discriminator);
 
             for (ExtractionTask? t = task; t is not null; t = t?.ParentTaskInfo?.ParentTask)
             {
                 if (t?.TaskResult is null)
                     continue;
-                var eq = EqualityComparer<TDataSelectable>.Default;
-                if (!eq.Equals((TDataSelectable?)t.TaskResult.DataSelectable, default))
-                    result.Add((TDataSelectable)t.TaskResult.DataSelectable!);
+                var eq = EqualityComparer<TDataDiscriminator>.Default;
+                if (!eq.Equals((TDataDiscriminator?)t.TaskResult.DataDiscriminator, default))
+                    result.Add((TDataDiscriminator)t.TaskResult.DataDiscriminator!);
             }
-            return new BaseStructDataStack<TDataSelectable>(result.Reverse());
+            return new BaseStructDataStack<TDataDiscriminator>(result.Reverse());
         }
 
-        public ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> GetNodeFactoryProvider()
-            => new FactoryProviderStackByTask<TExtractionData, TDataSelectable>(task, defaultNodeFactoryProvider).GetActiveSrcNodeFactoryProvider();
+        public ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> GetNodeFactoryProvider()
+            => new FactoryProviderStackByTask<TExtractionData, TDataDiscriminator>(task, defaultNodeFactoryProvider).GetActiveSrcNodeFactoryProvider();
     }
 }

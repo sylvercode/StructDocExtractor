@@ -9,7 +9,7 @@ namespace Sylvercode.StructDocExtractor.Tests;
 
 public class TaskContextTests_GetSrcNodeStack
 {
-    public readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> DefaultNodeFactoryProvider = new();
+    public readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> DefaultNodeFactoryProvider = new();
 
     public const string DefaultTaskValue = nameof(DefaultTaskValue);
     public const string DefaultTaskValue1 = nameof(DefaultTaskValue1);
@@ -37,7 +37,7 @@ public class TaskContextTests_GetSrcNodeStack
         // Given
         ExtractionTask task = NewTask();
 
-        BaseExtractor<string, BasicNodeSelectable>.TaskContext context = new(task, DefaultNodeFactoryProvider);
+        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(task, DefaultNodeFactoryProvider);
 
         // When
         IStructDocNodeStack result = context.GetSrcNodeStack();
@@ -53,7 +53,7 @@ public class TaskContextTests_GetSrcNodeStack
         var node = new BasicSrcNode();
         ExtractionTask task = NewTask(NewTaskResult(node));
 
-        BaseExtractor<string, BasicNodeSelectable>.TaskContext context = new(task, DefaultNodeFactoryProvider);
+        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(task, DefaultNodeFactoryProvider);
 
         // When
         IStructDocNodeStack result = context.GetSrcNodeStack();
@@ -72,7 +72,7 @@ public class TaskContextTests_GetSrcNodeStack
         ExtractionTask childTask = taskNode.ChildrenTaskInfo!.ChildrenTasks[0];
         childTask.SetResult(NewTaskResult(childNode), ChildrenTaskInfoFactory.Default);
 
-        BaseExtractor<string, BasicNodeSelectable>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
+        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
 
         // When
         IStructDocNodeStack result = context.GetSrcNodeStack();
@@ -86,14 +86,14 @@ public class TaskContextTests_GetSrcNodeStack
 
 public class TaskContextTests_GetStructDataStack
 {
-    public readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> DefaultNodeFactoryProvider = new();
+    public readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> DefaultNodeFactoryProvider = new();
 
     public const string DefaultTaskValue = nameof(DefaultTaskValue);
     public const string DefaultTaskValue1 = nameof(DefaultTaskValue1);
     public const string DefaultTaskValue2 = nameof(DefaultTaskValue2);
-    public const string DefaultSelectableValue1 = nameof(DefaultSelectableValue1);
-    public const string DefaultSelectableValue2 = nameof(DefaultSelectableValue2);
-    public const string DefaultSelectableValue3 = nameof(DefaultSelectableValue3);
+    public const string DefaultDiscriminatorValue1 = nameof(DefaultDiscriminatorValue1);
+    public const string DefaultDiscriminatorValue2 = nameof(DefaultDiscriminatorValue2);
+    public const string DefaultDiscriminatorValue3 = nameof(DefaultDiscriminatorValue3);
 
     public static ExtractionTask NewTask(BasicProcessTaskResult? taskResult = null)
     {
@@ -103,11 +103,11 @@ public class TaskContextTests_GetStructDataStack
         return result;
     }
 
-    public static BasicProcessTaskResult NewTaskResult(IStructDocNode node, BasicNodeSelectable? selectable, ICollection<string>? childData = null)
+    public static BasicProcessTaskResult NewTaskResult(IStructDocNode node, BasicNodeDiscriminator? discriminator, ICollection<string>? childData = null)
     {
         BasicProcessTaskResult taskResult = new(node)
         {
-            DataSelectable = selectable ?? default
+            DataDiscriminator = discriminator ?? default
         };
 
         if (childData is not null)
@@ -121,10 +121,10 @@ public class TaskContextTests_GetStructDataStack
         // Given
         ExtractionTask task = NewTask();
 
-        BaseExtractor<string, BasicNodeSelectable>.TaskContext context = new(task, DefaultNodeFactoryProvider);
+        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(task, DefaultNodeFactoryProvider);
 
         // When
-        IStructDataStack<BasicNodeSelectable> result = context.GetStructDataStack();
+        IStructDataStack<BasicNodeDiscriminator> result = context.GetStructDataStack();
 
         // Then
         Assert.Empty(result);
@@ -135,16 +135,16 @@ public class TaskContextTests_GetStructDataStack
     {
         // Given
         BasicSrcNode node = new();
-        BasicNodeSelectable selectable = new(BasicSrcNode.DefaultId);
-        ExtractionTask task = NewTask(NewTaskResult(node, selectable));
+        BasicNodeDiscriminator discriminator = new(BasicSrcNode.DefaultId);
+        ExtractionTask task = NewTask(NewTaskResult(node, discriminator));
 
-        BaseExtractor<string, BasicNodeSelectable>.TaskContext context = new(task, DefaultNodeFactoryProvider);
+        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(task, DefaultNodeFactoryProvider);
 
         // When
-        IStructDataStack<BasicNodeSelectable> result = context.GetStructDataStack();
+        IStructDataStack<BasicNodeDiscriminator> result = context.GetStructDataStack();
 
         // Then
-        Assert.Single(result, new IStructDataStack<BasicNodeSelectable>.Entry(0, selectable));
+        Assert.Single(result, new IStructDataStack<BasicNodeDiscriminator>.Entry(0, discriminator));
     }
 
     [Fact]
@@ -152,32 +152,32 @@ public class TaskContextTests_GetStructDataStack
     {
         // Given
         BasicSrcBloc parentNode = new();
-        BasicNodeSelectable parentSelectable = new(BasicSrcNode.DefaultId);
-        ExtractionTask taskNode = NewTask(NewTaskResult(parentNode, parentSelectable, [DefaultTaskValue1]));
+        BasicNodeDiscriminator parentDiscriminator = new(BasicSrcNode.DefaultId);
+        ExtractionTask taskNode = NewTask(NewTaskResult(parentNode, parentDiscriminator, [DefaultTaskValue1]));
 
         BasicSrcNode childNode = new(DefaultTaskValue1);
         ExtractionTask childTask = taskNode.ChildrenTaskInfo!.ChildrenTasks[0];
-        BasicNodeSelectable childSelectable = new(DefaultSelectableValue1);
-        childTask.SetResult(NewTaskResult(childNode, childSelectable), ChildrenTaskInfoFactory.Default);
+        BasicNodeDiscriminator childDiscriminator = new(DefaultDiscriminatorValue1);
+        childTask.SetResult(NewTaskResult(childNode, childDiscriminator), ChildrenTaskInfoFactory.Default);
 
-        BaseExtractor<string, BasicNodeSelectable>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
+        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
 
         // When
-        IStructDataStack<BasicNodeSelectable> result = context.GetStructDataStack();
+        IStructDataStack<BasicNodeDiscriminator> result = context.GetStructDataStack();
 
         // Then
         Assert.Collection(result,
-                          e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(1, childSelectable), e),
-                          e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(0, parentSelectable), e));
+                          e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(1, childDiscriminator), e),
+                          e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(0, parentDiscriminator), e));
     }
 
     [Fact]
-    public void WithTwoNodesAndExtraNoSelectableInMiddle_ReturnsTwoNodes()
+    public void WithTwoNodesAndExtraNoDiscriminatorInMiddle_ReturnsTwoNodes()
     {
         // Given
         BasicSrcBloc parentNode = new();
-        BasicNodeSelectable parentSelectable = new(BasicSrcNode.DefaultId);
-        ExtractionTask taskNode = NewTask(NewTaskResult(parentNode, parentSelectable, [DefaultTaskValue2]));
+        BasicNodeDiscriminator parentDiscriminator = new(BasicSrcNode.DefaultId);
+        ExtractionTask taskNode = NewTask(NewTaskResult(parentNode, parentDiscriminator, [DefaultTaskValue2]));
 
 
         BasicSrcNode extraNode = new(DefaultTaskValue2);
@@ -186,18 +186,18 @@ public class TaskContextTests_GetStructDataStack
 
         BasicSrcNode childNode = new(DefaultTaskValue1);
         ExtractionTask childTask = extraTask.ChildrenTaskInfo!.ChildrenTasks[0];
-        BasicNodeSelectable childSelectable = new(DefaultSelectableValue1);
-        childTask.SetResult(NewTaskResult(childNode, childSelectable), ChildrenTaskInfoFactory.Default);
+        BasicNodeDiscriminator childDiscriminator = new(DefaultDiscriminatorValue1);
+        childTask.SetResult(NewTaskResult(childNode, childDiscriminator), ChildrenTaskInfoFactory.Default);
 
-        BaseExtractor<string, BasicNodeSelectable>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
+        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
 
         // When
-        IStructDataStack<BasicNodeSelectable> result = context.GetStructDataStack();
+        IStructDataStack<BasicNodeDiscriminator> result = context.GetStructDataStack();
 
         // Then
         Assert.Collection(result,
-                          e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(1, childSelectable), e),
-                          e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(0, parentSelectable), e));
+                          e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(1, childDiscriminator), e),
+                          e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(0, parentDiscriminator), e));
     }
 
     [Fact]
@@ -205,27 +205,27 @@ public class TaskContextTests_GetStructDataStack
     {
         // Given
         BasicSrcBloc parentNode = new();
-        BasicNodeSelectable parentSelectable = new(BasicSrcNode.DefaultId);
-        ExtractionTask taskNode = NewTask(NewTaskResult(parentNode, parentSelectable, [DefaultTaskValue1]));
+        BasicNodeDiscriminator parentDiscriminator = new(BasicSrcNode.DefaultId);
+        ExtractionTask taskNode = NewTask(NewTaskResult(parentNode, parentDiscriminator, [DefaultTaskValue1]));
 
         BasicSrcNode childNode = new(DefaultTaskValue1);
         ExtractionTask childTask = taskNode.ChildrenTaskInfo!.ChildrenTasks[0];
-        BasicNodeSelectable childSelectable = new(DefaultSelectableValue1);
-        childTask.SetResult(NewTaskResult(childNode, childSelectable), ChildrenTaskInfoFactory.Default);
+        BasicNodeDiscriminator childDiscriminator = new(DefaultDiscriminatorValue1);
+        childTask.SetResult(NewTaskResult(childNode, childDiscriminator), ChildrenTaskInfoFactory.Default);
 
-        BaseExtractor<string, BasicNodeSelectable>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
+        BaseExtractor<string, BasicNodeDiscriminator>.TaskContext context = new(childTask, DefaultNodeFactoryProvider);
 
-        BasicNodeSelectable extra1 = new(DefaultSelectableValue2);
-        BasicNodeSelectable extra2 = new(DefaultSelectableValue3);
+        BasicNodeDiscriminator extra1 = new(DefaultDiscriminatorValue2);
+        BasicNodeDiscriminator extra2 = new(DefaultDiscriminatorValue3);
 
         // When
-        IStructDataStack<BasicNodeSelectable> result = context.GetStructDataStack(extra1, extra2);
+        IStructDataStack<BasicNodeDiscriminator> result = context.GetStructDataStack(extra1, extra2);
 
         // Then
         Assert.Collection(result,
-                          e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(3, extra2), e),
-                          e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(2, extra1), e),
-                          e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(1, childSelectable), e),
-                          e => Assert.Equal(new IStructDataStack<BasicNodeSelectable>.Entry(0, parentSelectable), e));
+                          e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(3, extra2), e),
+                          e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(2, extra1), e),
+                          e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(1, childDiscriminator), e),
+                          e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(0, parentDiscriminator), e));
     }
 }

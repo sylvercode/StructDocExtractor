@@ -7,10 +7,10 @@ public class NodeScoreCriteriaSet_CalculateScore
 {
     [Theory]
     [MemberData(nameof(NoCriterionSetSata))]
-    public void NoCriteriaSet_ReturnEmpty(BasicNodeSelectable? node)
+    public void NoCriteriaSet_ReturnEmpty(BasicNodeDiscriminator? node)
     {
         // Given
-        NodeScoreCriteriaSet<BasicNodeSelectable?> criteria = new();
+        NodeScoreCriteriaSet<BasicNodeDiscriminator?> criteria = new();
 
         // When
         NodeScore score = criteria.CalculateScore(node);
@@ -21,9 +21,9 @@ public class NodeScoreCriteriaSet_CalculateScore
 
     public static IEnumerable<object?[]> NoCriterionSetSata()
     {
-        yield return [BasicNodeSelectable.NewDefault()];
+        yield return [BasicNodeDiscriminator.NewDefault()];
 
-        yield return [BasicNodeSelectable.NewWrongId()];
+        yield return [BasicNodeDiscriminator.NewWrongId()];
 
         yield return [null];
     }
@@ -32,8 +32,8 @@ public class NodeScoreCriteriaSet_CalculateScore
     public void DefaultIdOnlyCriteriaSet_ReturnIdPriorityScoreWithSameIdNode()
     {
         // Given
-        NodeScoreCriteriaSet<BasicNodeSelectable> criteria = new(BasicNodeScoreIdSubCriterion.ByDefaultId);
-        BasicNodeSelectable node = BasicNodeSelectable.NewDefault();
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> criteria = new(BasicNodeScoreIdSubCriterion.ByDefaultId);
+        BasicNodeDiscriminator node = BasicNodeDiscriminator.NewDefault();
 
         // When
         NodeScore score = criteria.CalculateScore(node);
@@ -47,8 +47,8 @@ public class NodeScoreCriteriaSet_CalculateScore
     public void DefaultIdOnlyCriteriaSet_ReturnEmptyScoreWithWrongIdNode()
     {
         // Given
-        NodeScoreCriteriaSet<BasicNodeSelectable> criteria = new(BasicNodeScoreIdSubCriterion.ByDefaultId);
-        BasicNodeSelectable node = BasicNodeSelectable.NewWrongId();
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> criteria = new(BasicNodeScoreIdSubCriterion.ByDefaultId);
+        BasicNodeDiscriminator node = BasicNodeDiscriminator.NewWrongId();
 
         // When
         NodeScore score = criteria.CalculateScore(node);
@@ -61,8 +61,8 @@ public class NodeScoreCriteriaSet_CalculateScore
     public void DefaultIdAndDataCriteriaSet_ReturnEmptyScoreWithSameDataOnlyNode()
     {
         // Given
-        NodeScoreCriteriaSet<BasicNodeSelectable> criteria = new([BasicNodeScoreIdSubCriterion.ByDefaultId, BasicNodeScoreDataSubCriterion.Instance]);
-        BasicNodeSelectable node = BasicNodeSelectable.NewWrongId();
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> criteria = new([BasicNodeScoreIdSubCriterion.ByDefaultId, BasicNodeScoreDataSubCriterion.Instance]);
+        BasicNodeDiscriminator node = BasicNodeDiscriminator.NewWrongId();
 
         // When
         NodeScore score = criteria.CalculateScore(node);
@@ -75,8 +75,8 @@ public class NodeScoreCriteriaSet_CalculateScore
     public void DefaultIdAndDataCriteriaSet_ReturnBothPriorityScoreWithDefaultNode()
     {
         // Given
-        NodeScoreCriteriaSet<BasicNodeSelectable> criteria = new([BasicNodeScoreIdSubCriterion.ByDefaultId, BasicNodeScoreDataSubCriterion.Instance]);
-        BasicNodeSelectable node = BasicNodeSelectable.NewDefault();
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> criteria = new([BasicNodeScoreIdSubCriterion.ByDefaultId, BasicNodeScoreDataSubCriterion.Instance]);
+        BasicNodeDiscriminator node = BasicNodeDiscriminator.NewDefault();
 
         // When
         NodeScore score = criteria.CalculateScore(node);
@@ -91,8 +91,8 @@ public class NodeScoreCriteriaSet_CalculateScore
     public void DefaultIdAndDataSeparatedCriteriaSet_ReturnIdPriorityScoreWithDefaultNode()
     {
         // Given
-        NodeScoreCriteriaSet<BasicNodeSelectable> criteria = new([[BasicNodeScoreIdSubCriterion.ByDefaultId], [BasicNodeScoreDataSubCriterion.Instance]]);
-        BasicNodeSelectable node = BasicNodeSelectable.NewDefault();
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> criteria = new([[BasicNodeScoreIdSubCriterion.ByDefaultId], [BasicNodeScoreDataSubCriterion.Instance]]);
+        BasicNodeDiscriminator node = BasicNodeDiscriminator.NewDefault();
 
         // When
         NodeScore score = criteria.CalculateScore(node);
@@ -106,8 +106,8 @@ public class NodeScoreCriteriaSet_CalculateScore
     public void DefaultIdAndDataSeparatedCriteriaSet_ReturnDataPriorityScoreWithWrongIdNode()
     {
         // Given
-        NodeScoreCriteriaSet<BasicNodeSelectable> criteria = new([[BasicNodeScoreIdSubCriterion.ByDefaultId], [BasicNodeScoreDataSubCriterion.Instance]]);
-        BasicNodeSelectable node = BasicNodeSelectable.NewWrongId();
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> criteria = new([[BasicNodeScoreIdSubCriterion.ByDefaultId], [BasicNodeScoreDataSubCriterion.Instance]]);
+        BasicNodeDiscriminator node = BasicNodeDiscriminator.NewWrongId();
 
         // When
         NodeScore score = criteria.CalculateScore(node);
@@ -121,8 +121,8 @@ public class NodeScoreCriteriaSet_CalculateScore
     public void DefaultIdAndDataSeparatedCriteriaSet_ReturnEmptyScoreWithWrongIdAndDataNode()
     {
         // Given
-        NodeScoreCriteriaSet<BasicNodeSelectable> criteria = new([[BasicNodeScoreIdSubCriterion.ByDefaultId], [BasicNodeScoreDataSubCriterion.Instance]]);
-        BasicNodeSelectable node = BasicNodeSelectable.NewWrongIdAndData();
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> criteria = new([[BasicNodeScoreIdSubCriterion.ByDefaultId], [BasicNodeScoreDataSubCriterion.Instance]]);
+        BasicNodeDiscriminator node = BasicNodeDiscriminator.NewWrongIdAndData();
 
         // When
         NodeScore score = criteria.CalculateScore(node);
@@ -135,8 +135,8 @@ public class NodeScoreCriteriaSet_CalculateScore
     public void DefaultIdAndDataCriteriaSet_ReturnEmptyScoreWithWrongIdAndDataNode()
     {
         // Given
-        NodeScoreCriteriaSet<BasicNodeSelectable> criteria = new([BasicNodeScoreIdSubCriterion.ByDefaultId, BasicNodeScoreDataSubCriterion.Instance]);
-        BasicNodeSelectable node = BasicNodeSelectable.NewWrongIdAndData();
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> criteria = new([BasicNodeScoreIdSubCriterion.ByDefaultId, BasicNodeScoreDataSubCriterion.Instance]);
+        BasicNodeDiscriminator node = BasicNodeDiscriminator.NewWrongIdAndData();
 
         // When
         NodeScore score = criteria.CalculateScore(node);

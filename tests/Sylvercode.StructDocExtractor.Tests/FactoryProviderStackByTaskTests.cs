@@ -8,9 +8,9 @@ namespace Sylvercode.StructDocExtractor.Tests;
 public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
 {
     public const string DefaultTaskValue = nameof(DefaultTaskValue);
-    public readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> DefaultNodeFactoryProvider = new();
-    public readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> ANodeFactoryProvider1 = new();
-    public readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> ANodeFactoryProvider2 = new();
+    public readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> DefaultNodeFactoryProvider = new();
+    public readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> ANodeFactoryProvider1 = new();
+    public readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> ANodeFactoryProvider2 = new();
 
     public static ExtractionTask NewTask(BasicProcessTaskResult? taskResult = null)
     {
@@ -41,11 +41,11 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
     public void NoActiveProvider_ReturnsDefault()
     {
         // Given
-        FactoryProviderStackByTask<string, BasicNodeSelectable> provider =
+        FactoryProviderStackByTask<string, BasicNodeDiscriminator> provider =
             new(NewTask(), DefaultNodeFactoryProvider);
 
         // When
-        ISrcNodeFactoryProvider<string, BasicNodeSelectable> result = provider.GetActiveSrcNodeFactoryProvider();
+        ISrcNodeFactoryProvider<string, BasicNodeDiscriminator> result = provider.GetActiveSrcNodeFactoryProvider();
 
         // Then
         Assert.Same(DefaultNodeFactoryProvider, result);
@@ -55,12 +55,12 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
     public void TaskWithActiveProvider_ReturnsThatProvider()
     {
         // Given
-        FactoryProviderStackByTask<string, BasicNodeSelectable> provider =
+        FactoryProviderStackByTask<string, BasicNodeDiscriminator> provider =
             new(NewTask(NewTaskResult(providerId: 1)), DefaultNodeFactoryProvider);
 
 
         // When
-        ISrcNodeFactoryProvider<string, BasicNodeSelectable> result = provider.GetActiveSrcNodeFactoryProvider();
+        ISrcNodeFactoryProvider<string, BasicNodeDiscriminator> result = provider.GetActiveSrcNodeFactoryProvider();
 
         // Then
         Assert.Same(ANodeFactoryProvider1, result);
@@ -73,12 +73,12 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
         var parentTask = NewTask(NewTaskResult(providerId: 1, [DefaultTaskValue]));
         var childTask = parentTask.ChildrenTaskInfo!.ChildrenTasks[0];
         childTask.SetResult(NewTaskResult(), ChildrenTaskInfoFactory.Default);
-        FactoryProviderStackByTask<string, BasicNodeSelectable> provider =
+        FactoryProviderStackByTask<string, BasicNodeDiscriminator> provider =
             new(childTask, DefaultNodeFactoryProvider);
 
 
         // When
-        ISrcNodeFactoryProvider<string, BasicNodeSelectable> result = provider.GetActiveSrcNodeFactoryProvider();
+        ISrcNodeFactoryProvider<string, BasicNodeDiscriminator> result = provider.GetActiveSrcNodeFactoryProvider();
 
         // Then
         Assert.Same(ANodeFactoryProvider1, result);

@@ -1,8 +1,8 @@
 namespace Sylvercode.StructDocExtractor.StdHtml.Model;
 
-public readonly struct HtmlNodeSelectable(string id, string[] styleClass, string tagName)
+public readonly struct HtmlNodeDiscriminator(string id, string[] styleClass, string tagName)
 {
-    public HtmlNodeSelectable() : this(id: "", styleClass: [], tagName: "") { }
+    public HtmlNodeDiscriminator() : this(id: "", styleClass: [], tagName: "") { }
 
     public string Id { get; } = id;
     public string[] StyleClass { get; } = styleClass;

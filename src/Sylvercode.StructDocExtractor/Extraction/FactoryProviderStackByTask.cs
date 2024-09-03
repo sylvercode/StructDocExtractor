@@ -2,15 +2,15 @@ using Sylvercode.StructDocExtractor.Extraction.Factory;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 
-public class FactoryProviderStackByTask<TExtractionData, TDataSelectable>(
+public class FactoryProviderStackByTask<TExtractionData, TDataDiscriminator>(
     ExtractionTask task,
-    ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider)
-    : ISrcNodeFactoryProviderStack<TExtractionData, TDataSelectable>
+    ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider)
+    : ISrcNodeFactoryProviderStack<TExtractionData, TDataDiscriminator>
 {
-    public ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> DefaultSrcNodeFactoryProvider
+    public ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> DefaultSrcNodeFactoryProvider
         => defaultNodeFactoryProvider;
 
-    public ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> GetActiveSrcNodeFactoryProvider()
+    public ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> GetActiveSrcNodeFactoryProvider()
     {
 
         for (ExtractionTask? t = task; t is not null; t = t.ParentTaskInfo?.ParentTask)
@@ -19,7 +19,7 @@ public class FactoryProviderStackByTask<TExtractionData, TDataSelectable>(
                 continue;
 
             if (t.TaskResult.NodeFactoryProvider is not null)
-                return (ISrcNodeFactoryProvider<TExtractionData, TDataSelectable>)t.TaskResult.NodeFactoryProvider;
+                return (ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator>)t.TaskResult.NodeFactoryProvider;
         }
 
         return defaultNodeFactoryProvider;

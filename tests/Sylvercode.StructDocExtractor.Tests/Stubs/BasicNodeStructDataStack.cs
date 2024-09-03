@@ -3,21 +3,21 @@ using Sylvercode.StructDocExtractor.StructDataStack;
 
 namespace Sylvercode.StructDocExtractor.Tests.Stubs;
 
-public class BasicNodeStructDataStack : IStructDataStack<BasicNodeSelectable>
+public class BasicNodeStructDataStack : IStructDataStack<BasicNodeDiscriminator>
 {
-    private readonly Stack<IStructDataStack<BasicNodeSelectable>.Entry> _entries = [];
+    private readonly Stack<IStructDataStack<BasicNodeDiscriminator>.Entry> _entries = [];
 
     public int Count => _entries.Count;
 
-    public IStructDataStack<BasicNodeSelectable>.Entry Peek() => _entries.Peek();
+    public IStructDataStack<BasicNodeDiscriminator>.Entry Peek() => _entries.Peek();
 
-    public IEnumerator<IStructDataStack<BasicNodeSelectable>.Entry> GetEnumerator() => _entries.GetEnumerator();
+    public IEnumerator<IStructDataStack<BasicNodeDiscriminator>.Entry> GetEnumerator() => _entries.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => _entries.GetEnumerator();
 
-    public void Push(IStructDataStack<BasicNodeSelectable>.Entry entry) => _entries.Push(entry);
+    public void Push(IStructDataStack<BasicNodeDiscriminator>.Entry entry) => _entries.Push(entry);
 
-    public IStructDataStack<BasicNodeSelectable>.Entry Pop() => _entries.Pop();
+    public IStructDataStack<BasicNodeDiscriminator>.Entry Pop() => _entries.Pop();
 
-    public void Push(BasicNodeSelectable node) => Push(new IStructDataStack<BasicNodeSelectable>.Entry(Count, node));
+    public void Push(BasicNodeDiscriminator node) => Push(new IStructDataStack<BasicNodeDiscriminator>.Entry(Count, node));
 }

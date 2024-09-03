@@ -17,8 +17,8 @@ public partial class ExtractionTaskTests_ProcessResult
     }
 
     public const string TaskData = nameof(TaskData);
-    public readonly BasicNodeSelectable DataSelectableValue = new();
-    public readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> NodeFactoryProviderValue = new();
+    public readonly BasicNodeDiscriminator DataDiscriminatorValue = new();
+    public readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> NodeFactoryProviderValue = new();
 
     [Fact]
     public void WithNoChildResult_ResultIsSetAnEventSend()
@@ -29,7 +29,7 @@ public partial class ExtractionTaskTests_ProcessResult
         task.ResultSet += eventLogger.OnEventRaised;
         BasicProcessTaskResult processResult = new(new BasicSrcNode())
         {
-            DataSelectable = DataSelectableValue,
+            DataDiscriminator = DataDiscriminatorValue,
             NodeFactoryProvider = NodeFactoryProviderValue
         };
 
@@ -40,7 +40,7 @@ public partial class ExtractionTaskTests_ProcessResult
         Assert.NotNull(task.TaskResult);
         Assert.NotNull(task.TaskResult.SrcNode);
         Assert.Equal(BasicSrcNode.DefaultId, task.TaskResult.SrcNode.Id);
-        Assert.Equal(task.TaskResult.DataSelectable, DataSelectableValue);
+        Assert.Equal(task.TaskResult.DataDiscriminator, DataDiscriminatorValue);
         Assert.Same(task.TaskResult.NodeFactoryProvider, NodeFactoryProviderValue);
         Assert.NotNull(task.ChildrenTaskInfo);
         Assert.Empty(task.ChildrenTaskInfo.ChildrenTasks);

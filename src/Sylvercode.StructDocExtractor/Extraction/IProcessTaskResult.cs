@@ -7,18 +7,18 @@ public interface IProcessTaskResult
 {
     public TaskResultType ResultType { get; }
     public IStructDocNode? SrcNode { get; }
-    public object? DataSelectable { get; }
+    public object? dataDiscriminator { get; }
     public object? NodeFactoryProvider { get; }
     public IEnumerable<object> SubTasksExtractionData { get; }
     public IEnumerable<object> ExtraTasksExtractionData { get; }
 }
 
-public interface IProcessTaskResult<TExtractionData, TDataSelectable> : IProcessTaskResult
+public interface IProcessTaskResult<TExtractionData, TDataDiscriminator> : IProcessTaskResult
 {
-    new public TDataSelectable? DataSelectable { get; }
-    object? IProcessTaskResult.DataSelectable => DataSelectable;
+    new public TDataDiscriminator? DataDiscriminator { get; }
+    object? IProcessTaskResult.dataDiscriminator => DataDiscriminator;
 
-    new public ISrcNodeFactoryProvider<TExtractionData, TDataSelectable>? NodeFactoryProvider { get; }
+    new public ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator>? NodeFactoryProvider { get; }
     object? IProcessTaskResult.NodeFactoryProvider => NodeFactoryProvider;
 
     new public IEnumerable<TExtractionData> SubTasksExtractionData { get; }

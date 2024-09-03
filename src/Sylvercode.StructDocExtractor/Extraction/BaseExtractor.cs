@@ -5,8 +5,8 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 
-public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
-        ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider,
+public abstract partial class BaseExtractor<TExtractionData, TDataDiscriminator>(
+        ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider,
         IChildrenTaskInfoFactory? childrenTaskInfoFactory = null,
         IDataPreviewProvider<TExtractionData>? dataPreviewProvider = null,
         BaseExtractorOption option = default,
@@ -19,11 +19,11 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
                                                                                   ?? new ToStringPreviewProvider<TExtractionData>();
 
     private readonly ILoggerFactory _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
-    private readonly ILogger _logger = loggerFactory is not null ? loggerFactory.CreateLogger<BaseExtractor<TExtractionData, TDataSelectable>>()
+    private readonly ILogger _logger = loggerFactory is not null ? loggerFactory.CreateLogger<BaseExtractor<TExtractionData, TDataDiscriminator>>()
                                                                  : NullLogger.Instance;
 
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
-    private readonly ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> defaultNodeFactoryProvider = defaultNodeFactoryProvider;
+    private readonly ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider = defaultNodeFactoryProvider;
 
     public bool HasPendingTask => _pendingTacks.First is not null;
 
@@ -61,12 +61,12 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
 
     private IProcessTaskResult ProcessTask(ExtractionTask task)
     {
-        IProcessTaskResult<TExtractionData, TDataSelectable>? result = null;
+        IProcessTaskResult<TExtractionData, TDataDiscriminator>? result = null;
         TaskContext taskContext = new(task, defaultNodeFactoryProvider);
 
         using (_logger.BeginScope(new List<KeyValuePair<string, object?>>(){
             new("TaskIndex", taskContext.TaskIndex),
-            new("DataSelectableStack", taskContext.GetStructDataStack().ToString())
+            new("DataDiscriminatorStack", taskContext.GetStructDataStack().ToString())
         }))
         {
             try
@@ -75,7 +75,7 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
 
                 LogProcessTaskResult(
                     result.ResultType,
-                    result.DataSelectable?.ToString(),
+                    result.DataDiscriminator?.ToString(),
                     result.SrcNode?.DebugName,
                     result.NodeFactoryProvider?.DebugName);
 
@@ -93,7 +93,7 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
                 LogExceptionCatch(option.ExceptionCatchLogLevel, ex);
                 if (!option.ContinueOnException)
                     throw;
-                result = ProcessTaskResult.NewError<TExtractionData, TDataSelectable>();
+                result = ProcessTaskResult.NewError<TExtractionData, TDataDiscriminator>();
             }
         }
 
@@ -127,41 +127,41 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
             _pendingTacks.AddLast(task);
     }
 
-    protected virtual IProcessTaskResult<TExtractionData, TDataSelectable>
+    protected virtual IProcessTaskResult<TExtractionData, TDataDiscriminator>
         ProcessTask(TaskContext taskContext)
     {
         LogTraceProcessBegin();
 
-        ISrcNodeFactoryProvider<TExtractionData, TDataSelectable> factoryProvider =
+        ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> factoryProvider =
             taskContext.GetNodeFactoryProvider();
         LogFactoryProviderInUse(factoryProvider.DebugName);
 
-        TDataSelectable selectable = GetDataSelectable(taskContext);
-        LogDataSelectableGot(selectable?.ToString());
+        TDataDiscriminator discriminator = GetDataDiscriminator(taskContext);
+        LogDataDiscriminatorGot(discriminator?.ToString());
 
-        ISrcNodeFactory<TExtractionData, TDataSelectable>? factory =
-            factoryProvider.GetFactoryForStack(taskContext.GetStructDataStack(selectable));
-        LogNoNodeFactoryFound(option.MissingNodeFactoryLogLevel, selectable?.ToString());
+        ISrcNodeFactory<TExtractionData, TDataDiscriminator>? factory =
+            factoryProvider.GetFactoryForStack(taskContext.GetStructDataStack(discriminator));
+        LogNoNodeFactoryFound(option.MissingNodeFactoryLogLevel, discriminator?.ToString());
         if (factory is null)
-            return ProcessTaskResult.NewErrorOrSkipped<TExtractionData, TDataSelectable>(option.MissingNodeFactoryAsError);
+            return ProcessTaskResult.NewErrorOrSkipped<TExtractionData, TDataDiscriminator>(option.MissingNodeFactoryAsError);
 
         return factory.NewNode(taskContext.ExtractionData);
     }
 
-    protected virtual TDataSelectable GetDataSelectable(TaskContext taskContext)
+    protected virtual TDataDiscriminator GetDataDiscriminator(TaskContext taskContext)
     {
         // TODO: Implement this method
         throw new NotImplementedException();
     }
 
     [LoggerMessage(
-       Message = "No factory found for `{dataSelectable}`.")]
-    private partial void LogNoNodeFactoryFound(LogLevel level, string? dataSelectable);
+       Message = "No factory found for `{dataDiscriminator}`.")]
+    private partial void LogNoNodeFactoryFound(LogLevel level, string? dataDiscriminator);
 
     [LoggerMessage(
         Level = LogLevel.Debug,
-        Message = "Data selectable `{DataSelectable}`.")]
-    private partial void LogDataSelectableGot(string? dataSelectable);
+        Message = "Data discriminator `{DataDiscriminator}`.")]
+    private partial void LogDataDiscriminatorGot(string? dataDiscriminator);
 
     [LoggerMessage(
         Level = LogLevel.Debug,
@@ -179,8 +179,8 @@ public abstract partial class BaseExtractor<TExtractionData, TDataSelectable>(
 
     [LoggerMessage(
         Level = LogLevel.Trace,
-        Message = "Process task result: {ResultType}, DataSelectable: {DataSelectable}, SrcNode: {SrcNode}, NodeFactoryProvider: {NodeFactoryProvider}")]
-    private partial void LogProcessTaskResult(TaskResultType resultType, string? dataSelectable, string? srcNode, string? nodeFactoryProvider);
+        Message = "Process task result: {ResultType}, DataDiscriminator: {DataDiscriminator}, SrcNode: {SrcNode}, NodeFactoryProvider: {NodeFactoryProvider}")]
+    private partial void LogProcessTaskResult(TaskResultType resultType, string? dataDiscriminator, string? srcNode, string? nodeFactoryProvider);
 
     [LoggerMessage(
         Level = LogLevel.Debug,

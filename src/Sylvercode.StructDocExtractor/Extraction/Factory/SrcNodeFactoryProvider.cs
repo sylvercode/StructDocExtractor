@@ -3,20 +3,20 @@ using Sylvercode.StructDocExtractor.StructDataStack.Score;
 
 namespace Sylvercode.StructDocExtractor.Extraction.Factory;
 
-public class SrcNodeFactoryProvider<TExtractionData, TDataSelectable> : ISrcNodeFactoryProvider<TExtractionData, TDataSelectable>
+public class SrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> : ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator>
 {
-    private readonly struct NodeFactoryEntry(ISrcNodeFactory<TExtractionData, TDataSelectable> factory, IStackScoreCalculator<TDataSelectable> scoreCalculator)
+    private readonly struct NodeFactoryEntry(ISrcNodeFactory<TExtractionData, TDataDiscriminator> factory, IStackScoreCalculator<TDataDiscriminator> scoreCalculator)
     {
-        public readonly ISrcNodeFactory<TExtractionData, TDataSelectable> Factory = factory;
-        public readonly IStackScoreCalculator<TDataSelectable> ScoreCalculator = scoreCalculator;
+        public readonly ISrcNodeFactory<TExtractionData, TDataDiscriminator> Factory = factory;
+        public readonly IStackScoreCalculator<TDataDiscriminator> ScoreCalculator = scoreCalculator;
     }
 
     private readonly List<NodeFactoryEntry> factories = [];
 
-    public ISrcNodeFactory<TExtractionData, TDataSelectable>? GetFactoryForStack(IStructDataStack<TDataSelectable> stackEntries)
+    public ISrcNodeFactory<TExtractionData, TDataDiscriminator>? GetFactoryForStack(IStructDataStack<TDataDiscriminator> stackEntries)
     {
         StackedNodesScore bestScore = new();
-        ISrcNodeFactory<TExtractionData, TDataSelectable>? result = null;
+        ISrcNodeFactory<TExtractionData, TDataDiscriminator>? result = null;
         foreach (var entry in factories)
         {
             StackedNodesScore factoryScore = entry.ScoreCalculator.Calculate(stackEntries);
@@ -30,6 +30,6 @@ public class SrcNodeFactoryProvider<TExtractionData, TDataSelectable> : ISrcNode
         return result;
     }
 
-    public void AddFactory(ISrcNodeFactory<TExtractionData, TDataSelectable> factory, IStackScoreCalculator<TDataSelectable> scoreCalculator)
+    public void AddFactory(ISrcNodeFactory<TExtractionData, TDataDiscriminator> factory, IStackScoreCalculator<TDataDiscriminator> scoreCalculator)
         => factories.Add(new(factory, scoreCalculator));
 }

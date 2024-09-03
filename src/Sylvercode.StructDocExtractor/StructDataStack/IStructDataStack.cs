@@ -7,17 +7,17 @@ public interface IStructDataStack<TDiscriminator> : IEnumerable<IStructDataStack
 #pragma warning restore CA1711 // Identifiers should not have incorrect suffix
 {
     [DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
-    public readonly struct Entry(int depth, TDiscriminator nodeSelectable)
+    public readonly struct Entry(int depth, TDiscriminator nodeDiscriminator)
     {
         public int Depth { get; } = depth;
-        public TDiscriminator NodeSelectable { get; } = nodeSelectable;
+        public TDiscriminator NodeDiscriminator { get; } = nodeDiscriminator;
 
         private string GetDebuggerDisplay()
         {
-            return $"{Depth}: {NodeSelectable}";
+            return $"{Depth}: {NodeDiscriminator}";
         }
 
-        public override string ToString() => NodeSelectable?.ToString() ?? string.Empty;
+        public override string ToString() => NodeDiscriminator?.ToString() ?? string.Empty;
     }
 
     public Entry Peek();

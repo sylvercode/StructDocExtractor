@@ -2,8 +2,8 @@ using Sylvercode.StructDocExtractor.StructDataStack;
 
 namespace Sylvercode.StructDocExtractor.Extraction.Factory;
 
-public interface ISrcNodeFactoryProvider<TExtractionData, TDataSelectable>
+public interface ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator>
 {
-    ISrcNodeFactory<TExtractionData, TDataSelectable>? GetFactoryForStack(IStructDataStack<TDataSelectable> stackEntries);
+    ISrcNodeFactory<TExtractionData, TDataDiscriminator>? GetFactoryForStack(IStructDataStack<TDataDiscriminator> stackEntries);
     string DebugName => GetType().Name;
 }

@@ -2,7 +2,7 @@
 
 namespace Sylvercode.StructDocExtractor.Extraction.Factory;
 
-public interface ISrcNodeFactory<TExtractionData, TDataSelectable>
+public interface ISrcNodeFactory<TExtractionData, TDataDiscriminator>
 {
-    IProcessTaskResult<TExtractionData, TDataSelectable> NewNode(TExtractionData data);
+    IProcessTaskResult<TExtractionData, TDataDiscriminator> NewNode(TExtractionData data);
 }
