@@ -1,4 +1,4 @@
-namespace Sylvercode.StructDocExtractor.Extraction;
+namespace Sylvercode.StructDocExtractor.Extraction.PreviewProvider;
 
 
 public interface IDataPreviewProvider

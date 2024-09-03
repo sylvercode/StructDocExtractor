@@ -7,7 +7,7 @@ public interface IProcessTaskResult
 {
     public TaskResultType ResultType { get; }
     public IStructDocNode? SrcNode { get; }
-    public object? dataDiscriminator { get; }
+    public object? DataDiscriminator { get; }
     public object? NodeFactoryProvider { get; }
     public IEnumerable<object> SubTasksExtractionData { get; }
     public IEnumerable<object> ExtraTasksExtractionData { get; }
@@ -16,7 +16,7 @@ public interface IProcessTaskResult
 public interface IProcessTaskResult<TExtractionData, TDataDiscriminator> : IProcessTaskResult
 {
     new public TDataDiscriminator? DataDiscriminator { get; }
-    object? IProcessTaskResult.dataDiscriminator => DataDiscriminator;
+    object? IProcessTaskResult.DataDiscriminator => DataDiscriminator;
 
     new public IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator>? NodeFactoryProvider { get; }
     object? IProcessTaskResult.NodeFactoryProvider => NodeFactoryProvider;
