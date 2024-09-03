@@ -1,4 +1,5 @@
 ﻿using Sylvercode.StructDocExtractor.Extraction;
+using Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 
 namespace Sylvercode.StructDocExtractor.Tests;
 

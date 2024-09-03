@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Sylvercode.StructDocExtractor.Extraction.Factory;
+using Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 

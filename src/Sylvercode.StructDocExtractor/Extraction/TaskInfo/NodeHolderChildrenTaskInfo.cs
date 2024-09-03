@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Model.Init;
 
-namespace Sylvercode.StructDocExtractor.Extraction;
+namespace Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 
 public partial class NodeHolderChildrenTaskInfo : ChildrenTaskInfo
 {

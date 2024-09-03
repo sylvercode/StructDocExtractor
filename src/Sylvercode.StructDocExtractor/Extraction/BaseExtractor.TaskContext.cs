@@ -2,6 +2,7 @@ using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Model.Utils;
 using Sylvercode.StructDocExtractor.StructDataStack;
+using Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 

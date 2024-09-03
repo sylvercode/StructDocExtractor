@@ -1,4 +1,6 @@
 ﻿using Sylvercode.StructDocExtractor.Extraction;
+using Sylvercode.StructDocExtractor.Extraction.Factory;
+using Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
 

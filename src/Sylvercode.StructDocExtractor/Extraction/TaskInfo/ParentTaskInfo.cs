@@ -1,4 +1,4 @@
-namespace Sylvercode.StructDocExtractor.Extraction;
+namespace Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 
 public class ParentTaskInfo(ExtractionTask parentTask, TaskIndex siblingSubTaskIndex)
 {
