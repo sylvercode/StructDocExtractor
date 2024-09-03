@@ -13,9 +13,12 @@ public class BaseExtractorTests_ExtractAll
         public static readonly StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> NodeFactoryProviderValue = new();
 
         public delegate ProcessTaskResult<string, BasicNodeDiscriminator> OnProcessTask(TaskContext taskContext);
+
         private readonly Queue<OnProcessTask> _onProcessTaskQueue = [];
+
         public void AddOnProcessTaskAction(OnProcessTask action)
             => _onProcessTaskQueue.Enqueue(action);
+
         public bool HasOnProcessTask => _onProcessTaskQueue.Count > 0;
 
         protected override IProcessTaskResult<string, BasicNodeDiscriminator> ProcessTask(TaskContext taskContext)
@@ -168,4 +171,10 @@ public class BaseExtractorTests_ExtractAll
         BasicSrcRootBlock root = Assert.IsType<BasicSrcRootBlock>(node);
         Assert.Single(root.Content, c => Assert.IsType<BasicSrcNode>(c).Id == DefaultTaskValue1);
     }
+}
+
+
+public class BaseExtractorTests_ProcessTask
+{
+    // TODO: Add tests for ProcessTask
 }

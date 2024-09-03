@@ -8,6 +8,7 @@ namespace Sylvercode.StructDocExtractor.Extraction;
 
 public abstract partial class BaseExtractor<TExtractionData, TDataDiscriminator>(
         IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider,
+        IDataDiscriminatorFactory<TExtractionData, TDataDiscriminator>? dataDiscriminatorFactory = null,
         IChildrenTaskInfoFactory? childrenTaskInfoFactory = null,
         IDataPreviewProvider<TExtractionData>? dataPreviewProvider = null,
         BaseExtractorOption option = default,
@@ -151,8 +152,10 @@ public abstract partial class BaseExtractor<TExtractionData, TDataDiscriminator>
 
     protected virtual TDataDiscriminator GetDataDiscriminator(TaskContext taskContext)
     {
-        // TODO: Implement this method
-        throw new NotImplementedException();
+        if (dataDiscriminatorFactory is null)
+            throw new InvalidOperationException("DataDiscriminatorFactory is not set");
+
+        return dataDiscriminatorFactory.CreateDataDiscriminator(taskContext.ExtractionData);
     }
 
     [LoggerMessage(
