@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/DDBMarkdown.sln",
+                "${workspaceFolder}/StructDocExtractor.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -26,7 +26,7 @@
             "type": "process",
             "args": [
                 "test",
-                "${workspaceFolder}/DDBMarkdown.sln",
+                "${workspaceFolder}/StructDocExtractor.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -45,7 +45,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/DDBMarkdown.sln",
+                "${workspaceFolder}/StructDocExtractor.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
