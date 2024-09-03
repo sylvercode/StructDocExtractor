@@ -10,7 +10,7 @@ public class BaseExtractorTests_ExtractAll
 {
     public class MockExtractor() : BaseExtractor<string, BasicNodeDiscriminator>(NodeFactoryProviderValue)
     {
-        public static readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> NodeFactoryProviderValue = new();
+        public static readonly StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> NodeFactoryProviderValue = new();
 
         public delegate ProcessTaskResult<string, BasicNodeDiscriminator> OnProcessTask(TaskContext taskContext);
         private readonly Queue<OnProcessTask> _onProcessTaskQueue = [];

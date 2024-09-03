@@ -6,7 +6,7 @@ using Sylvercode.StructDocExtractor.Model;
 namespace Sylvercode.StructDocExtractor.Extraction;
 
 public abstract partial class BaseExtractor<TExtractionData, TDataDiscriminator>(
-        ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider,
+        IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider,
         IChildrenTaskInfoFactory? childrenTaskInfoFactory = null,
         IDataPreviewProvider<TExtractionData>? dataPreviewProvider = null,
         BaseExtractorOption option = default,
@@ -23,7 +23,7 @@ public abstract partial class BaseExtractor<TExtractionData, TDataDiscriminator>
                                                                  : NullLogger.Instance;
 
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
-    private readonly ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider = defaultNodeFactoryProvider;
+    private readonly IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider = defaultNodeFactoryProvider;
 
     public bool HasPendingTask => _pendingTacks.First is not null;
 
@@ -132,14 +132,14 @@ public abstract partial class BaseExtractor<TExtractionData, TDataDiscriminator>
     {
         LogTraceProcessBegin();
 
-        ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator> factoryProvider =
+        IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> factoryProvider =
             taskContext.GetNodeFactoryProvider();
         LogFactoryProviderInUse(factoryProvider.DebugName);
 
         TDataDiscriminator discriminator = GetDataDiscriminator(taskContext);
         LogDataDiscriminatorGot(discriminator?.ToString());
 
-        ISrcNodeFactory<TExtractionData, TDataDiscriminator>? factory =
+        IStructDocNodeFactory<TExtractionData, TDataDiscriminator>? factory =
             factoryProvider.GetFactoryForStack(taskContext.GetStructDataStack(discriminator));
         LogNoNodeFactoryFound(option.MissingNodeFactoryLogLevel, discriminator?.ToString());
         if (factory is null)

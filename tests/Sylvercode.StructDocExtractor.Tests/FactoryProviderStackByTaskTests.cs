@@ -8,9 +8,9 @@ namespace Sylvercode.StructDocExtractor.Tests;
 public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
 {
     public const string DefaultTaskValue = nameof(DefaultTaskValue);
-    public readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> DefaultNodeFactoryProvider = new();
-    public readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> ANodeFactoryProvider1 = new();
-    public readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> ANodeFactoryProvider2 = new();
+    public readonly StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> DefaultNodeFactoryProvider = new();
+    public readonly StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> ANodeFactoryProvider1 = new();
+    public readonly StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> ANodeFactoryProvider2 = new();
 
     public static ExtractionTask NewTask(BasicProcessTaskResult? taskResult = null)
     {
@@ -45,7 +45,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
             new(NewTask(), DefaultNodeFactoryProvider);
 
         // When
-        ISrcNodeFactoryProvider<string, BasicNodeDiscriminator> result = provider.GetActiveSrcNodeFactoryProvider();
+        IStructDocNodeFactoryProvider<string, BasicNodeDiscriminator> result = provider.GetActiveSrcNodeFactoryProvider();
 
         // Then
         Assert.Same(DefaultNodeFactoryProvider, result);
@@ -60,7 +60,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
 
 
         // When
-        ISrcNodeFactoryProvider<string, BasicNodeDiscriminator> result = provider.GetActiveSrcNodeFactoryProvider();
+        IStructDocNodeFactoryProvider<string, BasicNodeDiscriminator> result = provider.GetActiveSrcNodeFactoryProvider();
 
         // Then
         Assert.Same(ANodeFactoryProvider1, result);
@@ -78,7 +78,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
 
 
         // When
-        ISrcNodeFactoryProvider<string, BasicNodeDiscriminator> result = provider.GetActiveSrcNodeFactoryProvider();
+        IStructDocNodeFactoryProvider<string, BasicNodeDiscriminator> result = provider.GetActiveSrcNodeFactoryProvider();
 
         // Then
         Assert.Same(ANodeFactoryProvider1, result);

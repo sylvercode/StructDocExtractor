@@ -18,7 +18,7 @@ public interface IProcessTaskResult<TExtractionData, TDataDiscriminator> : IProc
     new public TDataDiscriminator? DataDiscriminator { get; }
     object? IProcessTaskResult.dataDiscriminator => DataDiscriminator;
 
-    new public ISrcNodeFactoryProvider<TExtractionData, TDataDiscriminator>? NodeFactoryProvider { get; }
+    new public IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator>? NodeFactoryProvider { get; }
     object? IProcessTaskResult.NodeFactoryProvider => NodeFactoryProvider;
 
     new public IEnumerable<TExtractionData> SubTasksExtractionData { get; }

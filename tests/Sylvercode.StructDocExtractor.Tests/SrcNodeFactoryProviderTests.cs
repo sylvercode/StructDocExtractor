@@ -7,7 +7,7 @@ namespace Sylvercode.StructDocExtractor.Tests;
 
 public class SrcNodeFactoryProvider_GetFactoryForStack
 {
-    public class FakeFactory(string name) : ISrcNodeFactory<string, BasicNodeDiscriminator>
+    public class FakeFactory(string name) : IStructDocNodeFactory<string, BasicNodeDiscriminator>
     {
         public const string Factory1Name = nameof(Factory1Name);
         public const string Factory2Name = nameof(Factory2Name);
@@ -23,9 +23,9 @@ public class SrcNodeFactoryProvider_GetFactoryForStack
         }
     }
 
-    public static SrcNodeFactoryProvider<string, BasicNodeDiscriminator> NewProvider(StackedNodesScore? FactoryOneScore = null, StackedNodesScore? FactoryTwoScore = null)
+    public static StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> NewProvider(StackedNodesScore? FactoryOneScore = null, StackedNodesScore? FactoryTwoScore = null)
     {
-        SrcNodeFactoryProvider<string, BasicNodeDiscriminator> provider = new();
+        StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> provider = new();
         provider.AddFactory(FakeFactory.FakeFactory1, new StackScoreCalculatorMock(FactoryOneScore ?? new()));
         provider.AddFactory(FakeFactory.FakeFactory2, new StackScoreCalculatorMock(FactoryTwoScore ?? new()));
         return provider;
@@ -37,7 +37,7 @@ public class SrcNodeFactoryProvider_GetFactoryForStack
     public void WithNoMatch_ReturnNull()
     {
         // Given
-        SrcNodeFactoryProvider<string, BasicNodeDiscriminator> provider = NewProvider();
+        StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> provider = NewProvider();
 
         // When
         var result = provider.GetFactoryForStack(StructDataStack);
@@ -50,7 +50,7 @@ public class SrcNodeFactoryProvider_GetFactoryForStack
     public void WithFactoryOneMatch_ReturnFactoryOne()
     {
         // Given
-        SrcNodeFactoryProvider<string, BasicNodeDiscriminator> provider = NewProvider(FactoryOneScore: new(1, new(new NodeScore.SubScore(1, 2))));
+        StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> provider = NewProvider(FactoryOneScore: new(1, new(new NodeScore.SubScore(1, 2))));
 
         // When
         var result = provider.GetFactoryForStack(StructDataStack);
@@ -63,7 +63,7 @@ public class SrcNodeFactoryProvider_GetFactoryForStack
     public void WithFactoryTwoBestMatch_ReturnFactoryTwo()
     {
         // Given
-        SrcNodeFactoryProvider<string, BasicNodeDiscriminator> provider = NewProvider(FactoryOneScore: new(1, new(new NodeScore.SubScore(1, 2))),
+        StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> provider = NewProvider(FactoryOneScore: new(1, new(new NodeScore.SubScore(1, 2))),
                                                                            FactoryTwoScore: new(0, new(new NodeScore.SubScore(1, 2))));
 
         // When

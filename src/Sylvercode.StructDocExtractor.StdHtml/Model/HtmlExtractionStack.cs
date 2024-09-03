@@ -8,20 +8,20 @@ namespace Sylvercode.StructDocExtractor.StdHtml.Model;
 #pragma warning disable CA1711 // Identifiers should not have incorrect suffix
 public class HtmlExtractionStack<TExtractionData>(
 #pragma warning restore CA1711 // Identifiers should not have incorrect suffix
-    ISrcNodeFactoryProvider<TExtractionData, HtmlNodeDiscriminator> defaultSrcNodeFactoryProvider)
-    : ISrcNodeFactoryProviderStack<TExtractionData, HtmlNodeDiscriminator>
+    IStructDocNodeFactoryProvider<TExtractionData, HtmlNodeDiscriminator> defaultSrcNodeFactoryProvider)
+    : IStructDocNodeFactoryProviderStack<TExtractionData, HtmlNodeDiscriminator>
 {
     public class Entry
     {
         public int Depth { get; private set; }
         public HtmlNodeDiscriminator? NodeDiscriminator { get; private set; }
         public IStructDocNode? SrcNode { get; private set; }
-        public ISrcNodeFactoryProvider<TExtractionData, HtmlNodeDiscriminator>? SrcNodeFactoryProvider { get; private set; }
+        public IStructDocNodeFactoryProvider<TExtractionData, HtmlNodeDiscriminator>? SrcNodeFactoryProvider { get; private set; }
     }
 
     private readonly Stack<Entry> m_Stack = [];
 
-    public ISrcNodeFactoryProvider<TExtractionData, HtmlNodeDiscriminator> DefaultSrcNodeFactoryProvider => defaultSrcNodeFactoryProvider;
+    public IStructDocNodeFactoryProvider<TExtractionData, HtmlNodeDiscriminator> DefaultSrcNodeFactoryProvider => defaultSrcNodeFactoryProvider;
 
     public IStructDataStack<HtmlNodeDiscriminator> AsStructDataStack()
     {
@@ -43,6 +43,6 @@ public class HtmlExtractionStack<TExtractionData>(
         );
     }
 
-    public ISrcNodeFactoryProvider<TExtractionData, HtmlNodeDiscriminator> GetActiveSrcNodeFactoryProvider() =>
+    public IStructDocNodeFactoryProvider<TExtractionData, HtmlNodeDiscriminator> GetActiveSrcNodeFactoryProvider() =>
         m_Stack.First(entry => entry.SrcNodeFactoryProvider is not null)?.SrcNodeFactoryProvider ?? DefaultSrcNodeFactoryProvider;
 }
