@@ -8,17 +8,17 @@ namespace Sylvercode.StructDocExtractor.Tests;
 
 public class BaseExtractorTests_ExtractAll
 {
-    public class MockExtractor() : BaseExtractor<string, BasicNodeSelectable>(NodeFactoryProviderValue)
+    public class MockExtractor() : BaseExtractor<string, BasicNodeDiscriminator>(NodeFactoryProviderValue)
     {
-        public static readonly SrcNodeFactoryProvider<string, BasicNodeSelectable> NodeFactoryProviderValue = new();
+        public static readonly SrcNodeFactoryProvider<string, BasicNodeDiscriminator> NodeFactoryProviderValue = new();
 
-        public delegate ProcessTaskResult<string, BasicNodeSelectable> OnProcessTask(TaskContext taskContext);
+        public delegate ProcessTaskResult<string, BasicNodeDiscriminator> OnProcessTask(TaskContext taskContext);
         private readonly Queue<OnProcessTask> _onProcessTaskQueue = [];
         public void AddOnProcessTaskAction(OnProcessTask action)
             => _onProcessTaskQueue.Enqueue(action);
         public bool HasOnProcessTask => _onProcessTaskQueue.Count > 0;
 
-        protected override IProcessTaskResult<string, BasicNodeSelectable> ProcessTask(TaskContext taskContext)
+        protected override IProcessTaskResult<string, BasicNodeDiscriminator> ProcessTask(TaskContext taskContext)
         {
             if (!_onProcessTaskQueue.TryDequeue(out OnProcessTask? nextAction))
                 throw new InvalidOperationException("No Next action in queue.");
@@ -157,7 +157,7 @@ public class BaseExtractorTests_ExtractAll
         extractor.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcNode(ctx.ExtractionData)));
         extractor.AddOnProcessTaskAction(
-            ctx => ProcessTaskResult.NewSkipped<string, BasicNodeSelectable>());
+            ctx => ProcessTaskResult.NewSkipped<string, BasicNodeDiscriminator>());
 
         // When
         IEnumerable<IStructDocNode> result = extractor.ExtractAll();

@@ -35,7 +35,7 @@ public partial class ExtractionTask(
 
     public string TaskSnippet(bool withParentSnippet = false)
     {
-        var snippet = TaskResult?.DataSelectable?.ToString() ?? string.Empty;
+        var snippet = TaskResult?.DataDiscriminator?.ToString() ?? string.Empty;
         if (ParentTaskInfo is null)
             return string.IsNullOrEmpty(snippet) ? "<<root>>" : snippet;
 

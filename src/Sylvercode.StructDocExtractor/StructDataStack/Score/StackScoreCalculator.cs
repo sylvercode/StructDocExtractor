@@ -21,7 +21,7 @@ public class StackScoreCalculator<TDiscriminator>(IEnumerable<NodeScoreCriteriaS
         var hasNextCriterion = criteriaIt.MoveNext();
         while (hasNextCriterion && stackEntriesIt.MoveNext())
         {
-            NodeScore nodeScore = criteriaIt.Current.CalculateScore(stackEntriesIt.Current.NodeSelectable);
+            NodeScore nodeScore = criteriaIt.Current.CalculateScore(stackEntriesIt.Current.NodeDiscriminator);
             if (!nodeScore.IsEmpty)
             {
                 result.Add(stackEntriesIt.Current.Depth, nodeScore);

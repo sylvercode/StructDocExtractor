@@ -9,13 +9,13 @@ public class StackScoreCalculatorTests_Calculate
     public void ForTwoStacklLevelCriteria_ReturnScoreForMatchingStack()
     {
         // Given
-        NodeScoreCriteriaSet<BasicNodeSelectable> criteria = new(BasicNodeScoreIdSubCriterion.ByDefaultId);
-        NodeScoreCriteriaSet<BasicNodeSelectable> parentCriteria = new(BasicNodeScoreIdSubCriterion.ByDefaultParentId);
-        StackScoreCalculator<BasicNodeSelectable> stackScoreCalculator = new([criteria, parentCriteria]);
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> criteria = new(BasicNodeScoreIdSubCriterion.ByDefaultId);
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> parentCriteria = new(BasicNodeScoreIdSubCriterion.ByDefaultParentId);
+        StackScoreCalculator<BasicNodeDiscriminator> stackScoreCalculator = new([criteria, parentCriteria]);
 
         BasicNodeStructDataStack stack = new();
-        stack.Push(BasicNodeSelectable.NewDefaultParent());
-        stack.Push(BasicNodeSelectable.NewDefault());
+        stack.Push(BasicNodeDiscriminator.NewDefaultParent());
+        stack.Push(BasicNodeDiscriminator.NewDefault());
 
 
         // When
@@ -35,12 +35,12 @@ public class StackScoreCalculatorTests_Calculate
     public void ForParentStackLevelCriteria_ReturnScoreForMatchingStack()
     {
         // Given
-        NodeScoreCriteriaSet<BasicNodeSelectable> parentCriteria = new(BasicNodeScoreIdSubCriterion.ByDefaultParentId);
-        StackScoreCalculator<BasicNodeSelectable> stackScoreCalculator = new([parentCriteria]);
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> parentCriteria = new(BasicNodeScoreIdSubCriterion.ByDefaultParentId);
+        StackScoreCalculator<BasicNodeDiscriminator> stackScoreCalculator = new([parentCriteria]);
 
         BasicNodeStructDataStack stack = new();
-        stack.Push(BasicNodeSelectable.NewDefaultParent());
-        stack.Push(BasicNodeSelectable.NewDefault());
+        stack.Push(BasicNodeDiscriminator.NewDefaultParent());
+        stack.Push(BasicNodeDiscriminator.NewDefault());
 
 
         // When
@@ -59,13 +59,13 @@ public class StackScoreCalculatorTests_Calculate
     public void ForTwoStacklLevelCriteria_ReturnEmptyForUnmatchingStack()
     {
         // Given
-        NodeScoreCriteriaSet<BasicNodeSelectable> criteria = new(BasicNodeScoreIdSubCriterion.ByDefaultId);
-        NodeScoreCriteriaSet<BasicNodeSelectable> parentCriteria = new(BasicNodeScoreIdSubCriterion.ByDefaultParentId);
-        StackScoreCalculator<BasicNodeSelectable> stackScoreCalculator = new([criteria, parentCriteria]);
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> criteria = new(BasicNodeScoreIdSubCriterion.ByDefaultId);
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> parentCriteria = new(BasicNodeScoreIdSubCriterion.ByDefaultParentId);
+        StackScoreCalculator<BasicNodeDiscriminator> stackScoreCalculator = new([criteria, parentCriteria]);
 
         BasicNodeStructDataStack stack = new();
-        stack.Push(BasicNodeSelectable.NewDefaultParent());
-        stack.Push(BasicNodeSelectable.NewWrongId());
+        stack.Push(BasicNodeDiscriminator.NewDefaultParent());
+        stack.Push(BasicNodeDiscriminator.NewWrongId());
 
 
         // When
@@ -79,12 +79,12 @@ public class StackScoreCalculatorTests_Calculate
     public void ForIdStackLevelCriteria_ReturnScoreForMatchingStack()
     {
         // Given
-        NodeScoreCriteriaSet<BasicNodeSelectable> criteria = new(BasicNodeScoreIdSubCriterion.ByDefaultId);
-        StackScoreCalculator<BasicNodeSelectable> stackScoreCalculator = new([criteria]);
+        NodeScoreCriteriaSet<BasicNodeDiscriminator> criteria = new(BasicNodeScoreIdSubCriterion.ByDefaultId);
+        StackScoreCalculator<BasicNodeDiscriminator> stackScoreCalculator = new([criteria]);
 
         BasicNodeStructDataStack stack = new();
-        stack.Push(BasicNodeSelectable.NewDefaultParent());
-        stack.Push(BasicNodeSelectable.NewDefault());
+        stack.Push(BasicNodeDiscriminator.NewDefaultParent());
+        stack.Push(BasicNodeDiscriminator.NewDefault());
 
 
         // When
@@ -103,11 +103,11 @@ public class StackScoreCalculatorTests_Calculate
     public void ForEmptyStackLevelCriteria_ReturnEmpty()
     {
         // Given
-        StackScoreCalculator<BasicNodeSelectable> stackScoreCalculator = new([]);
+        StackScoreCalculator<BasicNodeDiscriminator> stackScoreCalculator = new([]);
 
         BasicNodeStructDataStack stack = new();
-        stack.Push(BasicNodeSelectable.NewDefaultParent());
-        stack.Push(BasicNodeSelectable.NewDefault());
+        stack.Push(BasicNodeDiscriminator.NewDefaultParent());
+        stack.Push(BasicNodeDiscriminator.NewDefault());
 
 
         // When

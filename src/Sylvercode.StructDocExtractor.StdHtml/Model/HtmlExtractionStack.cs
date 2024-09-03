@@ -8,26 +8,26 @@ namespace Sylvercode.StructDocExtractor.StdHtml.Model;
 #pragma warning disable CA1711 // Identifiers should not have incorrect suffix
 public class HtmlExtractionStack<TExtractionData>(
 #pragma warning restore CA1711 // Identifiers should not have incorrect suffix
-    ISrcNodeFactoryProvider<TExtractionData, HtmlNodeSelectable> defaultSrcNodeFactoryProvider)
-    : ISrcNodeFactoryProviderStack<TExtractionData, HtmlNodeSelectable>
+    ISrcNodeFactoryProvider<TExtractionData, HtmlNodeDiscriminator> defaultSrcNodeFactoryProvider)
+    : ISrcNodeFactoryProviderStack<TExtractionData, HtmlNodeDiscriminator>
 {
     public class Entry
     {
         public int Depth { get; private set; }
-        public HtmlNodeSelectable? NodeSelectable { get; private set; }
+        public HtmlNodeDiscriminator? NodeDiscriminator { get; private set; }
         public IStructDocNode? SrcNode { get; private set; }
-        public ISrcNodeFactoryProvider<TExtractionData, HtmlNodeSelectable>? SrcNodeFactoryProvider { get; private set; }
+        public ISrcNodeFactoryProvider<TExtractionData, HtmlNodeDiscriminator>? SrcNodeFactoryProvider { get; private set; }
     }
 
     private readonly Stack<Entry> m_Stack = [];
 
-    public ISrcNodeFactoryProvider<TExtractionData, HtmlNodeSelectable> DefaultSrcNodeFactoryProvider => defaultSrcNodeFactoryProvider;
+    public ISrcNodeFactoryProvider<TExtractionData, HtmlNodeDiscriminator> DefaultSrcNodeFactoryProvider => defaultSrcNodeFactoryProvider;
 
-    public IStructDataStack<HtmlNodeSelectable> AsStructDataStack()
+    public IStructDataStack<HtmlNodeDiscriminator> AsStructDataStack()
     {
-        return new BaseStructDataStack<HtmlNodeSelectable>(
+        return new BaseStructDataStack<HtmlNodeDiscriminator>(
             from entry in m_Stack
-            let node = entry.NodeSelectable
+            let node = entry.NodeDiscriminator
             where node.HasValue
             select node.Value
         );
@@ -43,6 +43,6 @@ public class HtmlExtractionStack<TExtractionData>(
         );
     }
 
-    public ISrcNodeFactoryProvider<TExtractionData, HtmlNodeSelectable> GetActiveSrcNodeFactoryProvider() =>
+    public ISrcNodeFactoryProvider<TExtractionData, HtmlNodeDiscriminator> GetActiveSrcNodeFactoryProvider() =>
         m_Stack.First(entry => entry.SrcNodeFactoryProvider is not null)?.SrcNodeFactoryProvider ?? DefaultSrcNodeFactoryProvider;
 }
