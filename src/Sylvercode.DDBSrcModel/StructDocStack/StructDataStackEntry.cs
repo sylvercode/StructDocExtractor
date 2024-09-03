@@ -1,1 +1,0 @@
-namespace Sylvercode.DDBSrcModel.StructDocStack;
