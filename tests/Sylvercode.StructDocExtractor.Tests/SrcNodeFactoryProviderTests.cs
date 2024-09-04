@@ -1,6 +1,7 @@
 ﻿using Sylvercode.StructDocExtractor.Extraction;
 using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.StructDataStack.Score;
+using Sylvercode.StructDocExtractor.Tests.Mocks;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
 
 namespace Sylvercode.StructDocExtractor.Tests;

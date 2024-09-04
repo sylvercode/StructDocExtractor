@@ -3,8 +3,9 @@ using Sylvercode.StructDocExtractor.StructDataStack;
 
 namespace Sylvercode.StructDocExtractor.Tests.Stubs;
 
-public class BasicNodeStructDataStack : IStructDataStack<BasicNodeDiscriminator>
+public class BasicNodeStructDataStack() : IStructDataStack<BasicNodeDiscriminator>
 {
+    public BasicNodeStructDataStack(BasicNodeDiscriminator singleEntry) : this() => Push(singleEntry);
     private readonly Stack<IStructDataStack<BasicNodeDiscriminator>.Entry> _entries = [];
 
     public int Count => _entries.Count;
