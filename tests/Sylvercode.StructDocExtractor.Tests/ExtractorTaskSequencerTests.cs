@@ -79,7 +79,7 @@ public class ExtractorTaskSequencerTests_ExtractAll
         ExtractorTaskSequencer<string, BasicNodeDiscriminator> extractor = new(handler);
 
         // When
-        ExtractionResult result = extractor.ExtractAll();
+        ExtractionResult result = extractor.ProcessTasks();
 
         // Then
         Assert.False(handler.HasOnProcessTask);
@@ -100,7 +100,7 @@ public class ExtractorTaskSequencerTests_ExtractAll
         extractor.AddTask(DefaultTaskValue);
 
         // When
-        ExtractionResult result = extractor.ExtractAll();
+        ExtractionResult result = extractor.ProcessTasks();
 
         // Then
         Assert.False(handler.HasOnProcessTask);
@@ -127,7 +127,7 @@ public class ExtractorTaskSequencerTests_ExtractAll
         extractor.AddTask(DefaultTaskValue);
 
         // When
-        ExtractionResult result = extractor.ExtractAll();
+        ExtractionResult result = extractor.ProcessTasks();
 
         // Then
         Assert.False(handler.HasOnProcessTask);
@@ -160,7 +160,7 @@ public class ExtractorTaskSequencerTests_ExtractAll
         extractor.AddTask(DefaultTaskValue);
 
         // When
-        ExtractionResult result = extractor.ExtractAll();
+        ExtractionResult result = extractor.ProcessTasks();
 
         // Then
         Assert.False(handler.HasOnProcessTask);
@@ -200,7 +200,7 @@ public class ExtractorTaskSequencerTests_ExtractAll
         extractor.AddTask(DefaultTaskValue);
 
         // When
-        ExtractionResult result = extractor.ExtractAll();
+        ExtractionResult result = extractor.ProcessTasks();
 
         // Then
         Assert.False(handler.HasOnProcessTask);

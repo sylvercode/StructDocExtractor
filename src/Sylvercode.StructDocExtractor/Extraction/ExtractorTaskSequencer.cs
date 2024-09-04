@@ -14,7 +14,7 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
 
     public bool HasPendingTask => _pendingTacks.First is not null;
 
-    public ExtractionResult ExtractAll() // TODO rename
+    public ExtractionResult ProcessTasks() 
     {
         ExtractionResult.ExtractionSummery summery = new();
         List<IStructDocNode> result = [];

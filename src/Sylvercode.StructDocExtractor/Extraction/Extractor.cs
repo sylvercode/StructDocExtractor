@@ -27,7 +27,7 @@ public class Extractor<TExtractionData, TDataDiscriminator>(
             );
         ExtractorTaskSequencer<TExtractionData, TDataDiscriminator> extractorTaskSequencer = new(handler);
         extractorTaskSequencer.AddTask(data);
-        return extractorTaskSequencer.ExtractAll();
+        return extractorTaskSequencer.ProcessTasks();
     }
 
 }
