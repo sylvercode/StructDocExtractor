@@ -1,38 +1,23 @@
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
-using Sylvercode.StructDocExtractor.Extraction.Factory;
-using Sylvercode.StructDocExtractor.Extraction.PreviewProvider;
 using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 
-public abstract partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>(
-        IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider,
-        IDataDiscriminatorFactory<TExtractionData, TDataDiscriminator>? dataDiscriminatorFactory = null,
-        IChildrenTaskInfoFactory? childrenTaskInfoFactory = null,
-        IDataPreviewProvider<TExtractionData>? dataPreviewProvider = null,
-        BaseExtractorOption option = default,
-        ILoggerFactory? loggerFactory = null)
+public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>(
+        IExtractorTaskSequencerHandler<TExtractionData, TDataDiscriminator> handler)
         where TExtractionData : notnull
 {
-    private readonly IChildrenTaskInfoFactory _childrenTaskInfoFactory = childrenTaskInfoFactory
-                                                                         ?? ChildrenTaskInfoFactory.Default;
-    private readonly IDataPreviewProvider<TExtractionData> _dataPreviewProvider = dataPreviewProvider
-                                                                                  ?? new ToStringPreviewProvider<TExtractionData>();
 
-    private readonly ILoggerFactory _loggerFactory = loggerFactory ?? NullLoggerFactory.Instance;
-    private readonly ILogger _logger = loggerFactory is not null ? loggerFactory.CreateLogger<ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>>()
-                                                                 : NullLogger.Instance;
+    private readonly ILogger _logger = handler.CreateLogger<ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>>();
 
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
-    private readonly IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider = defaultNodeFactoryProvider;
 
     public bool HasPendingTask => _pendingTacks.First is not null;
 
-    public IEnumerable<IStructDocNode> ExtractAll()
+    public ExtractionResult ExtractAll() // TODO rename
     {
         ExtractionResult.ExtractionSummery summery = new();
-        LinkedList<IStructDocNode> result = [];
+        List<IStructDocNode> result = [];
         while (HasPendingTask)
         {
             ExtractionTask task = GetNextTask();
@@ -43,12 +28,12 @@ public abstract partial class ExtractorTaskSequencer<TExtractionData, TDataDiscr
             if (task.ParentTaskInfo?.ParentTask is null)
             {
                 if (taskResult.SrcNode is not null)
-                    result.AddLast(taskResult.SrcNode);
+                    result.Add(taskResult.SrcNode);
                 else if (taskResult.ResultType is TaskResultType.Success or TaskResultType.Warning)
-                    LogRootTaskWithNoNodeResultOnSuccessOrWarning(_dataPreviewProvider.GetPreview((TExtractionData)task.ExtractionData));
+                    LogRootTaskWithNoNodeResultOnSuccessOrWarning(handler.GetDataPreview((TExtractionData)task.ExtractionData));
             }
         }
-        return result;
+        return new(summery, result);
     }
 
     private ExtractionTask GetNextTask()
@@ -64,7 +49,7 @@ public abstract partial class ExtractorTaskSequencer<TExtractionData, TDataDiscr
     private IProcessTaskResult ProcessTask(ExtractionTask task)
     {
         IProcessTaskResult<TExtractionData, TDataDiscriminator>? result = null;
-        TaskContext taskContext = new(task, defaultNodeFactoryProvider);
+        TaskContext<TExtractionData, TDataDiscriminator> taskContext = new(task, handler.DefaultNodeFactoryProvider);
 
         using (_logger.BeginScope(new List<KeyValuePair<string, object?>>(){
             new("TaskIndex", taskContext.TaskIndex),
@@ -73,7 +58,7 @@ public abstract partial class ExtractorTaskSequencer<TExtractionData, TDataDiscr
         {
             try
             {
-                result = ProcessTask(taskContext);
+                result = handler.OnProcessTask(taskContext);
 
                 LogProcessTaskResult(
                     result.ResultType,
@@ -81,7 +66,7 @@ public abstract partial class ExtractorTaskSequencer<TExtractionData, TDataDiscr
                     result.SrcNode?.DebugName,
                     result.NodeFactoryProvider?.DebugName);
 
-                task.SetResult(result, _childrenTaskInfoFactory);
+                task.SetResult(result, handler.ChildrenTaskInfoFactory);
 
                 IReadOnlyList<ExtractionTask> subTask = task.ChildrenTaskInfo!.ChildrenTasks;
                 LogChildrenTaskCount(subTask.Count);
@@ -92,8 +77,8 @@ public abstract partial class ExtractorTaskSequencer<TExtractionData, TDataDiscr
             }
             catch (Exception ex)
             {
-                LogExceptionCatch(option.ExceptionCatchLogLevel, ex);
-                if (!option.ContinueOnException)
+                LogExceptionCatch(handler.ExtractorOption.ExceptionCatchLogLevel, ex);
+                if (!handler.ExtractorOption.ContinueOnException)
                     throw;
                 result = ProcessTaskResult.NewError<TExtractionData, TDataDiscriminator>();
             }
@@ -117,65 +102,17 @@ public abstract partial class ExtractorTaskSequencer<TExtractionData, TDataDiscr
     }
 
     public void AddTask(TExtractionData data, bool asNext = false)
-        => AddTask(new ExtractionTask(data, logger: _loggerFactory.CreateLogger<ExtractionTask>()), asNext);
+        => AddTask(new ExtractionTask(data, logger: handler.CreateLogger<ExtractionTask>()), asNext);
 
     private void AddTask(ExtractionTask task, bool asNext = false)
     {
-        LogTaskAdded(_dataPreviewProvider.GetPreview((TExtractionData)task.ExtractionData),
+        LogTaskAdded(handler.GetDataPreview((TExtractionData)task.ExtractionData),
                      asNext ? "Next" : "Last");
         if (asNext)
             _pendingTacks.AddFirst(task);
         else
             _pendingTacks.AddLast(task);
     }
-
-    protected virtual IProcessTaskResult<TExtractionData, TDataDiscriminator>
-        ProcessTask(TaskContext taskContext)
-    {
-        LogTraceProcessBegin();
-
-        IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> factoryProvider =
-            taskContext.GetNodeFactoryProvider();
-        LogFactoryProviderInUse(factoryProvider.DebugName);
-
-        TDataDiscriminator discriminator = GetDataDiscriminator(taskContext);
-        LogDataDiscriminatorGot(discriminator?.ToString());
-
-        IStructDocNodeFactory<TExtractionData, TDataDiscriminator>? factory =
-            factoryProvider.GetFactoryForStack(taskContext.GetStructDataStack(discriminator));
-        LogNoNodeFactoryFound(option.MissingNodeFactoryLogLevel, discriminator?.ToString());
-        if (factory is null)
-            return ProcessTaskResult.NewErrorOrSkipped<TExtractionData, TDataDiscriminator>(option.MissingNodeFactoryAsError);
-
-        return factory.NewNode(taskContext.ExtractionData);
-    }
-
-    protected virtual TDataDiscriminator GetDataDiscriminator(TaskContext taskContext)
-    {
-        if (dataDiscriminatorFactory is null)
-            throw new InvalidOperationException("DataDiscriminatorFactory is not set");
-
-        return dataDiscriminatorFactory.CreateDataDiscriminator(taskContext.ExtractionData);
-    }
-
-    [LoggerMessage(
-       Message = "No factory found for `{dataDiscriminator}`.")]
-    private partial void LogNoNodeFactoryFound(LogLevel level, string? dataDiscriminator);
-
-    [LoggerMessage(
-        Level = LogLevel.Debug,
-        Message = "Data discriminator `{DataDiscriminator}`.")]
-    private partial void LogDataDiscriminatorGot(string? dataDiscriminator);
-
-    [LoggerMessage(
-        Level = LogLevel.Debug,
-        Message = "Factory provider `{FactoryProviderName}` in use.")]
-    private partial void LogFactoryProviderInUse(string factoryProviderName);
-
-    [LoggerMessage(
-        Level = LogLevel.Trace,
-        Message = "Begin process task.")]
-    private partial void LogTraceProcessBegin();
 
     [LoggerMessage(
         Message = "Exception cath while processing task.")]

@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Sylvercode.StructDocExtractor.Extraction;
 using Sylvercode.StructDocExtractor.Extraction.Factory;
+using Sylvercode.StructDocExtractor.Extraction.PreviewProvider;
 using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
 
@@ -8,27 +10,41 @@ namespace Sylvercode.StructDocExtractor.Tests;
 
 public class ExtractorTaskSequencerTests_ExtractAll
 {
-    public class MockExtractorTaskSequencer() : ExtractorTaskSequencer<string, BasicNodeDiscriminator>(NodeFactoryProviderValue)
+    public class MockExtractorTaskSequencerHandler() : IExtractorTaskSequencerHandler<string, BasicNodeDiscriminator>
+
     {
-        public static readonly StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> NodeFactoryProviderValue = new();
+        public ExtractorOption ExtractorOption { get; } = new();
 
-        public delegate ProcessTaskResult<string, BasicNodeDiscriminator> OnProcessTask(TaskContext taskContext);
+        public IStructDocNodeFactoryProvider<string, BasicNodeDiscriminator> DefaultNodeFactoryProvider { get; } = new StructDocNodeFactoryProvider<string, BasicNodeDiscriminator>();
 
-        private readonly Queue<OnProcessTask> _onProcessTaskQueue = [];
+        public delegate ProcessTaskResult<string, BasicNodeDiscriminator> ProcessTaskCallback(TaskContext<string, BasicNodeDiscriminator> taskContext);
 
-        public void AddOnProcessTaskAction(OnProcessTask action)
+        public StringPreviewProvider DataPreviewProvider { get; } = new();
+
+        private readonly Queue<ProcessTaskCallback> _onProcessTaskQueue = [];
+
+        public void AddOnProcessTaskAction(ProcessTaskCallback action)
             => _onProcessTaskQueue.Enqueue(action);
 
         public bool HasOnProcessTask => _onProcessTaskQueue.Count > 0;
 
-        protected override IProcessTaskResult<string, BasicNodeDiscriminator> ProcessTask(TaskContext taskContext)
+
+        public IProcessTaskResult<string, BasicNodeDiscriminator> OnProcessTask(TaskContext<string, BasicNodeDiscriminator> taskContext)
         {
-            if (!_onProcessTaskQueue.TryDequeue(out OnProcessTask? nextAction))
+            if (!_onProcessTaskQueue.TryDequeue(out ProcessTaskCallback? nextAction))
                 throw new InvalidOperationException("No Next action in queue.");
 
             return nextAction.Invoke(taskContext);
         }
+
+        public IChildrenTaskInfoFactory ChildrenTaskInfoFactory { get; } = Extraction.Factory.ChildrenTaskInfoFactory.Default;
+
+        public string GetDataPreview(string data)
+            => DataPreviewProvider.GetPreview(data);
+
+        public ILogger<TCategoryName> CreateLogger<TCategoryName>() => NullLogger<TCategoryName>.Instance;
     }
+
     public const string DefaultTaskValue = nameof(DefaultTaskValue);
     public const string DefaultTaskValue1 = nameof(DefaultTaskValue1);
     public const string DefaultTaskValue2 = nameof(DefaultTaskValue2);
@@ -59,81 +75,97 @@ public class ExtractorTaskSequencerTests_ExtractAll
     public void NoTask_NothingProcessed()
     {
         // Given
-        MockExtractorTaskSequencer extractor = new();
+        MockExtractorTaskSequencerHandler handler = new();
+        ExtractorTaskSequencer<string, BasicNodeDiscriminator> extractor = new(handler);
 
         // When
-        IEnumerable<IStructDocNode> result = extractor.ExtractAll();
+        ExtractionResult result = extractor.ExtractAll();
 
         // Then
-        Assert.False(extractor.HasOnProcessTask);
-        Assert.Empty(result);
+        Assert.False(handler.HasOnProcessTask);
+        Assert.Empty(result.SrcNodes);
+        Assert.Equal(0, result.Summery.ProcessedTaskCount);
+        Assert.Equal(0, result.Summery.ErrorTaskCount);
+        Assert.Equal(0, result.Summery.SkippedTaskCount);
     }
 
     [Fact]
     public void OneTaskGeneratingARoot_OneRootReturned()
     {
         // Given
-        MockExtractorTaskSequencer extractor = new();
+        MockExtractorTaskSequencerHandler handler = new();
+        handler.AddOnProcessTaskAction(ctx => NewTaskResult(new BasicSrcRootBlock(ctx.ExtractionData)));
+
+        ExtractorTaskSequencer<string, BasicNodeDiscriminator> extractor = new(handler);
         extractor.AddTask(DefaultTaskValue);
-        extractor.AddOnProcessTaskAction(ctx => NewTaskResult(new BasicSrcRootBlock(ctx.ExtractionData)));
 
         // When
-        IEnumerable<IStructDocNode> result = extractor.ExtractAll();
+        ExtractionResult result = extractor.ExtractAll();
 
         // Then
-        Assert.False(extractor.HasOnProcessTask);
-        Assert.Single(result, r => r.Id == DefaultTaskValue);
+        Assert.False(handler.HasOnProcessTask);
+        Assert.Single(result.SrcNodes, r => r.Id == DefaultTaskValue);
+        Assert.Equal(1, result.Summery.ProcessedTaskCount);
+        Assert.Equal(0, result.Summery.ErrorTaskCount);
+        Assert.Equal(0, result.Summery.SkippedTaskCount);
     }
 
     [Fact]
     public void OneTaskWithTwoSubTask_OneRootWithTwoChildrenReturned()
     {
         // Given
-        MockExtractorTaskSequencer extractor = new();
-        extractor.AddTask(DefaultTaskValue);
-        extractor.AddOnProcessTaskAction(
+        MockExtractorTaskSequencerHandler handler = new();
+        handler.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcRootBlock(ctx.ExtractionData),
                                  [DefaultTaskValue1, DefaultTaskValue2]));
-        extractor.AddOnProcessTaskAction(
+        handler.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcNode(ctx.ExtractionData)));
-        extractor.AddOnProcessTaskAction(
+        handler.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcNode(ctx.ExtractionData)));
+
+        ExtractorTaskSequencer<string, BasicNodeDiscriminator> extractor = new(handler);
+        extractor.AddTask(DefaultTaskValue);
 
         // When
-        IEnumerable<IStructDocNode> result = extractor.ExtractAll();
+        ExtractionResult result = extractor.ExtractAll();
 
         // Then
-        Assert.False(extractor.HasOnProcessTask);
-        IStructDocNode node = Assert.Single(result, r => r.Id == DefaultTaskValue);
+        Assert.False(handler.HasOnProcessTask);
+        IStructDocNode node = Assert.Single(result.SrcNodes, r => r.Id == DefaultTaskValue);
         BasicSrcRootBlock root = Assert.IsType<BasicSrcRootBlock>(node);
         Assert.Collection(root.Content,
             c => Assert.Equal(DefaultTaskValue1, Assert.IsType<BasicSrcNode>(c).Id),
             c => Assert.Equal(DefaultTaskValue2, Assert.IsType<BasicSrcNode>(c).Id));
+        Assert.Equal(3, result.Summery.ProcessedTaskCount);
+        Assert.Equal(0, result.Summery.ErrorTaskCount);
+        Assert.Equal(0, result.Summery.SkippedTaskCount);
     }
 
     [Fact]
     public void OneTaskWithTwoSubTaskAndExtraTask_TwoRootReturned()
     {
         // Given
-        MockExtractorTaskSequencer extractor = new();
-        extractor.AddTask(DefaultTaskValue);
-        extractor.AddOnProcessTaskAction(
+        MockExtractorTaskSequencerHandler handler = new();
+        handler.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcRootBlock(ctx.ExtractionData),
                                  [DefaultTaskValue1, DefaultTaskValue2], [DefaultTaskValueA]));
-        extractor.AddOnProcessTaskAction(
+        handler.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcNode(ctx.ExtractionData)));
-        extractor.AddOnProcessTaskAction(
+        handler.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcNode(ctx.ExtractionData)));
-        extractor.AddOnProcessTaskAction(
+        handler.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcRootBlock(ctx.ExtractionData)));
 
+        ExtractorTaskSequencer<string, BasicNodeDiscriminator> extractor = new(handler);
+        extractor.AddTask(DefaultTaskValue);
+
         // When
-        IEnumerable<IStructDocNode> result = extractor.ExtractAll();
+        ExtractionResult result = extractor.ExtractAll();
 
         // Then
-        Assert.False(extractor.HasOnProcessTask);
-        Assert.Equal(2, result.Count());
-        var it = result.GetEnumerator();
+        Assert.False(handler.HasOnProcessTask);
+        Assert.Equal(2, result.SrcNodes.Count());
+        var it = result.SrcNodes.GetEnumerator();
         it.MoveNext();
         IStructDocNode node = it.Current;
         Assert.Equal(DefaultTaskValue, node.Id);
@@ -146,35 +178,37 @@ public class ExtractorTaskSequencerTests_ExtractAll
         Assert.Equal(DefaultTaskValueA, node.Id);
         root = Assert.IsType<BasicSrcRootBlock>(node);
         Assert.Empty(root.Content);
+        Assert.Equal(4, result.Summery.ProcessedTaskCount);
+        Assert.Equal(0, result.Summery.ErrorTaskCount);
+        Assert.Equal(0, result.Summery.SkippedTaskCount);
     }
 
     [Fact]
     public void OneTaskWithTwoSubTaskOneWithoutResult_OneRootWithOneChildrenReturned()
     {
         // Given
-        MockExtractorTaskSequencer extractor = new();
-        extractor.AddTask(DefaultTaskValue);
-        extractor.AddOnProcessTaskAction(
+        MockExtractorTaskSequencerHandler handler = new();
+        handler.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcRootBlock(ctx.ExtractionData),
                                  [DefaultTaskValue1, DefaultTaskValue2]));
-        extractor.AddOnProcessTaskAction(
+        handler.AddOnProcessTaskAction(
             ctx => NewTaskResult(new BasicSrcNode(ctx.ExtractionData)));
-        extractor.AddOnProcessTaskAction(
+        handler.AddOnProcessTaskAction(
             ctx => ProcessTaskResult.NewSkipped<string, BasicNodeDiscriminator>());
 
+        ExtractorTaskSequencer<string, BasicNodeDiscriminator> extractor = new(handler);
+        extractor.AddTask(DefaultTaskValue);
+
         // When
-        IEnumerable<IStructDocNode> result = extractor.ExtractAll();
+        ExtractionResult result = extractor.ExtractAll();
 
         // Then
-        Assert.False(extractor.HasOnProcessTask);
-        IStructDocNode node = Assert.Single(result, r => r.Id == DefaultTaskValue);
+        Assert.False(handler.HasOnProcessTask);
+        IStructDocNode node = Assert.Single(result.SrcNodes, r => r.Id == DefaultTaskValue);
         BasicSrcRootBlock root = Assert.IsType<BasicSrcRootBlock>(node);
         Assert.Single(root.Content, c => Assert.IsType<BasicSrcNode>(c).Id == DefaultTaskValue1);
+        Assert.Equal(3, result.Summery.ProcessedTaskCount);
+        Assert.Equal(0, result.Summery.ErrorTaskCount);
+        Assert.Equal(1, result.Summery.SkippedTaskCount);
     }
-}
-
-
-public class BaseExtractorTests_ProcessTask
-{
-    // TODO: Add tests for ProcessTask
 }
