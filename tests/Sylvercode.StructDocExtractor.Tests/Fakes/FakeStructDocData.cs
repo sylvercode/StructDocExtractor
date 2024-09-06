@@ -5,11 +5,13 @@ using Sylvercode.StructDocExtractor.Tests.Stubs;
 
 namespace Sylvercode.StructDocExtractor.Tests.Fakes;
 
-public class FakeStructDocData
+public class FakeStructDocData(string? id = null, string? data = null)
 {
+    public static FakeStructDocDataBuilder New(string? id = null, string? data = null)
+        => new(new FakeStructDocData(id, data));
     public FakeStructDocData? Parent { get; set; }
-    public string Id { get; set; } = "";
-    public string Data { get; set; } = "";
+    public string Id { get; set; } = id ?? "";
+    public string Data { get; set; } = data ?? "";
     public List<FakeStructDocData> Children { get; } = [];
     public TaskResultType ResultType { get; set; } = TaskResultType.Success;
 
