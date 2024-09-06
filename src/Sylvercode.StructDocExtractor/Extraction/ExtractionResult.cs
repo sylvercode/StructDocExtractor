@@ -27,5 +27,5 @@ public class ExtractionResult(ExtractionResult.ExtractionSummery summery,
     }
 
     public ExtractionSummery Summery { get; } = summery;
-    public IReadOnlyList<IStructDocNode> SrcNodes { get; } = srcNodes;
+    public IReadOnlyList<IStructDocNode> StructDocNodes { get; } = srcNodes;
 }
