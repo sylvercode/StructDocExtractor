@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Immutable;
 
-namespace Sylvercode.StructDocExtractor.Extraction;
+namespace Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 
 public readonly struct TaskIndex : IComparable<TaskIndex>, IReadOnlyList<int>, IStructuralComparable, IStructuralEquatable, IEquatable<TaskIndex>
 {

@@ -1,4 +1,6 @@
-namespace Sylvercode.StructDocExtractor.Extraction;
+using Sylvercode.StructDocExtractor.Extraction.TaskInfo;
+
+namespace Sylvercode.StructDocExtractor.Extraction.Factory;
 
 public interface IExtractionTaskFactory
 {

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace Sylvercode.StructDocExtractor.Extraction;
+namespace Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 
 public class ProxyChildrenTaskInfo(ExtractionTask task,
                                    IEnumerable<object>? childrenData,

@@ -1,9 +1,10 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Model.Init;
 
-namespace Sylvercode.StructDocExtractor.Extraction;
+namespace Sylvercode.StructDocExtractor.Extraction.Factory;
 
 public partial class ChildrenTaskInfoFactory(
     ILoggerFactory? loggerFactory = null) : IChildrenTaskInfoFactory

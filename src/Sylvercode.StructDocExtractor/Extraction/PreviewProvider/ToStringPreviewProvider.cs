@@ -1,4 +1,4 @@
-namespace Sylvercode.StructDocExtractor.Extraction;
+namespace Sylvercode.StructDocExtractor.Extraction.PreviewProvider;
 
 public class ToStringPreviewProvider<TData>(int characterCountForPreview = 20) : IDataPreviewProvider<TData>
 {
