@@ -83,7 +83,7 @@ public class ExtractorTaskSequencerTests_ExtractAll
 
         // Then
         Assert.False(handler.HasOnProcessTask);
-        Assert.Empty(result.SrcNodes);
+        Assert.Empty(result.StructDocNodes);
         Assert.Equal(0, result.Summery.ProcessedTaskCount);
         Assert.Equal(0, result.Summery.ErrorTaskCount);
         Assert.Equal(0, result.Summery.SkippedTaskCount);
@@ -104,7 +104,7 @@ public class ExtractorTaskSequencerTests_ExtractAll
 
         // Then
         Assert.False(handler.HasOnProcessTask);
-        Assert.Single(result.SrcNodes, r => r.Id == DefaultTaskValue);
+        Assert.Single(result.StructDocNodes, r => r.Id == DefaultTaskValue);
         Assert.Equal(1, result.Summery.ProcessedTaskCount);
         Assert.Equal(0, result.Summery.ErrorTaskCount);
         Assert.Equal(0, result.Summery.SkippedTaskCount);
@@ -131,7 +131,7 @@ public class ExtractorTaskSequencerTests_ExtractAll
 
         // Then
         Assert.False(handler.HasOnProcessTask);
-        IStructDocNode node = Assert.Single(result.SrcNodes, r => r.Id == DefaultTaskValue);
+        IStructDocNode node = Assert.Single(result.StructDocNodes, r => r.Id == DefaultTaskValue);
         BasicSrcRootBlock root = Assert.IsType<BasicSrcRootBlock>(node);
         Assert.Collection(root.Content,
             c => Assert.Equal(DefaultTaskValue1, Assert.IsType<BasicSrcNode>(c).Id),
@@ -164,8 +164,8 @@ public class ExtractorTaskSequencerTests_ExtractAll
 
         // Then
         Assert.False(handler.HasOnProcessTask);
-        Assert.Equal(2, result.SrcNodes.Count());
-        var it = result.SrcNodes.GetEnumerator();
+        Assert.Equal(2, result.StructDocNodes.Count());
+        var it = result.StructDocNodes.GetEnumerator();
         it.MoveNext();
         IStructDocNode node = it.Current;
         Assert.Equal(DefaultTaskValue, node.Id);
@@ -204,7 +204,7 @@ public class ExtractorTaskSequencerTests_ExtractAll
 
         // Then
         Assert.False(handler.HasOnProcessTask);
-        IStructDocNode node = Assert.Single(result.SrcNodes, r => r.Id == DefaultTaskValue);
+        IStructDocNode node = Assert.Single(result.StructDocNodes, r => r.Id == DefaultTaskValue);
         BasicSrcRootBlock root = Assert.IsType<BasicSrcRootBlock>(node);
         Assert.Single(root.Content, c => Assert.IsType<BasicSrcNode>(c).Id == DefaultTaskValue1);
         Assert.Equal(3, result.Summery.ProcessedTaskCount);
