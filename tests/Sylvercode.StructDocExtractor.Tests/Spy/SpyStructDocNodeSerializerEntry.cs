@@ -5,7 +5,7 @@ namespace Sylvercode.StructDocExtractor.Tests.Spy;
 public class SpyStructDocNodeSerializerEntry(
     ISerializer serializer,
     SpyStructDocNodeSerializerEntry.Methods methodName,
-    IEnumerable<string?> parameters)
+    IEnumerable<object?> parameters)
 {
     public enum Methods
     {
@@ -34,19 +34,22 @@ public class SpyStructDocNodeSerializerEntry(
     public SpyStructDocNodeSerializerEntry(
         ISerializer serializer,
         string methodName,
-        IEnumerable<string?> parameters)
+        IEnumerable<object?> parameters)
         : this(serializer, GetMethod(methodName), parameters)
     {
     }
 
     public ISerializer Serializer { get; } = serializer;
     public Methods Method { get; } = methodName;
-    public List<string?> ParamsId { get; } = [.. parameters];
+    public List<object?> ParamsId { get; } = [.. parameters];
 
     public void Assert(SpyStructDocNodeSerializerEntry expected)
     {
-        Xunit.Assert.Equal(expected.Serializer, Serializer);
+        Xunit.Assert.Same(expected.Serializer, Serializer);
         Xunit.Assert.Equal(expected.Method, Method);
-        Xunit.Assert.Equal(expected.ParamsId, ParamsId);
+        Xunit.Assert.Collection(ParamsId, AsAsserter(expected.ParamsId));
     }
+
+    private static Action<object?>[] AsAsserter(List<object?> parameters)
+        => parameters.Select(p => new Action<object?>(expected => Xunit.Assert.Same(expected, p))).ToArray();
 }

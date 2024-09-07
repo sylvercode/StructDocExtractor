@@ -16,7 +16,7 @@ public static class ListExtension
         ISpySerializer serializer,
         SpyStructDocNodeSerializerEntry.Methods method,
         params IStructDocNode?[] parameters)
-        => entriesLog.Add(new SpyStructDocNodeSerializerEntry(serializer, method, parameters.Select(p => p?.Id)));
+        => entriesLog.Add(new SpyStructDocNodeSerializerEntry(serializer, method, parameters));
 
     public static Action<SpyStructDocNodeSerializerEntry>[] AsAsserter(this List<SpyStructDocNodeSerializerEntry> entriesLog)
         => entriesLog.Select(e => new Action<SpyStructDocNodeSerializerEntry>(expected => e.Assert(expected))).ToArray();

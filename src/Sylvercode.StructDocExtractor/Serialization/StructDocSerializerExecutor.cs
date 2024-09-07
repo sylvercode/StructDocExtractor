@@ -30,7 +30,7 @@ public class StructDocSerializerExecutor(StreamWriter stream, object rootData, I
         IStructDocNodeHolderSerializer? holderSerializer = task.ParentInfo?.Parent.Serializer as IStructDocNodeHolderSerializer;
 
         if (CanNotifyHolder(holder, holderSerializer, node))
-            holderSerializer.OnBetweenChildrenSerialize(holder, (IStructDocNode?)task.ParentInfo?.PreviousSibling?.Data, node, stream);
+            holderSerializer.OnBetweenChildrenSerialize(holder, (IStructDocNode?)task.ParentInfo!.PreviousSibling?.Data, node, stream);
 
         task.Serializer = serializerProvider.GetSerializerFor(task.Data);
         if (task.Serializer is null)
@@ -38,16 +38,16 @@ public class StructDocSerializerExecutor(StreamWriter stream, object rootData, I
 
         IStructDocNodeSerializer? nodeSerializer = task.Serializer as IStructDocNodeSerializer;
 
-        if (CanNotifyNode(node, nodeSerializer))
-            nodeSerializer.OnBeforeChildSerialize(node, task.ParentInfo?.PreviousSibling?.Data as IStructDocNode, stream);
+        if (CanNotifyNode(node, nodeSerializer, task.ParentInfo))
+            nodeSerializer.OnBeforeChildSerialize(node, task.ParentInfo.PreviousSibling?.Data as IStructDocNode, stream);
 
         task.Serializer.Serialize(task.Data, stream);
 
-        if (CanNotifyNode(node, nodeSerializer))
-            nodeSerializer.OnAfterChildSerialize(node, task.ParentInfo?.NextSibling?.Data as IStructDocNode, stream);
+        if (CanNotifyNode(node, nodeSerializer, task.ParentInfo))
+            nodeSerializer.OnAfterChildSerialize(node, task.ParentInfo.NextSibling?.Data as IStructDocNode, stream);
 
         if (CanNotifyHolder(holder, holderSerializer, node)
-            && (task.ParentInfo?.IsLastChild ?? false))
+            && task.ParentInfo!.IsLastChild)
             holderSerializer.OnBetweenChildrenSerialize(holder, node, null, stream);
 
         if (task.Data is not IStructDocNodeHolder childHolderData)
@@ -60,18 +60,18 @@ public class StructDocSerializerExecutor(StreamWriter stream, object rootData, I
             return;
         }
 
-        SerializerTask? previousTask = null;
-        foreach (var child in childHolderData.Content)
+        SerializerTask? nextTask = null;
+        foreach (var child in childHolderData.Content.Reverse())
         {
             var childTask = new SerializerTask(child, new SerializerTaskParentInfo(task));
             _pendingTasks.AddFirst(childTask);
 
-            if (previousTask is not null)
+            if (nextTask is not null)
             {
-                previousTask.ParentInfo!.NextSibling = childTask;
-                childTask.ParentInfo!.PreviousSibling = previousTask;
+                nextTask.ParentInfo!.PreviousSibling = childTask;
+                childTask.ParentInfo!.NextSibling = nextTask;
             }
-            previousTask = childTask;
+            nextTask = childTask;
         }
     }
 
@@ -84,6 +84,7 @@ public class StructDocSerializerExecutor(StreamWriter stream, object rootData, I
 
     private static bool CanNotifyNode(
         [NotNullWhen(true)] IStructDocNode? node,
-        [NotNullWhen(true)] IStructDocNodeSerializer? nodeSerializer)
-        => nodeSerializer is not null && node is not null;
+        [NotNullWhen(true)] IStructDocNodeSerializer? nodeSerializer,
+        [NotNullWhen(true)] SerializerTaskParentInfo? parentInfo)
+        => nodeSerializer is not null && node is not null && parentInfo is not null;
 }
