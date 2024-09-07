@@ -6,22 +6,37 @@ public class BaseStructDocNodeHolderSerializer<TData, TChild> : BaseStructDocNod
     where TData : IStructDocNodeHolder<TChild>
     where TChild : class, IStructDocNode
 {
-    public override void Serialize(TData obj, StreamWriter stream)
-        => SerializeContent(obj, stream);
+    public virtual void OnBetweenChildrenSerialize(TData parent, TChild? previousChild, TChild? nextChild, StreamWriter stream)
+    {
+        if (previousChild is null)
+        {
+            if (nextChild is null)
+                OnNoChildSerialize(parent, stream);
+            else
+                OnBeforeFirstChildSerialize(parent, nextChild, stream);
+        }
+        else
+        {
+            if (nextChild is null)
+                OnAfterLastChildSerialize(parent, previousChild, stream);
+            else
+                OnBetweenSiblingSerialize(parent, previousChild, nextChild, stream);
+        }
+    }
 
-    protected override void SerializeContent(TData node, StreamWriter stream)
+    protected virtual void OnBeforeFirstChildSerialize(TData parent, TChild nextChild, StreamWriter stream)
     {
     }
 
-    public virtual void OnBeforeFirstChildSerialize(TData parent, TChild child, StreamWriter stream)
+    protected virtual void OnBetweenSiblingSerialize(TData parent, TChild previousChild, TChild nextChild, StreamWriter stream)
     {
     }
 
-    public virtual void OnBetweenSiblingSerialize(TData parent, TChild child1, TChild child2, StreamWriter stream)
+    protected virtual void OnAfterLastChildSerialize(TData parent, TChild previousChild, StreamWriter stream)
     {
     }
 
-    public virtual void OnAfterLastChildSerialize(TData parent, TChild child, StreamWriter stream)
+    protected virtual void OnNoChildSerialize(TData parent, StreamWriter stream)
     {
     }
 }
