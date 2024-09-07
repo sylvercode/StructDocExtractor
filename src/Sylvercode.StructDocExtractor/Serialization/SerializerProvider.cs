@@ -1,9 +1,11 @@
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Serialization;
 
 
-public class SerializerProvider : ISerializerProvider
+public class SerializerProvider : ISerializerProvider, IEnumerable<KeyValuePair<Type, ISerializer>>
 {
     private readonly Dictionary<Type, ISerializer> _serializers = [];
 
@@ -21,5 +23,15 @@ public class SerializerProvider : ISerializerProvider
     {
         if (!_serializers.TryAdd(type, serializer))
             throw new InvalidOperationException($"A serializer for type {type.Name} already exists");
+    }
+
+    public IEnumerator<KeyValuePair<Type, ISerializer>> GetEnumerator()
+    {
+        return ((IEnumerable<KeyValuePair<Type, ISerializer>>)_serializers).GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable)_serializers).GetEnumerator();
     }
 }
