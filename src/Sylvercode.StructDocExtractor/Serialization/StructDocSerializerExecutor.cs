@@ -5,7 +5,6 @@ namespace Sylvercode.StructDocExtractor.Serialization;
 
 public class StructDocSerializerExecutor(StreamWriter stream, object rootData, ISerializerProvider serializerProvider)
 {
-
     private readonly LinkedList<SerializerTask> _pendingTasks = new([new SerializerTask(rootData)]);
 
     private bool HasPendingTasks => _pendingTasks.Count > 0;
@@ -25,66 +24,39 @@ public class StructDocSerializerExecutor(StreamWriter stream, object rootData, I
 
     private void ExecuteTask(SerializerTask task)
     {
-        IStructDocNode? node = task.Data as IStructDocNode;
-        IStructDocNodeHolder? holder = task.ParentInfo?.Parent.Data as IStructDocNodeHolder;
-        IStructDocNodeHolderSerializer? holderSerializer = task.ParentInfo?.Parent.Serializer as IStructDocNodeHolderSerializer;
-
-        if (CanNotifyHolder(holder, holderSerializer, node))
-            holderSerializer.OnBetweenChildrenSerialize(holder, (IStructDocNode?)task.ParentInfo!.PreviousSibling?.Data, node, stream);
-
         task.Serializer = serializerProvider.GetSerializerFor(task.Data);
         if (task.Serializer is null)
+        {
+            task.OnToProcess(stream);
+            task.HasChildTasks = false;
+            task.OnProcessed(stream);
             throw new InvalidOperationException($"No serializer found for {task.Data.GetType()}");
+        }
 
-        IStructDocNodeSerializer? nodeSerializer = task.Serializer as IStructDocNodeSerializer;
-
-        if (CanNotifyNode(node, nodeSerializer, task.ParentInfo))
-            nodeSerializer.OnBeforeChildSerialize(node, task.ParentInfo.PreviousSibling?.Data as IStructDocNode, stream);
+        task.OnToProcess(stream);
 
         task.Serializer.Serialize(task.Data, stream);
 
-        if (CanNotifyNode(node, nodeSerializer, task.ParentInfo))
-            nodeSerializer.OnAfterChildSerialize(node, task.ParentInfo.NextSibling?.Data as IStructDocNode, stream);
-
-        if (CanNotifyHolder(holder, holderSerializer, node)
-            && task.ParentInfo!.IsLastChild)
-            holderSerializer.OnBetweenChildrenSerialize(holder, node, null, stream);
-
-        if (task.Data is not IStructDocNodeHolder childHolderData)
-            return;
-
-        if (childHolderData.Content.Count == 0)
+        bool hasChildTasks = false;
+        if (task.Data is IStructDocNodeHolder childHolderData)
         {
-            if (nodeSerializer is IStructDocNodeHolderSerializer childHolderSerializer)
-                childHolderSerializer.OnBetweenChildrenSerialize(childHolderData, null, null, stream);
-            return;
-        }
-
-        SerializerTask? nextTask = null;
-        foreach (var child in childHolderData.Content.Reverse())
-        {
-            var childTask = new SerializerTask(child, new SerializerTaskParentInfo(task));
-            _pendingTasks.AddFirst(childTask);
-
-            if (nextTask is not null)
+            SerializerTask? nextTask = null;
+            foreach (var child in childHolderData.Content.Reverse())
             {
-                nextTask.ParentInfo!.PreviousSibling = childTask;
-                childTask.ParentInfo!.NextSibling = nextTask;
+                hasChildTasks = true;
+                var childTask = new SerializerTask(child, new SerializerTaskParentInfo(task));
+                _pendingTasks.AddFirst(childTask);
+
+                if (nextTask is not null)
+                {
+                    nextTask.ParentInfo!.PreviousSibling = childTask;
+                    childTask.ParentInfo!.NextSibling = nextTask;
+                }
+                nextTask = childTask;
             }
-            nextTask = childTask;
         }
+        task.HasChildTasks = hasChildTasks;
+
+        task.OnProcessed(stream);
     }
-
-
-    private static bool CanNotifyHolder(
-        [NotNullWhen(true)] IStructDocNodeHolder? holder,
-        [NotNullWhen(true)] IStructDocNodeHolderSerializer? holderSerializer,
-        [NotNullWhen(true)] IStructDocNode? node)
-        => holderSerializer is not null && holder is not null && node is not null;
-
-    private static bool CanNotifyNode(
-        [NotNullWhen(true)] IStructDocNode? node,
-        [NotNullWhen(true)] IStructDocNodeSerializer? nodeSerializer,
-        [NotNullWhen(true)] SerializerTaskParentInfo? parentInfo)
-        => nodeSerializer is not null && node is not null && parentInfo is not null;
 }

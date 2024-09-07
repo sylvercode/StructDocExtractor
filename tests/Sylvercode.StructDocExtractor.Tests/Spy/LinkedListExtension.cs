@@ -19,5 +19,5 @@ public static class ListExtension
         => entriesLog.Add(new SpyStructDocNodeSerializerEntry(serializer, method, parameters));
 
     public static Action<SpyStructDocNodeSerializerEntry>[] AsAsserter(this List<SpyStructDocNodeSerializerEntry> entriesLog)
-        => entriesLog.Select(e => new Action<SpyStructDocNodeSerializerEntry>(expected => e.Assert(expected))).ToArray();
+        => entriesLog.Select(expected => new Action<SpyStructDocNodeSerializerEntry>(e => e.Assert(expected))).ToArray();
 }

@@ -51,5 +51,5 @@ public class SpyStructDocNodeSerializerEntry(
     }
 
     private static Action<object?>[] AsAsserter(List<object?> parameters)
-        => parameters.Select(p => new Action<object?>(expected => Xunit.Assert.Same(expected, p))).ToArray();
+        => parameters.Select(expected => new Action<object?>(p => Xunit.Assert.Same(expected, p))).ToArray();
 }

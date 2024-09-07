@@ -1,7 +1,6 @@
 ﻿using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Model.Init;
 using Sylvercode.StructDocExtractor.Serialization;
-using Sylvercode.StructDocExtractor.Tests.Fakes;
 using Sylvercode.StructDocExtractor.Tests.Spy;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
 
@@ -63,7 +62,7 @@ public class StructDocSerializerExecutorTests
         List<SpyStructDocNodeSerializerEntry> ExpectedEntriesLog = [];
         ExpectedEntriesLog.AddEntry(context.RootSerializer, Serialize, root);
         ExpectedEntriesLog.AddEntry(context.RootSerializer, OnNoChildSerialize, root);
-        Assert.Collection(ExpectedEntriesLog, context.EntriesLog.AsAsserter());
+        Assert.Collection(context.EntriesLog, ExpectedEntriesLog.AsAsserter());
     }
 
     [Fact]
@@ -90,7 +89,7 @@ public class StructDocSerializerExecutorTests
         ExpectedEntriesLog.AddEntry(context.NodeSerializer, Serialize, node);
         ExpectedEntriesLog.AddEntry(context.NodeSerializer, OnAfterChildSerialize, node, null);
         ExpectedEntriesLog.AddEntry(context.RootSerializer, OnAfterLastChildSerialize, root, node);
-        Assert.Collection(ExpectedEntriesLog, context.EntriesLog.AsAsserter());
+        Assert.Collection(context.EntriesLog, ExpectedEntriesLog.AsAsserter());
     }
 
     [Fact]
@@ -181,6 +180,7 @@ public class StructDocSerializerExecutorTests
                 ExpectedEntriesLog.AddEntry(context.NodeSerializer, Serialize, nodeA2);
                 ExpectedEntriesLog.AddEntry(context.NodeSerializer, OnAfterChildSerialize, nodeA2, null);
             }
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnAfterLastChildSerialize, blockA, nodeA2);
             ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnAfterChildSerialize, blockA, blockB);
         }
 
@@ -201,10 +201,52 @@ public class StructDocSerializerExecutorTests
                 ExpectedEntriesLog.AddEntry(context.NodeSerializer, Serialize, nodeB2);
                 ExpectedEntriesLog.AddEntry(context.NodeSerializer, OnAfterChildSerialize, nodeB2, null);
             }
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnAfterLastChildSerialize, blockB, nodeB2);
             ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnAfterChildSerialize, blockB, null);
         }
         ExpectedEntriesLog.AddEntry(context.RootSerializer, OnAfterLastChildSerialize, root, blockB);
 
+        Assert.Collection(ExpectedEntriesLog, context.EntriesLog.AsAsserter());
+    }
+
+    [Fact]
+    public void TwoEmptyBlockHavingInRoot()
+    {
+        // Given
+        ExtractionContext context = new();
+        BasicSrcRootBlock root = new(nameof(root));
+        var rootInit = root.NewParentChildLinkInitializer();
+        BasicSrcBloc blockA = new(nameof(blockA));
+        rootInit.AddChild(blockA);
+        BasicSrcBloc blockB = new(nameof(blockB));
+        rootInit.AddChild(blockB);
+        rootInit.InitializeParentChildLink();
+
+        StructDocSerializerExecutor executor = context.NewExecutor(root);
+
+        // When
+        executor.ExecuteTasks();
+
+        // Then
+        List<SpyStructDocNodeSerializerEntry> ExpectedEntriesLog = [];
+        ExpectedEntriesLog.AddEntry(context.RootSerializer, Serialize, root);
+        ExpectedEntriesLog.AddEntry(context.RootSerializer, OnBeforeFirstChildSerialize, root, blockA);
+        {
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnBeforeChildSerialize, blockA, null);
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, Serialize, blockA);
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnNoChildSerialize, blockA);
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnAfterChildSerialize, blockA, blockB);
+        }
+
+        ExpectedEntriesLog.AddEntry(context.RootSerializer, OnBetweenSiblingSerialize, root, blockA, blockB);
+
+        {
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnBeforeChildSerialize, blockB, blockA);
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, Serialize, blockB);
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnNoChildSerialize, blockB);
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnAfterChildSerialize, blockB, null);
+        }
+        ExpectedEntriesLog.AddEntry(context.RootSerializer, OnAfterLastChildSerialize, root, blockB);
         Assert.Collection(ExpectedEntriesLog, context.EntriesLog.AsAsserter());
     }
 }
