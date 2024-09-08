@@ -1,3 +1,5 @@
+using Sylvercode.SiteFetcher.UriTransformer;
+
 namespace Sylvercode.SiteFetcher.Resource;
 
 public class Resource(Uri uri, ResourcePullType pullType, IUriTransformer? sourceUriTransformer)

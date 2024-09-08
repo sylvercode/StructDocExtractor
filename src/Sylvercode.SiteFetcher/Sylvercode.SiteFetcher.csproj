@@ -13,4 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Sylvercode.StructDocExtractor\Sylvercode.StructDocExtractor.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Fetch/" />
+  </ItemGroup>
 </Project>

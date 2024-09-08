@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using Sylvercode.SiteFetcher.UriTransformer;
 
 namespace Sylvercode.SiteFetcher.Resource;
 

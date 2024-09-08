@@ -1,4 +1,4 @@
-namespace Sylvercode.SiteFetcher.Resource;
+namespace Sylvercode.SiteFetcher.UriTransformer;
 
 public interface IUriTransformer
 {
