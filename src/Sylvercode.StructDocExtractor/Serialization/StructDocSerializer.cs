@@ -1,10 +1,12 @@
-﻿namespace Sylvercode.StructDocExtractor.Serialization;
+﻿using Microsoft.Extensions.Logging;
 
-public class StructDocSerializer(ISerializerProvider serializerProvider)
+namespace Sylvercode.StructDocExtractor.Serialization;
+
+public class StructDocSerializer(ISerializerProvider serializerProvider, ILoggerFactory loggerFactory)
 {
     public void Serialize(StreamWriter stream, object rootData)
     {
-        var executor = new StructDocSerializerExecutor(stream, rootData, serializerProvider);
+        var executor = new StructDocSerializerExecutor(stream, rootData, serializerProvider, loggerFactory);
         executor.ExecuteTasks();
     }
 }
