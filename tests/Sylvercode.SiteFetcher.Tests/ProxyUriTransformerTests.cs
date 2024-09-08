@@ -12,7 +12,7 @@ public class ProxyUriTransformerTests_Transform
         Uri proxyBase = new("https://proxy.com/");
         Uri uri = new("https://example.com/test");
 
-        ProxyUriTransformer transformer = new(sourceBase, proxyBase);
+        ProxyChangeBaseUriTransformer transformer = new(sourceBase, proxyBase);
 
         // When
         Uri result = transformer.Transform(uri);
@@ -29,7 +29,7 @@ public class ProxyUriTransformerTests_Transform
         Uri proxyBase = new("https://proxy.com/");
         Uri uri = new("https://example.org/test");
 
-        ProxyUriTransformer transformer = new(sourceBase, proxyBase, new() { OtherBaseAsError = true });
+        ProxyChangeBaseUriTransformer transformer = new(sourceBase, proxyBase, new() { OtherBaseAsError = true });
 
         // When
         void action() => transformer.Transform(uri);
@@ -46,7 +46,7 @@ public class ProxyUriTransformerTests_Transform
         Uri proxyBase = new("https://proxy.com/");
         Uri uri = new("https://example.org/test");
 
-        ProxyUriTransformer transformer = new(sourceBase, proxyBase);
+        ProxyChangeBaseUriTransformer transformer = new(sourceBase, proxyBase);
 
         // When
         Uri result = transformer.Transform(uri);

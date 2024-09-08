@@ -4,14 +4,14 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Sylvercode.SiteFetcher.UriTransformer;
 
-public partial class ProxyUriTransformer(Uri SourceBase, Uri ProxyBase, ProxyUriTransformer.Options options = new(), ILogger<ProxyUriTransformer>? logger = null) : IUriTransformer
+public partial class ProxyChangeBaseUriTransformer(Uri SourceBase, Uri ProxyBase, ProxyChangeBaseUriTransformer.Options options = new(), ILogger<ProxyChangeBaseUriTransformer>? logger = null) : IUriTransformer
 {
     public struct Options
     {
         public bool OtherBaseAsError { get; set; }
     }
 
-    private readonly ILogger<ProxyUriTransformer> _logger = logger ?? NullLogger<ProxyUriTransformer>.Instance;
+    private readonly ILogger<ProxyChangeBaseUriTransformer> _logger = logger ?? NullLogger<ProxyChangeBaseUriTransformer>.Instance;
 
     public Uri Transform(Uri uri)
     {
