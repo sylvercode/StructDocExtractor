@@ -8,7 +8,7 @@ namespace Sylvercode.StructDocExtractor.StdHtml.Resource;
 public partial class HtmlResourcesTracker(ResourceDictionary resourceDictionary, IHtmlResourcesTrackerConfig config, ILogger<HtmlResourcesTracker>? logger)
     : BaseResourcesTracker(resourceDictionary, config.PullConfig)
 {
-    private readonly ILogger<HtmlResourcesTracker>? _logger = logger ?? NullLogger<HtmlResourcesTracker>.Instance;
+    private readonly ILogger<HtmlResourcesTracker> _logger = logger ?? NullLogger<HtmlResourcesTracker>.Instance;
 
     protected override Uri? GetUri(object sender)
     {
