@@ -1,7 +1,7 @@
 namespace Sylvercode.SiteFetcher.Resource;
 
-public class ResourceState(ResourcePullType pullType, bool pulled = false)
+public struct ResourceState(ResourcePullType pullType, bool pulled = false)
 {
-    public ResourcePullType PullType => pullType;
-    public bool IsPullNeeded { get; } = pullType is not ResourcePullType.NoPull && !pulled;
+    public readonly ResourcePullType PullType => pullType;
+    public readonly bool IsPullNeeded => pullType is not ResourcePullType.NoPull && !pulled;
 }
