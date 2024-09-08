@@ -1,4 +1,4 @@
-namespace Sylvercode.SiteFetcher.Extractor;
+namespace Sylvercode.SiteFetcher.Resource;
 
 public enum ResourcePullType
 {

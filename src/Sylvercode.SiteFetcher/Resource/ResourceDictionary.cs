@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Sylvercode.SiteFetcher.Extractor;
+namespace Sylvercode.SiteFetcher.Resource;
 
 public class ResourceDictionary : IReadOnlyDictionary<Uri, Resource>
 {
