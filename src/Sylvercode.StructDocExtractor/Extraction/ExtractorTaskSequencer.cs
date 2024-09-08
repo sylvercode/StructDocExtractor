@@ -7,14 +7,15 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
         IExtractorTaskSequencerHandler<TExtractionData, TDataDiscriminator> handler)
         where TExtractionData : notnull
 {
-
     private readonly ILogger _logger = handler.CreateLogger<ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>>();
 
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
 
     public bool HasPendingTask => _pendingTacks.First is not null;
 
-    public ExtractionResult ProcessTasks() 
+    public event EventHandler? TaskResultSet;
+
+    public ExtractionResult ProcessTasks()
     {
         ExtractionResult.ExtractionSummery summery = new();
         List<IStructDocNode> result = [];
@@ -106,8 +107,11 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
 
     private void AddTask(ExtractionTask task, bool asNext = false)
     {
+        if (TaskResultSet is not null)
+            task.ResultSet += TaskResultSet;
+
         LogTaskAdded(handler.GetDataPreview((TExtractionData)task.ExtractionData),
-                     asNext ? "Next" : "Last");
+                         asNext ? "Next" : "Last");
         if (asNext)
             _pendingTacks.AddFirst(task);
         else
