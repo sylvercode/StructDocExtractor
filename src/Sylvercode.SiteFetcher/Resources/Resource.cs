@@ -1,8 +1,8 @@
 using Sylvercode.SiteFetcher.UriTransformer;
 
-namespace Sylvercode.SiteFetcher.Resource;
+namespace Sylvercode.SiteFetcher.Resources;
 
-public class Resource(Uri uri, ResourcePullType pullType, IUriTransformer? sourceUriTransformer)
+public class Resource(Uri uri, ResourcePullType pullType, IUriTransformer? sourceUriTransformer = null)
 {
     public Uri Uri { get; } = uri;
 

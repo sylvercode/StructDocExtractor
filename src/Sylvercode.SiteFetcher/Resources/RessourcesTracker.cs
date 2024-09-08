@@ -1,4 +1,4 @@
-﻿namespace Sylvercode.SiteFetcher.Resource;
+﻿namespace Sylvercode.SiteFetcher.Resources;
 
 public abstract class BaseResourcesTracker(ResourceDictionary resourceDictionary,
                                            IResourcePullConfig config) : IResourcesTracker

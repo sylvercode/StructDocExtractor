@@ -1,4 +1,4 @@
-using Sylvercode.SiteFetcher.Resource;
+using Sylvercode.SiteFetcher.Resources;
 
 namespace Sylvercode.StructDocExtractor.StdHtml.Resource;
 

@@ -1,4 +1,4 @@
-namespace Sylvercode.SiteFetcher.Resource;
+namespace Sylvercode.SiteFetcher.Resources;
 
 public struct ResourceState(ResourcePullType pullType, bool pulled = false)
 {
