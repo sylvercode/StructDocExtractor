@@ -1,8 +1,8 @@
-﻿using Sylvercode.SiteFetcher.Resources;
-using Sylvercode.SiteFetcher.Tests.Fakes;
-using Sylvercode.SiteFetcher.Tests.Stubs;
+﻿using Sylvercode.SiteSource.Resources;
+using Sylvercode.SiteSource.Tests.Fakes;
+using Sylvercode.SiteSource.Tests.Stubs;
 
-namespace Sylvercode.SiteFetcher.Tests;
+namespace Sylvercode.SiteSource.Tests;
 
 public class BaseResourcesTrackerTests_OnTaskResult
 {

@@ -1,6 +1,6 @@
-﻿using Sylvercode.SiteFetcher.Resources;
+﻿using Sylvercode.SiteSource.Resources;
 
-namespace Sylvercode.SiteFetcher.Tests.Stubs;
+namespace Sylvercode.SiteSource.Tests.Stubs;
 
 public class BasicResourcesTracker(ResourceDictionary resourceDictionary,
                                    IResourcePullConfig config) : BaseResourcesTracker(resourceDictionary, config)

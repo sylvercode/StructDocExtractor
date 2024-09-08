@@ -1,6 +1,6 @@
-﻿using Sylvercode.SiteFetcher.Resources;
+﻿using Sylvercode.SiteSource.Resources;
 
-namespace Sylvercode.SiteFetcher.Tests;
+namespace Sylvercode.SiteSource.Tests;
 
 public class ResourceTests_DestinationUri
 {

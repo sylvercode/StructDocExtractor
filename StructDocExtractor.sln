@@ -15,9 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.StructDocExtract
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.StructDocExtractor.DnDBeyond", "src\Sylvercode.StructDocExtractor.DnDBeyond\Sylvercode.StructDocExtractor.DnDBeyond.csproj", "{24277F95-BC6A-4AE8-9533-AB6E1BFD41C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.SiteFetcher", "src\Sylvercode.SiteFetcher\Sylvercode.SiteFetcher.csproj", "{FD77C87A-1163-4458-89B2-9F6B30A968FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.SiteSource", "src\Sylvercode.SiteSource\Sylvercode.SiteSource.csproj", "{FD77C87A-1163-4458-89B2-9F6B30A968FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.SiteFetcher.Tests", "tests\Sylvercode.SiteFetcher.Tests\Sylvercode.SiteFetcher.Tests.csproj", "{EE2860FB-9648-4477-92A6-55F46EB9B98F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.SiteSource.Tests", "tests\Sylvercode.SiteSource.Tests\Sylvercode.SiteSource.Tests.csproj", "{EE2860FB-9648-4477-92A6-55F46EB9B98F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using Sylvercode.SiteFetcher.Resources;
+using Sylvercode.SiteSource.Resources;
 using Sylvercode.StructDocExtractor.StdHtml.Model.Base;
 
 namespace Sylvercode.StructDocExtractor.StdHtml.Resource;

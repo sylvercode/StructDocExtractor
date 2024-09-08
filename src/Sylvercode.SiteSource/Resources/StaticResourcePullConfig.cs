@@ -1,4 +1,4 @@
-namespace Sylvercode.SiteFetcher.Resources;
+namespace Sylvercode.SiteSource.Resources;
 
 public class StaticResourcePullConfig(ResourcePullType pullType) : IResourcePullConfig
 {

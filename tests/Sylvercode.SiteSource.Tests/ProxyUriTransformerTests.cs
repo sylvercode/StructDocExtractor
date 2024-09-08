@@ -1,6 +1,6 @@
-using Sylvercode.SiteFetcher.UriTransformer;
+using Sylvercode.SiteSource.UriTransformer;
 
-namespace Sylvercode.SiteFetcher.Tests;
+namespace Sylvercode.SiteSource.Tests;
 
 public class ProxyUriTransformerTests_Transform
 {

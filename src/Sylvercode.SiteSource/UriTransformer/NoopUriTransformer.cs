@@ -1,4 +1,4 @@
-namespace Sylvercode.SiteFetcher.UriTransformer;
+namespace Sylvercode.SiteSource.UriTransformer;
 
 public class NoopUriTransformer : IUriTransformer
 {

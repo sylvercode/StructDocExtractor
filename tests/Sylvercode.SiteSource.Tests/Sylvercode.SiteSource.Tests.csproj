@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Sylvercode.SiteFetcher\Sylvercode.SiteFetcher.csproj" />
+    <ProjectReference Include="../../src/Sylvercode.SiteSource/Sylvercode.SiteSource.csproj" />
   </ItemGroup>
 
 </Project>

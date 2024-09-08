@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace Sylvercode.SiteFetcher.UriTransformer;
+namespace Sylvercode.SiteSource.UriTransformer;
 
 public partial class ProxyChangeBaseUriTransformer(Uri SourceBase, Uri ProxyBase, ProxyChangeBaseUriTransformer.Options options = new(), ILogger<ProxyChangeBaseUriTransformer>? logger = null) : IUriTransformer
 {

@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <ProjectReference Include="../Sylvercode.SiteSource/Sylvercode.SiteSource.csproj" />
     <ProjectReference Include="..\Sylvercode.StructDocExtractor\Sylvercode.StructDocExtractor.csproj" />
-    <ProjectReference Include="..\Sylvercode.SiteFetcher\Sylvercode.SiteFetcher.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
-using Sylvercode.SiteFetcher.UriTransformer;
+using Sylvercode.SiteSource.UriTransformer;
 
-namespace Sylvercode.SiteFetcher.Resources;
+namespace Sylvercode.SiteSource.Resources;
 
 public class ResourceDictionary(IUriTransformer? uriTransformer = null) : IReadOnlyDictionary<Uri, Resource>
 {

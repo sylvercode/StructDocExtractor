@@ -1,6 +1,6 @@
-﻿using Sylvercode.SiteFetcher.Resources;
+﻿using Sylvercode.SiteSource.Resources;
 
-namespace Sylvercode.SiteFetcher.Tests.Fakes;
+namespace Sylvercode.SiteSource.Tests.Fakes;
 
 public class FakeResourcePullConfig : IResourcePullConfig
 {
