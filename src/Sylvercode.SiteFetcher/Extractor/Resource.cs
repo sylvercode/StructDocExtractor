@@ -21,7 +21,7 @@ public class Resource(Uri uri, ResourcePullType pullType)
         }
         private set
         {
-
+            _outUri = value;
         }
     }
     public void MarkAsPulled(Uri newUri)
