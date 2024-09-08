@@ -3,12 +3,12 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Sylvercode.SiteFetcher.Resource;
 
-public class ResourceDictionary : IReadOnlyDictionary<Uri, Resource>
+public class ResourceDictionary(IUriTransformer? uriTransformer = null) : IReadOnlyDictionary<Uri, Resource>
 {
     private readonly Dictionary<Uri, Resource> _resources = [];
 
     public void Add(Uri uri, ResourcePullType pullType)
-        => _resources.TryAdd(uri, new Resource(uri, pullType));
+        => _resources.TryAdd(uri, new Resource(uri, pullType, uriTransformer));
 
     #region IReadOnlyDictionary<Uri, Resource> implementation
     public Resource this[Uri key] => ((IReadOnlyDictionary<Uri, Resource>)_resources)[key];
@@ -20,23 +20,15 @@ public class ResourceDictionary : IReadOnlyDictionary<Uri, Resource>
     public int Count => ((IReadOnlyCollection<KeyValuePair<Uri, Resource>>)_resources).Count;
 
     public bool ContainsKey(Uri key)
-    {
-        return ((IReadOnlyDictionary<Uri, Resource>)_resources).ContainsKey(key);
-    }
+        => ((IReadOnlyDictionary<Uri, Resource>)_resources).ContainsKey(key);
 
     public IEnumerator<KeyValuePair<Uri, Resource>> GetEnumerator()
-    {
-        return ((IEnumerable<KeyValuePair<Uri, Resource>>)_resources).GetEnumerator();
-    }
+        => ((IEnumerable<KeyValuePair<Uri, Resource>>)_resources).GetEnumerator();
 
     public bool TryGetValue(Uri key, [MaybeNullWhen(false)] out Resource value)
-    {
-        return ((IReadOnlyDictionary<Uri, Resource>)_resources).TryGetValue(key, out value);
-    }
+        => ((IReadOnlyDictionary<Uri, Resource>)_resources).TryGetValue(key, out value);
 
     IEnumerator IEnumerable.GetEnumerator()
-    {
-        return ((IEnumerable)_resources).GetEnumerator();
-    }
+        => ((IEnumerable)_resources).GetEnumerator();
     #endregion
 }
