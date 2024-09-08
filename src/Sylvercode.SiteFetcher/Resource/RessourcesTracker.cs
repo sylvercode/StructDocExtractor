@@ -1,21 +1,5 @@
 ﻿namespace Sylvercode.SiteFetcher.Resource;
 
-public interface IResourcesTracker
-{
-    void OnTaskResult(object sender, EventArgs e);
-}
-
-public interface IResourcePullConfig
-{
-    ResourcePullType GetPullType(Uri uri);
-}
-
-public class StaticResourcePullConfig(ResourcePullType pullType) : IResourcePullConfig
-{
-    public static StaticResourcePullConfig Default { get; } = new StaticResourcePullConfig(ResourcePullType.NoPull);
-    public ResourcePullType GetPullType(Uri uri) => pullType;
-}
-
 public abstract class BaseResourcesTracker(ResourceDictionary resourceDictionary,
                                            IResourcePullConfig config) : IResourcesTracker
 {
