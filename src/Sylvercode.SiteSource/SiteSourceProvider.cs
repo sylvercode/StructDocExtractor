@@ -1,6 +1,6 @@
 ﻿namespace Sylvercode.SiteSource;
 
-public class SiteSourceProvider
+public class SiteSourceProvider(ISiteSource? defaultSource)
 {
     private class Entry(ISiteSourceProviderSelector selector, ISiteSource source)
     {
@@ -13,7 +13,7 @@ public class SiteSourceProvider
     public void Add(ISiteSourceProviderSelector selector, ISiteSource source)
         => _sourceProviders.Add(new Entry(selector, source));
 
-    public ISiteSource GetSource(Uri uri, ISiteSource? defaultSource)
+    public ISiteSource GetSource(Uri uri)
         => _sourceProviders.FirstOrDefault(entry => entry.Selector.IsValid(uri))?.Source
            ?? defaultSource
            ?? throw new InvalidOperationException("No source found");
