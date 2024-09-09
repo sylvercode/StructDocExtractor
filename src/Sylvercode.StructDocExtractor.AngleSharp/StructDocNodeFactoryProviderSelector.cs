@@ -17,15 +17,15 @@ public class StructDocNodeFactoryProviderSelector
         public IStructDocNodeFactoryProvider<IElement, HtmlNodeDiscriminator> FactoryProvider { get; } = factoryProvider;
     }
 
-    private readonly List<Entry> m_FactoryProviders = [];
+    private readonly List<Entry> _FactoryProviders = [];
 
     public void Add(ISelector selector, IStructDocNodeFactoryProvider<IElement, HtmlNodeDiscriminator> factoryProvider)
-        => m_FactoryProviders.Add(new Entry(selector, factoryProvider));
+        => _FactoryProviders.Add(new Entry(selector, factoryProvider));
 
     public IStructDocNodeFactoryProvider<IElement, HtmlNodeDiscriminator> GetFactoryProvider(
         IElement element,
         IStructDocNodeFactoryProvider<IElement, HtmlNodeDiscriminator>? defaultFactoryProvider)
-        => m_FactoryProviders.FirstOrDefault(entry => entry.Selector.IsValid(element))?.FactoryProvider
+        => _FactoryProviders.FirstOrDefault(entry => entry.Selector.IsValid(element))?.FactoryProvider
            ?? defaultFactoryProvider
            ?? throw new InvalidOperationException("No factory provider found");
 }
