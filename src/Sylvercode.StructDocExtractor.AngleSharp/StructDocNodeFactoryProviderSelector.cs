@@ -8,7 +8,7 @@ public class StructDocNodeFactoryProviderSelector
 {
     public interface ISelector
     {
-        bool IsValid(IElement element);
+        bool IsValid(IElement element, out IElement rootExtraction);
     }
 
     private class Entry(ISelector selector, IStructDocNodeFactoryProvider<IElement, HtmlNodeDiscriminator> factoryProvider)
@@ -24,8 +24,14 @@ public class StructDocNodeFactoryProviderSelector
 
     public IStructDocNodeFactoryProvider<IElement, HtmlNodeDiscriminator> GetFactoryProvider(
         IElement element,
-        IStructDocNodeFactoryProvider<IElement, HtmlNodeDiscriminator>? defaultFactoryProvider)
-        => _FactoryProviders.FirstOrDefault(entry => entry.Selector.IsValid(element))?.FactoryProvider
-           ?? defaultFactoryProvider
-           ?? throw new InvalidOperationException("No factory provider found");
+        out IElement rootExtraction)
+    {
+        foreach (var entry in _FactoryProviders)
+        {
+            if (entry.Selector.IsValid(element, out rootExtraction))
+                return entry.FactoryProvider;
+        }
+
+        throw new InvalidOperationException("No factory provider found");
+    }
 }
