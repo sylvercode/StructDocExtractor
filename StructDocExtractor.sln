@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.SiteSource", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.SiteSource.Tests", "tests\Sylvercode.SiteSource.Tests\Sylvercode.SiteSource.Tests.csproj", "{EE2860FB-9648-4477-92A6-55F46EB9B98F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.SiteSource.AngleSharp", "src\Sylvercode.SiteSource.AngleSharp\Sylvercode.SiteSource.AngleSharp.csproj", "{A2B24C35-3064-4EB0-91B1-7646C21BEE12}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{EE2860FB-9648-4477-92A6-55F46EB9B98F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE2860FB-9648-4477-92A6-55F46EB9B98F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE2860FB-9648-4477-92A6-55F46EB9B98F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2B24C35-3064-4EB0-91B1-7646C21BEE12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2B24C35-3064-4EB0-91B1-7646C21BEE12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2B24C35-3064-4EB0-91B1-7646C21BEE12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2B24C35-3064-4EB0-91B1-7646C21BEE12}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,5 +66,6 @@ Global
 		{24277F95-BC6A-4AE8-9533-AB6E1BFD41C3} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
 		{FD77C87A-1163-4458-89B2-9F6B30A968FD} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
 		{EE2860FB-9648-4477-92A6-55F46EB9B98F} = {7DD327A8-8077-48C0-AB26-892B6BAC2D6B}
+		{A2B24C35-3064-4EB0-91B1-7646C21BEE12} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
 	EndGlobalSection
 EndGlobal
