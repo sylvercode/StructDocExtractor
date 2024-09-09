@@ -6,6 +6,8 @@ public class Resource(Uri uri, ResourcePullType pullType, IUriTransformer? sourc
 {
     public Uri Uri { get; } = uri;
 
+    ISet<Uri> SubUri { get; } = new(); // TODO
+
     public ResourceState State { get; private set; } = new(pullType);
 
     public IUriTransformer SourceUriTransformer { get; } = sourceUriTransformer ?? NoopUriTransformer.Default;
