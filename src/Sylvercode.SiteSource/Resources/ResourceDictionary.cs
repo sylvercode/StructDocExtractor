@@ -4,15 +4,49 @@ using Sylvercode.SiteSource.UriTransformer;
 
 namespace Sylvercode.SiteSource.Resources;
 
-public class ResourceDictionary(IUriTransformer? uriTransformer = null) : IReadOnlyDictionary<Uri, Resource>
+public class ResourceDictionary() : IReadOnlyDictionary<Uri, Resource>
 {
     private readonly Dictionary<Uri, Resource> _resources = [];
 
     public void Add(Uri uri, ResourcePullType pullType)
-        => _resources.TryAdd(uri, new Resource(uri, pullType, uriTransformer));
+    {
+        (Uri uriWithoutFragment, string fragment) = GetUriAndFragment(uri);
+        if (!_resources.TryGetValue(uriWithoutFragment, out Resource? resource))
+            _resources[uriWithoutFragment] = new Resource(pullType, uriWithoutFragment, fragment);
+        else
+        {
+            if (resource.State.PullType != pullType)
+                throw new InvalidOperationException("The resource already exists with a different pull type.");
+            resource.AddFragment(fragment);
+        }
+    }
+    public Uri GetDestinationFor(Uri uri)
+    {
+        (Uri uriWithoutFragment, _) = GetUriAndFragment(uri);
+        if (!_resources.TryGetValue(uriWithoutFragment, out Resource? resource))
+            throw new InvalidOperationException("The resource does not exist.");
+        return resource.GetDestinationFor(uri);
+    }
+
+    private static Tuple<Uri, string> GetUriAndFragment(Uri uri)
+    {
+        string fragment = uri.IsAbsoluteUri ? uri.Fragment : string.Empty;
+        Uri uriWithoutFragment = new(uri.GetComponents(UriComponents.AbsoluteUri & ~UriComponents.Fragment, UriFormat.Unescaped));
+        return new Tuple<Uri, string>(uriWithoutFragment, fragment);
+    }
 
     #region IReadOnlyDictionary<Uri, Resource> implementation
-    public Resource this[Uri key] => ((IReadOnlyDictionary<Uri, Resource>)_resources)[key];
+    public Resource this[Uri key]
+    {
+        get
+        {
+            (Uri uriWithoutFragment, string fragment) = GetUriAndFragment(key);
+            var result = _resources[uriWithoutFragment];
+            if (!result.Fragments.Contains(fragment))
+                throw new KeyNotFoundException("The fragment is not part of the resource.");
+            return result;
+        }
+    }
 
     public IEnumerable<Uri> Keys => ((IReadOnlyDictionary<Uri, Resource>)_resources).Keys;
 
@@ -21,7 +55,12 @@ public class ResourceDictionary(IUriTransformer? uriTransformer = null) : IReadO
     public int Count => ((IReadOnlyCollection<KeyValuePair<Uri, Resource>>)_resources).Count;
 
     public bool ContainsKey(Uri key)
-        => ((IReadOnlyDictionary<Uri, Resource>)_resources).ContainsKey(key);
+    {
+        (Uri uriWithoutFragment, string fragment) = GetUriAndFragment(key);
+        if (_resources.TryGetValue(uriWithoutFragment, out Resource? resource))
+            return resource.Fragments.Contains(fragment);
+        return false;
+    }
 
     public IEnumerator<KeyValuePair<Uri, Resource>> GetEnumerator()
         => ((IEnumerable<KeyValuePair<Uri, Resource>>)_resources).GetEnumerator();
