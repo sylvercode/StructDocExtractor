@@ -59,7 +59,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/DDBMarkdown.sln"
+                "${workspaceFolder}/StructDocExtractor.sln"
             ],
             "problemMatcher": "$msCompile"
         }
