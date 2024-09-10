@@ -15,6 +15,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.StructDocExtract
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.StructDocExtractor.DnDBeyond", "src\Sylvercode.StructDocExtractor.DnDBeyond\Sylvercode.StructDocExtractor.DnDBeyond.csproj", "{24277F95-BC6A-4AE8-9533-AB6E1BFD41C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.SiteSource", "src\Sylvercode.SiteSource\Sylvercode.SiteSource.csproj", "{FD77C87A-1163-4458-89B2-9F6B30A968FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.SiteSource.Tests", "tests\Sylvercode.SiteSource.Tests\Sylvercode.SiteSource.Tests.csproj", "{EE2860FB-9648-4477-92A6-55F46EB9B98F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.SiteSource.AngleSharp", "src\Sylvercode.SiteSource.AngleSharp\Sylvercode.SiteSource.AngleSharp.csproj", "{A2B24C35-3064-4EB0-91B1-7646C21BEE12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.StructDocExtractor.AngleSharp", "src\Sylvercode.StructDocExtractor.AngleSharp\Sylvercode.StructDocExtractor.AngleSharp.csproj", "{6DF63EF9-8F75-4C2C-A3A4-C3E498BA0A3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +45,22 @@ Global
 		{24277F95-BC6A-4AE8-9533-AB6E1BFD41C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24277F95-BC6A-4AE8-9533-AB6E1BFD41C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24277F95-BC6A-4AE8-9533-AB6E1BFD41C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD77C87A-1163-4458-89B2-9F6B30A968FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD77C87A-1163-4458-89B2-9F6B30A968FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD77C87A-1163-4458-89B2-9F6B30A968FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD77C87A-1163-4458-89B2-9F6B30A968FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE2860FB-9648-4477-92A6-55F46EB9B98F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE2860FB-9648-4477-92A6-55F46EB9B98F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE2860FB-9648-4477-92A6-55F46EB9B98F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE2860FB-9648-4477-92A6-55F46EB9B98F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2B24C35-3064-4EB0-91B1-7646C21BEE12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2B24C35-3064-4EB0-91B1-7646C21BEE12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2B24C35-3064-4EB0-91B1-7646C21BEE12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2B24C35-3064-4EB0-91B1-7646C21BEE12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DF63EF9-8F75-4C2C-A3A4-C3E498BA0A3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DF63EF9-8F75-4C2C-A3A4-C3E498BA0A3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DF63EF9-8F75-4C2C-A3A4-C3E498BA0A3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DF63EF9-8F75-4C2C-A3A4-C3E498BA0A3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,5 +70,9 @@ Global
 		{C50523EF-4AA8-44B0-8D0E-F0CC4CEB50A9} = {7DD327A8-8077-48C0-AB26-892B6BAC2D6B}
 		{581D3D18-5F0A-4549-B0D2-6E34D5288690} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
 		{24277F95-BC6A-4AE8-9533-AB6E1BFD41C3} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
+		{FD77C87A-1163-4458-89B2-9F6B30A968FD} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
+		{EE2860FB-9648-4477-92A6-55F46EB9B98F} = {7DD327A8-8077-48C0-AB26-892B6BAC2D6B}
+		{A2B24C35-3064-4EB0-91B1-7646C21BEE12} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
+		{6DF63EF9-8F75-4C2C-A3A4-C3E498BA0A3C} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
 	EndGlobalSection
 EndGlobal
