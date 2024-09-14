@@ -1,4 +1,4 @@
-﻿namespace Sylvercode.SiteSource.Web;
+﻿namespace Sylvercode.SiteSource.Downloader.Web;
 
 public class ImageSelector : ISiteSourceProviderSelector
 {
