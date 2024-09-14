@@ -1,6 +1,6 @@
 ﻿namespace Sylvercode.SiteSource;
 
-public class SiteSourceProvider(ISiteSource? defaultSource)
+public class SiteSourceProvider(ISiteSource? defaultSource) : ISiteSourceProvider
 {
     private class Entry(ISiteSourceProviderSelector selector, ISiteSource source)
     {
