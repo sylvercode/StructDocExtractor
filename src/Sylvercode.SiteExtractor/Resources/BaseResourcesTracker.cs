@@ -1,11 +1,32 @@
-﻿namespace Sylvercode.SiteExtractor.Resources;
+﻿using Sylvercode.StructDocExtractor.Extraction;
+using Sylvercode.StructDocExtractor.Model;
+
+namespace Sylvercode.SiteExtractor.Resources;
 
 public abstract class BaseResourcesTracker(ResourceDictionary resourceDictionary,
-                                           IResourcePullConfig config) : IResourcesTracker
+                                           IResourcePullConfig config) : IObserver<ExtractionTask>
 {
-    public void OnTaskResult(object sender, EventArgs e)
+    public void OnCompleted()
     {
-        Uri? uri = GetUri(sender);
+    }
+
+    public void OnError(Exception error)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnNext(ExtractionTask value)
+    {
+        ExtractionTaskResult? result = value.TaskResult;
+        if (result is null)
+            return;
+
+        IStructDocNode? node = result.SrcNode;
+
+        if (node is null)
+            return;
+
+        Uri? uri = GetUri(node);
         if (uri is null
             || resourceDictionary.ContainsKey(uri))
             return;
@@ -14,5 +35,5 @@ public abstract class BaseResourcesTracker(ResourceDictionary resourceDictionary
         resourceDictionary.Add(uri, pullType);
     }
 
-    protected abstract Uri? GetUri(object sender);
+    protected abstract Uri? GetUri(IStructDocNode node);
 }

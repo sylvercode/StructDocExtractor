@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Tests.Spy;
 

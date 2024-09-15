@@ -7,18 +7,30 @@ namespace Sylvercode.StructDocExtractor.Tests;
 
 public class ExtractorTests
 {
+
+    class ExtractionObserver : IObserver<ExtractionTask>
+    {
+        public List<string?> CallbackIds { get; } = [];
+        public int OnCompletedCount { get; private set; }
+
+        public void OnNext(ExtractionTask value) =>
+            CallbackIds.Add(value.TaskResult?.SrcNode?.Id);
+
+        public void OnError(Exception error) => throw new NotImplementedException();
+
+        public void OnCompleted() => OnCompletedCount++;
+    }
+
     [Fact]
     public void EventFired()
     {
         // Given
-        List<string?> CallbackIds = [];
-        void OnTaskResultSet(object? sender, EventArgs e) =>
-            CallbackIds.Add(((ExtractionTask?)sender)?.TaskResult?.SrcNode?.Id);
+        ExtractionObserver observer = new();
 
         Extractor<FakeStructDocData, BasicNodeDiscriminator> extractor = new(
             BasicStructDocNodeFactoryProvider.Default,
             dataDiscriminatorFactory: FakeStructDocDataDiscriminatorProvider.Default);
-        extractor.TaskResultSet += OnTaskResultSet;
+        extractor.Subscribe(observer);
 
         FakeStructDocData data = FakeStructDocData.New().WithId("1")
             .NewChildrenBuilder()
@@ -33,9 +45,11 @@ public class ExtractorTests
         extractor.Extract(data);
 
         // Then
-        Assert.Collection(CallbackIds,
+        Assert.Collection(observer.CallbackIds,
             id => Assert.Equal("1", id),
             id => Assert.Equal("2", id),
             id => Assert.Equal("3", id));
+
+        Assert.Equal(1, observer.OnCompletedCount);
     }
 }

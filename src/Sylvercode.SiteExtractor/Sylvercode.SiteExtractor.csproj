@@ -12,4 +12,7 @@
     <Folder Include="Source/" />
     <Folder Include="Store/" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sylvercode.StructDocExtractor\Sylvercode.StructDocExtractor.csproj" />
+  </ItemGroup>
 </Project>

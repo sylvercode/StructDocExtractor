@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Sylvercode.SiteExtractor.Resources;
+using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.StdHtml.Model.Base;
 
 namespace Sylvercode.StructDocExtractor.StdHtml.Resource;
@@ -10,9 +11,9 @@ public partial class HtmlResourcesTracker(ResourceDictionary resourceDictionary,
 {
     private readonly ILogger<HtmlResourcesTracker> _logger = logger ?? NullLogger<HtmlResourcesTracker>.Instance;
 
-    protected override Uri? GetUri(object sender)
+    protected override Uri? GetUri(IStructDocNode node)
     {
-        if (sender is not BaseHtmlHref href)
+        if (node is not BaseHtmlHref href)
             return null;
 
         if (!Uri.TryCreate(href.Href, UriKind.RelativeOrAbsolute, out Uri? hrefUri))
