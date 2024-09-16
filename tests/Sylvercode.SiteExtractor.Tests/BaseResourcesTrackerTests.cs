@@ -15,14 +15,13 @@ public class BaseResourcesTrackerTests_OnTaskResult
         result.SetResult(new BasicProcessTaskResult(uri), ChildrenTaskInfoFactory.Default);
         return result;
     }
+
     [Fact]
     public void NewUriResult_UriAdded()
     {
         // Arrange
-        ResourceDictionary resourceDictionary = [];
-        resourceDictionary.Add(new Uri("http://example.com"), ResourcePullType.NoPull);
-        FakeResourcePullConfig pullConfig = new();
-        BasicResourcesTracker resourcesTracker = new(resourceDictionary, pullConfig);
+        ResourcesTracker resourcesTracker = new(new FakeResourceProcessoProvider(ResourcePullType.NoPull), new BasicResourcesUriRetriver());
+        resourcesTracker.AddResource(new Uri("http://example.com"), new FakeResourceProcessor(ResourcePullType.NoPull));
         UriNode uri = new("http://other.example.com");
         ExtractionTask task = AsTask(uri);
 
@@ -30,17 +29,16 @@ public class BaseResourcesTrackerTests_OnTaskResult
         resourcesTracker.OnNext(task);
 
         // Assert
-        Resource entry = Assert.Contains(uri.Uri, resourceDictionary);
+        Resource entry = Assert.Contains(uri.Uri, resourcesTracker.Resources);
         Assert.Equal(ResourcePullType.NoPull, entry.State.PullType);
     }
+
     [Fact]
     public void ExistingUriResult_UriIgnored()
     {
         // Arrange
-        ResourceDictionary resourceDictionary = [];
-        resourceDictionary.Add(new Uri("http://example.com"), ResourcePullType.Extract);
-        FakeResourcePullConfig pullConfig = new();
-        BasicResourcesTracker resourcesTracker = new(resourceDictionary, pullConfig);
+        ResourcesTracker resourcesTracker = new(new FakeResourceProcessoProvider(ResourcePullType.Extract), new BasicResourcesUriRetriver());
+        resourcesTracker.AddResource(new Uri("http://example.com"), new FakeResourceProcessor(ResourcePullType.Extract));
         UriNode uri = new("http://example.com");
         ExtractionTask task = AsTask(uri);
 
@@ -48,7 +46,7 @@ public class BaseResourcesTrackerTests_OnTaskResult
         resourcesTracker.OnNext(task);
 
         // Assert
-        Resource entry = Assert.Contains(uri.Uri, resourceDictionary);
+        Resource entry = Assert.Contains(uri.Uri, resourcesTracker.Resources);
         Assert.Equal(ResourcePullType.Extract, entry.State.PullType);
     }
 }

@@ -6,12 +6,12 @@ using Sylvercode.StructDocExtractor.StdHtml.Model.Base;
 
 namespace Sylvercode.StructDocExtractor.StdHtml.Resource;
 
-public partial class HtmlResourcesTracker(ResourceDictionary resourceDictionary, IHtmlResourcesTrackerConfig config, ILogger<HtmlResourcesTracker>? logger)
-    : BaseResourcesTracker(resourceDictionary, config.PullConfig)
+public partial class HtmlResourcesUriRetriver(Uri? baseUri = null, ILogger<HtmlResourcesUriRetriver>? logger = null)
+    : IResourceUriRetriver
 {
-    private readonly ILogger<HtmlResourcesTracker> _logger = logger ?? NullLogger<HtmlResourcesTracker>.Instance;
+    private readonly ILogger<HtmlResourcesUriRetriver> _logger = logger ?? NullLogger<HtmlResourcesUriRetriver>.Instance;
 
-    protected override Uri? GetUri(IStructDocNode node)
+    public Uri? GetResourceUri(IStructDocNode node)
     {
         if (node is not BaseHtmlHref href)
             return null;
@@ -23,7 +23,7 @@ public partial class HtmlResourcesTracker(ResourceDictionary resourceDictionary,
         }
 
         if (hrefUri.IsAbsoluteUri
-            || config.BaseUri is null)
+            || baseUri is null)
         {
             if (hrefUri.IsAbsoluteUri)
                 LogAbsoluteHrefUri(href.Href);
@@ -32,13 +32,13 @@ public partial class HtmlResourcesTracker(ResourceDictionary resourceDictionary,
             return hrefUri;
         }
 
-        if (Uri.TryCreate(config.BaseUri, hrefUri, out Uri? fullUri))
+        if (Uri.TryCreate(baseUri, hrefUri, out Uri? fullUri))
         {
             LogFullUri(href.Href, fullUri.ToString());
             return fullUri;
         }
 
-        LogIncompatibleBaseUri(href.Href, config.BaseUri);
+        LogIncompatibleBaseUri(href.Href, baseUri);
         return hrefUri;
     }
 

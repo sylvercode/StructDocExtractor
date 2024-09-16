@@ -7,17 +7,23 @@ public class ResourceDictionary() : IReadOnlyDictionary<Uri, Resource>
 {
     private readonly Dictionary<Uri, Resource> _resources = [];
 
-    public void Add(Uri uri, ResourcePullType pullType)
+    public (Resource resource, bool isNew) Add(Uri uri, ResourcePullType pullType)
     {
         (Uri uriWithoutFragment, string fragment) = GetUriAndFragment(uri);
-        if (!_resources.TryGetValue(uriWithoutFragment, out Resource? resource))
-            _resources[uriWithoutFragment] = new Resource(pullType, uriWithoutFragment, fragment);
+        var result = (resource: default(Resource), isNew: false);
+        if (!_resources.TryGetValue(uriWithoutFragment, out result.resource))
+        {
+            _resources[uriWithoutFragment] = result.resource = new Resource(pullType, uriWithoutFragment, fragment);
+            result.isNew = true;
+        }
         else
         {
-            if (resource.State.PullType != pullType)
+            if (result.resource.State.PullType != pullType)
                 throw new InvalidOperationException("The resource already exists with a different pull type.");
-            resource.AddFragment(fragment);
+            result.resource.AddFragment(fragment);
         }
+
+        return result!;
     }
     public Uri GetDestinationFor(Uri uri)
     {

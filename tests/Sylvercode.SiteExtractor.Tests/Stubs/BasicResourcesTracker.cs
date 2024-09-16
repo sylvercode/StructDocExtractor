@@ -3,10 +3,9 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.SiteExtractor.Tests.Stubs;
 
-public class BasicResourcesTracker(ResourceDictionary resourceDictionary,
-                                   IResourcePullConfig config) : BaseResourcesTracker(resourceDictionary, config)
+public class BasicResourcesUriRetriver() : IResourceUriRetriver
 {
-    protected override Uri? GetUri(IStructDocNode node)
+    public Uri? GetResourceUri(IStructDocNode node)
     {
         if (node is UriNode uri)
             return uri.Uri;

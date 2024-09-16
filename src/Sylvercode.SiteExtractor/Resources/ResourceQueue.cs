@@ -1,12 +1,13 @@
 namespace Sylvercode.SiteExtractor.Resources;
 
-public class ResourceQueue : IResourceQueue
+public class ResourceQueue
 {
-    private readonly Queue<Resource> _queue = new();
+    private readonly Queue<KeyValuePair<Resource, IResourceProcessor>> _queue = new();
 
     public bool HasQueuedResources => _queue.Count > 0;
 
-    public Resource Dequeue() => _queue.Dequeue();
+    public KeyValuePair<Resource, IResourceProcessor> Dequeue() => _queue.Dequeue();
 
-    public void Enqueue(Resource resource) => _queue.Enqueue(resource);
+    public void Enqueue(Resource resource, IResourceProcessor processor)
+        => _queue.Enqueue(new(resource, processor));
 }

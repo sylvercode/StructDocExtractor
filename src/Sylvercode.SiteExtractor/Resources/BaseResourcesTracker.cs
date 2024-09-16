@@ -3,9 +3,24 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.SiteExtractor.Resources;
 
-public abstract class BaseResourcesTracker(ResourceDictionary resourceDictionary,
-                                           IResourcePullConfig config) : IObserver<ExtractionTask>
+public class ResourcesTracker(IResourceProcessorProvider processorProvider,
+                              IResourceUriRetriver resourceUriRetriver) : IObserver<ExtractionTask>
 {
+    private readonly ResourceDictionary _resourceDictionary = [];
+    public IReadOnlyDictionary<Uri, Resource> Resources => _resourceDictionary;
+
+    private ResourceQueue ResourceQueue { get; } = new();
+
+    public bool AddResource(Uri uri, IResourceProcessor resourceProcessor)
+    {
+        var (resource, isNew) = _resourceDictionary.Add(uri, resourceProcessor.GetPullType());
+        if (isNew)
+            ResourceQueue.Enqueue(resource, resourceProcessor);
+
+        return isNew;
+    }
+
+    #region IObserver<ExtractionTask>
     public void OnCompleted()
     {
     }
@@ -26,14 +41,15 @@ public abstract class BaseResourcesTracker(ResourceDictionary resourceDictionary
         if (node is null)
             return;
 
-        Uri? uri = GetUri(node);
-        if (uri is null
-            || resourceDictionary.ContainsKey(uri))
+        Uri? uri = resourceUriRetriver.GetResourceUri(node);
+        if (uri is null)
             return;
 
-        ResourcePullType pullType = config.GetPullType(uri);
-        resourceDictionary.Add(uri, pullType);
+        IResourceProcessor resourceProcessor = processorProvider.GetProcessor(uri);
+        ResourcePullType pullType = resourceProcessor.GetPullType();
+        var (resource, isNew) = _resourceDictionary.Add(uri, pullType);
+        if (isNew)
+            ResourceQueue.Enqueue(resource, resourceProcessor);
     }
-
-    protected abstract Uri? GetUri(IStructDocNode node);
+    #endregion
 }
