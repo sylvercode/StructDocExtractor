@@ -18,7 +18,7 @@ public partial class StructDocSerializerExecutor
 
     public StructDocSerializerExecutor(
         StreamWriter stream,
-        object rootData,
+        IStructDocNode rootData,
         ISerializerProvider serializerProvider,
         ILoggerFactory? loggerFactory = null)
     {

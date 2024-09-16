@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Logging;
 using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.Extraction.PreviewProvider;
 
@@ -12,10 +13,9 @@ public class Extractor<TExtractionData, TDataDiscriminator>(
     IDataPreviewProvider<TExtractionData>? dataPreviewProvider = null,
     ILoggerFactory? loggerFactory = null
     )
-    : IObservable<ExtractionTask>
-    where TExtractionData : notnull
+    : IExtractor<TExtractionData>
 {
-    public ExtractionResult Extract(TExtractionData data)
+    public ExtractionResult Extract([DisallowNull] TExtractionData data)
     {
         ExtractorTaskSequencerHandler<TExtractionData, TDataDiscriminator> handler = new(
             defaultNodeFactoryProvider,

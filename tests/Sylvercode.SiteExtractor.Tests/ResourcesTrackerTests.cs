@@ -7,7 +7,7 @@ using Sylvercode.StructDocExtractor.Tests.Stubs;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
-public class BaseResourcesTrackerTests_OnTaskResult
+public class ResourcesTrackerTests_OnTaskResult
 {
     private static ExtractionTask AsTask(UriNode uri)
     {

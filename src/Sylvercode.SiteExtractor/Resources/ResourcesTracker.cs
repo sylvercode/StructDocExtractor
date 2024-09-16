@@ -1,4 +1,5 @@
-﻿using Sylvercode.StructDocExtractor.Extraction;
+﻿using Sylvercode.SiteExtractor.Resources.Processors;
+using Sylvercode.StructDocExtractor.Extraction;
 using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.SiteExtractor.Resources;

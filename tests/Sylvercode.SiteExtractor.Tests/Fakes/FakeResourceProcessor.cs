@@ -1,4 +1,5 @@
 using Sylvercode.SiteExtractor.Resources;
+using Sylvercode.SiteExtractor.Resources.Processors;
 
 namespace Sylvercode.SiteExtractor.Tests.Fakes;
 
@@ -10,11 +11,4 @@ public class FakeResourceProcessor(ResourcePullType pullType) : IResourceProcess
     public void Process(Resource resource)
     {
     }
-}
-
-public class FakeResourceProcessoProvider(ResourcePullType pullType) : IResourceProcessorProvider
-
-{
-
-    public IResourceProcessor GetProcessor(Uri uri) => new FakeResourceProcessor(pullType);
 }

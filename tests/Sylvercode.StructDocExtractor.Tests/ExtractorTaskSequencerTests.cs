@@ -39,7 +39,7 @@ public class ExtractorTaskSequencerTests_ExtractAll
 
         public IChildrenTaskInfoFactory ChildrenTaskInfoFactory { get; } = Extraction.Factory.ChildrenTaskInfoFactory.Default;
 
-        public string GetDataPreview(string data)
+        public string GetDataPreview(string? data)
             => DataPreviewProvider.GetPreview(data);
 
         public ILogger<TCategoryName> CreateLogger<TCategoryName>() => NullLogger<TCategoryName>.Instance;

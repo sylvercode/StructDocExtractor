@@ -1,3 +1,5 @@
+using Sylvercode.SiteExtractor.Resources.Processors;
+
 namespace Sylvercode.SiteExtractor.Resources;
 
 public class ResourceQueue

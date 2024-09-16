@@ -5,9 +5,9 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Serialization;
 
-public partial class SerializerTask(object data, SerializerTaskParentInfo? parentInfo = null, ILogger<SerializerTask>? logger = null)
+public partial class SerializerTask(IStructDocNode data, SerializerTaskParentInfo? parentInfo = null, ILogger<SerializerTask>? logger = null)
 {
-    public object Data { get; } = data;
+    public IStructDocNode Data { get; } = data;
     public SerializerTaskParentInfo? ParentInfo { get; } = parentInfo;
     public bool? HasChildTasks { get; set; }
     public ISerializer? Serializer { get; set; }

@@ -4,7 +4,7 @@ using Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 
 public interface IExtractionTask
 {
-    object ExtractionData { get; }
+    object? ExtractionData { get; }
     ParentTaskInfo? ParentTaskInfo { get; }
     IChildrenTaskInfo? ChildrenTaskInfo { get; }
     ExtractionTaskResult? TaskResult { get; }
