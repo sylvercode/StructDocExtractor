@@ -1,4 +1,3 @@
-using System;
 using AngleSharp.Dom;
 using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.StdHtml.Model;

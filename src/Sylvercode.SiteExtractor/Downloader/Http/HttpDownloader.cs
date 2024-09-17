@@ -2,6 +2,8 @@
 
 namespace Sylvercode.SiteExtractor.Downloader.Http;
 
+
+
 public class HttpDownloader(HttpClient httpClient) : ISiteSource<byte[]>
 {
     public bool CanGetFrom(Uri uri)
