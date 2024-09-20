@@ -5,8 +5,9 @@ namespace Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
 
 public class HtmlDataPreviewProvider : IDataPreviewProvider<IElement>
 {
-    public string GetPreview(IElement data)
+    public string GetPreview(IElement? data)
     {
+        // TODO: Implement this method
         throw new NotImplementedException();
     }
 }

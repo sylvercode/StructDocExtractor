@@ -37,7 +37,7 @@ public class StructDocSerializerExecutorTests
             };
         }
 
-        public StructDocSerializerExecutor NewExecutor(object rootData)
+        public StructDocSerializerExecutor NewExecutor(IStructDocNode rootData)
             => new(_streamWriter, rootData, SerializerProvider);
 
         public void Dispose()

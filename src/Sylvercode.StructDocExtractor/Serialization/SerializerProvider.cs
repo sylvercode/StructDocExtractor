@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Serialization;
@@ -9,7 +8,7 @@ public class SerializerProvider : ISerializerProvider, IEnumerable<KeyValuePair<
 {
     private readonly Dictionary<Type, ISerializer> _serializers = [];
 
-    public ISerializer GetSerializerFor(object obj)
+    public ISerializer GetSerializerFor(IStructDocNode obj)
     {
         ArgumentNullException.ThrowIfNull(obj);
 

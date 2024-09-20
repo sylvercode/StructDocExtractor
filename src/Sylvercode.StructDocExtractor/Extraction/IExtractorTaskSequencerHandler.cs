@@ -6,7 +6,7 @@ namespace Sylvercode.StructDocExtractor.Extraction;
 public interface IExtractorTaskSequencerHandler<TExtractionData, TDataDiscriminator>
 {
     ExtractorOption ExtractorOption { get; }
-    string GetDataPreview(TExtractionData data);
+    string GetDataPreview(TExtractionData? data);
     IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> DefaultNodeFactoryProvider { get; }
     IChildrenTaskInfoFactory ChildrenTaskInfoFactory { get; }
     ILogger<TCategoryName> CreateLogger<TCategoryName>();

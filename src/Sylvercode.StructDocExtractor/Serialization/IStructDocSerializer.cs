@@ -2,7 +2,7 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Serialization;
 
-public interface ISerializerProvider
+public interface IStructDocSerializer
 {
-    ISerializer GetSerializerFor(IStructDocNode obj);
+    void Serialize(StreamWriter stream, IStructDocNode rootData);
 }

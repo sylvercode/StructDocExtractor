@@ -2,3 +2,6 @@
 dotnet_diagnostic.IDE0130.severity = warning
 dotnet_diagnostic.IDE1006.severity = warning
 dotnet_diagnostic.IDE0044.severity = warning
+
+# IDE0160: Convert to block scoped namespace
+csharp_style_namespace_declarations = file_scoped

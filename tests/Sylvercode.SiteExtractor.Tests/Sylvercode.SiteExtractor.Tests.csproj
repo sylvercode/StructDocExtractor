@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Sylvercode.SiteExtractor/Sylvercode.SiteExtractor.csproj" />
+    <ProjectReference Include="..\Sylvercode.StructDocExtractor.Tests\Sylvercode.StructDocExtractor.Tests.csproj" />
   </ItemGroup>
 
 </Project>

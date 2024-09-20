@@ -1,8 +1,11 @@
 namespace Sylvercode.StructDocExtractor.Extraction.PreviewProvider;
 
-public class StringPreviewProvider(int characterCountForPreview = 20) : IDataPreviewProvider<string>
+public class StringPreviewProvider(int characterCountForPreview = 20) : IDataPreviewProvider<string?>
 {
-
-    public string GetPreview(string data)
-        => data.Length <= characterCountForPreview ? data : data[..characterCountForPreview];
+    public string GetPreview(string? data)
+        => data is null
+            ? string.Empty
+            : data.Length <= characterCountForPreview
+                ? data
+                : data[..characterCountForPreview];
 }

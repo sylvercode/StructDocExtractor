@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 using Sylvercode.StructDocExtractor.Model;
 
@@ -5,7 +6,6 @@ namespace Sylvercode.StructDocExtractor.Extraction;
 
 public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>(
         IExtractorTaskSequencerHandler<TExtractionData, TDataDiscriminator> handler)
-        where TExtractionData : notnull
 {
     private readonly ILogger _logger = handler.CreateLogger<ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>>();
 
@@ -99,10 +99,13 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
     {
         var iterable = asNext ? extractionDatas.Reverse() : extractionDatas;
         foreach (var data in iterable)
-            AddTask(data, asNext);
+        {
+            if (data is not null)
+                AddTask(data, asNext);
+        }
     }
 
-    public void AddTask(TExtractionData data, bool asNext = false)
+    public void AddTask([DisallowNull] TExtractionData data, bool asNext = false)
         => AddTask(new ExtractionTask(data, logger: handler.CreateLogger<ExtractionTask>()), asNext);
 
     private void AddTask(ExtractionTask task, bool asNext = false)

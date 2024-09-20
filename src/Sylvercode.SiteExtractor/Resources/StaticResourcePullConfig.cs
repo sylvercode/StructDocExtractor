@@ -1,7 +1,0 @@
-namespace Sylvercode.SiteExtractor.Resources;
-
-public class StaticResourcePullConfig(ResourcePullType pullType) : IResourcePullConfig
-{
-    public static StaticResourcePullConfig Default { get; } = new StaticResourcePullConfig(ResourcePullType.NoPull);
-    public ResourcePullType GetPullType(Uri uri) => pullType;
-}

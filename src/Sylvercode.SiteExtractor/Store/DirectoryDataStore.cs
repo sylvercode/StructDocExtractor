@@ -1,8 +1,11 @@
+using Microsoft.Extensions.Options;
+
+
 namespace Sylvercode.SiteExtractor.Store;
 
-public class DirectoryDataStore(Uri baseUri, bool autoCreateBaseDir = false) : BaseDataStop(baseUri)
+public class DirectoryDataStore(IOptions<DirectoryDataStoreOptions> options, IOptions<SiteExtractorOptions> siteProcessorOptions) : BaseDataStore(siteProcessorOptions)
 {
-
+    private bool MustAutoCreateBaseDir => options.Value.AutoCreateBaseDir;
     public override Stream GetStream(Uri uri)
     {
         Uri completeUri = GetCompleteUri(uri);
@@ -15,7 +18,7 @@ public class DirectoryDataStore(Uri baseUri, bool autoCreateBaseDir = false) : B
         string path = uri.LocalPath;
         if (!Directory.Exists(path))
         {
-            if (!autoCreateBaseDir)
+            if (!MustAutoCreateBaseDir)
                 throw new DirectoryNotFoundException(path);
             Directory.CreateDirectory(path);
         }

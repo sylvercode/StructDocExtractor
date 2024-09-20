@@ -6,7 +6,6 @@ namespace Sylvercode.StructDocExtractor.Extraction;
 
 public partial class ExtractorTaskSequencerHandler<TExtractionData, TDataDiscriminator>
     : BaseExtractorTaskSequencerHandler<TExtractionData, TDataDiscriminator>
-    where TExtractionData : notnull
 {
     private readonly ExtractorTaskSequencer<TExtractionData, TDataDiscriminator> _sequencer;
 

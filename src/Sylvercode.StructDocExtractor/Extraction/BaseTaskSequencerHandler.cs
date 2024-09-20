@@ -19,7 +19,7 @@ public abstract class BaseExtractorTaskSequencerHandler<TExtractionData, TDataDi
     public IDataPreviewProvider<TExtractionData> DataPreviewProvider { get; } = dataPreviewProvider ?? new ToStringPreviewProvider<TExtractionData>();
     public ILoggerFactory LoggerFactory { get; } = loggerFactory ?? NullLoggerFactory.Instance;
 
-    public string GetDataPreview(TExtractionData data) => DataPreviewProvider.GetPreview(data);
+    public string GetDataPreview(TExtractionData? data) => DataPreviewProvider.GetPreview(data);
     public ILogger<TCategoryName> CreateLogger<TCategoryName>() => LoggerFactory.CreateLogger<TCategoryName>();
 
     public abstract IProcessTaskResult<TExtractionData, TDataDiscriminator> OnProcessTask(TaskContext<TExtractionData, TDataDiscriminator> taskContext);
