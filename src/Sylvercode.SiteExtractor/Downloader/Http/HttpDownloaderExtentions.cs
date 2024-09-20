@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+using Sylvercode.SiteExtractor;
 using Sylvercode.SiteExtractor.Downloader.Http;
 using Sylvercode.SiteExtractor.Sources;
 
@@ -9,7 +11,10 @@ public static class HttpDownloaderExtentions
 {
     public static IServiceCollection AddHttpDownloader(this IServiceCollection services)
     {
-        services.AddSingleton<ISiteSource<byte[]>, HttpDownloader>();
+        services.AddHttpClient<ISiteSource<byte[]>, HttpDownloader>((sp, client) => {
+            var options = sp.GetRequiredService<IOptions<SiteExtractorOptions>>().Value;
+            client.BaseAddress = options.GetSourceBaseUri();
+        });
 
         return services;
     }

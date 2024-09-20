@@ -2,7 +2,7 @@ using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
-public class ResourceProcessorProvider : IResourceProcessorProvider
+public class ResourceProcessorProvider() : IResourceProcessorProvider
 {
     private class Entry(IUriMatcher matcher, IResourceProcessor processor)
     {

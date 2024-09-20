@@ -2,9 +2,9 @@ using Microsoft.Extensions.Options;
 
 namespace Sylvercode.SiteExtractor.Store;
 
-public abstract class BaseDataStore(IOptions<BaseDataStoreOptions> options) : IDataStore
+public abstract class BaseDataStore(IOptions<SiteExtractorOptions> options) : IDataStore
 {
-    public Uri BaseUri => new(options.Value.BaseUri);
+    public Uri BaseUri => new(options.Value.OutputDirectory);
     public abstract Stream GetStream(Uri uri);
     public virtual StreamWriter GetStreamWriter(Uri uri) => new(GetStream(uri));
 

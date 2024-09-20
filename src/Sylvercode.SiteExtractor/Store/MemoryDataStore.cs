@@ -2,7 +2,7 @@ using Microsoft.Extensions.Options;
 
 namespace Sylvercode.SiteExtractor.Store;
 
-public class MemoryDataStore(IOptions<BaseDataStoreOptions> options) : BaseDataStore(options)
+public class MemoryDataStore(IOptions<SiteExtractorOptions> options) : BaseDataStore(options)
 {
     private readonly Dictionary<Uri, MemoryStream> _data = [];
 
