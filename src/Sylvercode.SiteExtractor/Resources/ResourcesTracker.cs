@@ -10,10 +10,11 @@ public class ResourcesTracker(IResourceProcessorProvider processorProvider,
     private readonly ResourceDictionary _resourceDictionary = [];
     public IReadOnlyDictionary<Uri, Resource> Resources => _resourceDictionary;
 
-    private ResourceQueue ResourceQueue { get; } = new();
+    public ResourceQueue ResourceQueue { get; } = new();
 
-    public bool AddResource(Uri uri, IResourceProcessor resourceProcessor)
+    public bool AddResource(Uri uri)
     {
+        IResourceProcessor resourceProcessor = processorProvider.GetProcessor(uri);
         var (resource, isNew) = _resourceDictionary.Add(uri, resourceProcessor.GetPullType());
         if (isNew)
             ResourceQueue.Enqueue(resource, resourceProcessor);
@@ -46,11 +47,7 @@ public class ResourcesTracker(IResourceProcessorProvider processorProvider,
         if (uri is null)
             return;
 
-        IResourceProcessor resourceProcessor = processorProvider.GetProcessor(uri);
-        ResourcePullType pullType = resourceProcessor.GetPullType();
-        var (resource, isNew) = _resourceDictionary.Add(uri, pullType);
-        if (isNew)
-            ResourceQueue.Enqueue(resource, resourceProcessor);
+        AddResource(uri);
     }
     #endregion
 }

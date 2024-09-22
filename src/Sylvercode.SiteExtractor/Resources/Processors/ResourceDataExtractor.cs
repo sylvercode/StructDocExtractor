@@ -11,20 +11,26 @@ public class ResourceDataExtractor<TExtractionData>(
     IStructDocSerializer serisalizer,
     IDataStore dataStore) : IResourceDataExtractor<TExtractionData>
 {
-    public void Extract(Resource resource)
+    public IResourceProcessorResult Extract(Resource resource)
     {
         TExtractionData extractionData = siteSource.GetData(resource.SourceUri);
         if (extractionData is null)
-            return;
+            return new NoPostProcessResult(this, resource);
 
         ExtractionResult result = extractor.Extract(extractionData);
-        using var stream = dataStore.GetStreamWriter(resource.DestinationUri);
+        return new DataExtractedProcessorResult<TExtractionData>(this, resource, result);
+    }
+
+    public void OnPostExtraction(Resource resource, ExtractionResult result)
+    {
+        // TODO: Complete destination uri
+        using var stream = dataStore.GetStreamWriter(null!);
         serisalizer.Serialize(stream, result.StructDocNodes[0]); // TODO: Handle multiple nodes
     }
 
     #region IResourceProcessor
     public ResourcePullType GetPullType() => ResourcePullType.Extract;
 
-    public void Process(Resource resource) => Extract(resource);
+    public IResourceProcessorResult Process(Resource resource) => Extract(resource);
     #endregion
 }

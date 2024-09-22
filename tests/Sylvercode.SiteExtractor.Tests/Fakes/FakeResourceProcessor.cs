@@ -8,7 +8,6 @@ public class FakeResourceProcessor(ResourcePullType pullType) : IResourceProcess
 {
     public ResourcePullType GetPullType() => pullType;
 
-    public void Process(Resource resource)
-    {
-    }
+    public IResourceProcessorResult Process(Resource resource)
+        => new NoPostProcessResult(this, resource);
 }
