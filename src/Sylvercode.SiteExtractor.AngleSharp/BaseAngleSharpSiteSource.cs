@@ -1,17 +1,23 @@
 ﻿
 using AngleSharp;
 using AngleSharp.Dom;
+using Microsoft.Extensions.Options;
 using Sylvercode.SiteExtractor.Sources;
 
 namespace Sylvercode.SiteExtractor.AngleSharp;
 
+
 public abstract class BaseAngleSharpSiteSource : ISiteSource<IElement>
 {
     protected IConfiguration Config { get; }
+
     protected IBrowsingContext BrowsingContext { get; }
 
-    public BaseAngleSharpSiteSource(IConfiguration? config, IBrowsingContext? browsingContext)
+    public Uri BaseUri { get; protected set; }
+
+    public BaseAngleSharpSiteSource(IOptions<SiteExtractorOptions> options, IConfiguration? config, IBrowsingContext? browsingContext)
     {
+        BaseUri = new Uri(options.Value.OutputDirectory);
         Config = config ?? Configuration.Default;
         BrowsingContext = browsingContext ?? global::AngleSharp.BrowsingContext.New(Config);
     }

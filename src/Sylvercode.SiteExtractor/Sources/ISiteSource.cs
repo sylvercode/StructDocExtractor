@@ -2,6 +2,7 @@
 
 public interface ISiteSource
 {
+    Uri BaseUri { get; }
     bool CanGetFrom(Uri uri);
     bool DataExists(Uri uri);
     object? GetData(Uri uri);

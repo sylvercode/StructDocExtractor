@@ -9,18 +9,17 @@ public class ResourceDictionary() : IReadOnlyDictionary<Uri, Resource>
 
     public (Resource resource, bool isNew) Add(Uri uri, ResourcePullType pullType)
     {
-        (Uri uriWithoutFragment, string fragment) = GetUriAndFragment(uri);
+        (Uri uriWithoutFragment, _) = GetUriAndFragment(uri);
         var result = (resource: default(Resource), isNew: false);
         if (!_resources.TryGetValue(uriWithoutFragment, out result.resource))
         {
-            _resources[uriWithoutFragment] = result.resource = new Resource(pullType, uriWithoutFragment, fragment);
+            _resources[uriWithoutFragment] = result.resource = new Resource(pullType, uriWithoutFragment);
             result.isNew = true;
         }
         else
         {
             if (result.resource.State.PullType != pullType)
                 throw new InvalidOperationException("The resource already exists with a different pull type.");
-            result.resource.AddFragment(fragment);
         }
 
         return result!;
@@ -45,10 +44,8 @@ public class ResourceDictionary() : IReadOnlyDictionary<Uri, Resource>
     {
         get
         {
-            (Uri uriWithoutFragment, string fragment) = GetUriAndFragment(key);
+            (Uri uriWithoutFragment, _) = GetUriAndFragment(key);
             var result = _resources[uriWithoutFragment];
-            if (!result.Fragments.Contains(fragment))
-                throw new KeyNotFoundException("The fragment is not part of the resource.");
             return result;
         }
     }
@@ -61,10 +58,8 @@ public class ResourceDictionary() : IReadOnlyDictionary<Uri, Resource>
 
     public bool ContainsKey(Uri key)
     {
-        (Uri uriWithoutFragment, string fragment) = GetUriAndFragment(key);
-        if (_resources.TryGetValue(uriWithoutFragment, out Resource? resource))
-            return resource.Fragments.Contains(fragment);
-        return false;
+        (Uri uriWithoutFragment, _) = GetUriAndFragment(key);
+        return _resources.ContainsKey(uriWithoutFragment);
     }
 
     public IEnumerator<KeyValuePair<Uri, Resource>> GetEnumerator()

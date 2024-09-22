@@ -21,7 +21,7 @@ public class ResourcesTrackerTests_OnTaskResult
     {
         // Arrange
         ResourcesTracker resourcesTracker = new(new FakeResourceProcessoProvider(ResourcePullType.NoPull), new BasicResourcesUriRetriver());
-        resourcesTracker.AddResource(new Uri("http://example.com"), new FakeResourceProcessor(ResourcePullType.NoPull));
+        resourcesTracker.AddResource(new Uri("http://example.com"));
         UriNode uri = new("http://other.example.com");
         ExtractionTask task = AsTask(uri);
 
@@ -38,7 +38,7 @@ public class ResourcesTrackerTests_OnTaskResult
     {
         // Arrange
         ResourcesTracker resourcesTracker = new(new FakeResourceProcessoProvider(ResourcePullType.Extract), new BasicResourcesUriRetriver());
-        resourcesTracker.AddResource(new Uri("http://example.com"), new FakeResourceProcessor(ResourcePullType.Extract));
+        resourcesTracker.AddResource(new Uri("http://example.com"));
         UriNode uri = new("http://example.com");
         ExtractionTask task = AsTask(uri);
 

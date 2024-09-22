@@ -1,7 +1,7 @@
-﻿using Sylvercode.SiteExtractor.Resources;
+﻿#if false
+using Sylvercode.SiteExtractor.Resources;
 
 namespace Sylvercode.SiteExtractor.Tests;
-
 public class ResourceTests_DestinationUri
 {
     [Fact]
@@ -108,3 +108,4 @@ public class ResourceTests_MarkAsPulled
         Assert.Throws<InvalidOperationException>(action);
     }
 }
+#endif

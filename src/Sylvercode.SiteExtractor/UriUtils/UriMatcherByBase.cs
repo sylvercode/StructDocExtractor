@@ -1,5 +1,3 @@
-using System;
-
 namespace Sylvercode.SiteExtractor.UriUtils;
 
 public class UriMatcherByBase(Uri baseUri) : IUriMatcher

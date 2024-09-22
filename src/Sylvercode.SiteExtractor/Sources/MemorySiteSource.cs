@@ -3,9 +3,11 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Sylvercode.SiteExtractor.Sources;
 
-public class MemorySiteSource<TData>(TData? defaultData = default) : ISiteSource<TData>, IDictionary<Uri, TData>
+public class MemorySiteSource<TData>(TData? defaultData = default, Uri? baseUri = null) : ISiteSource<TData>, IDictionary<Uri, TData>
 {
     private readonly Dictionary<Uri, TData> _data = [];
+
+    public Uri BaseUri { get; } = baseUri ?? new Uri("memory://");
 
     public bool CanGetFrom(Uri uri) => defaultData is not null || _data.ContainsKey(uri);
     public bool DataExists(Uri uri) => CanGetFrom(uri);

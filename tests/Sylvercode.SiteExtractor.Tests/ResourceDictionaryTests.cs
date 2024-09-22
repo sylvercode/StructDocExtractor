@@ -16,9 +16,6 @@ public class ResourceDictionaryTests_Add
 
         // Then
         Resource resource = Assert.Single(resourceDictionary.Values);
-        Assert.Collection(resource.Fragments.Order(),
-                          f => Assert.Equal("", f),
-                          f => Assert.Equal("#fragment1", f));
     }
 
     [Fact]
@@ -82,7 +79,7 @@ public class ResourceDictionaryTests_GetDestinationFor
     }
 
     [Fact]
-    public void ResourceExistsWithFragment_Invalid()
+    public void ResourceExistsWithOtherFragment_Valid()
     {
         // Given
         ResourceDictionary resourceDictionary = [];
@@ -90,10 +87,10 @@ public class ResourceDictionaryTests_GetDestinationFor
         resourceDictionary.Single().Value.MarkAsPulled(new Uri("https://other.example.org"));
 
         // When
-        void action() => resourceDictionary.GetDestinationFor(new Uri("https://other.example.org/#fragment2"));
+        Uri destination = resourceDictionary.GetDestinationFor(new Uri("https://example.org/#fragment2"));
 
         // Then
-        Assert.Throws<InvalidOperationException>(action);
+        Assert.Equal("https://other.example.org/#fragment1", destination.AbsoluteUri);
     }
 }
 
@@ -138,22 +135,20 @@ public class ResourceDictionaryTests_Index
 
         // Then
         Assert.Equal("https://example.com/", resource.SourceUri.AbsoluteUri);
-        Assert.Collection(resource.Fragments.Order(),
-                          f => Assert.Equal("#fragment1", f));
     }
 
     [Fact]
-    public void ResourceExistsWithFragment_Invalid()
+    public void ResourceExistsWithOtherFragment_Valid()
     {
         // Given
         ResourceDictionary resourceDictionary = [];
         resourceDictionary.Add(new Uri("https://example.com#fragment1"), ResourcePullType.Extract);
 
         // When
-        void action() => _ = resourceDictionary[new Uri("https://example.com#fragment2")];
+        Resource resource = resourceDictionary[new Uri("https://example.com#fragment2")];
 
         // Then
-        Assert.Throws<KeyNotFoundException>(action);
+        Assert.Equal("https://example.com/", resource.SourceUri.AbsoluteUri);
     }
 }
 
@@ -201,7 +196,7 @@ public class ResourceDictionaryTests_Contains
     }
 
     [Fact]
-    public void ResourceExistsWithFragment_Invalid()
+    public void ResourceExistsWithOtherFragment_Valid()
     {
         // Given
         ResourceDictionary resourceDictionary = [];
@@ -211,6 +206,6 @@ public class ResourceDictionaryTests_Contains
         bool contains = resourceDictionary.ContainsKey(new Uri("https://example.com/#fragment2"));
 
         // Then
-        Assert.False(contains);
+        Assert.True(contains);
     }
 }

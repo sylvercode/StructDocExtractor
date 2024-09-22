@@ -6,6 +6,9 @@ namespace Sylvercode.SiteExtractor.Downloader.Http;
 
 public class HttpDownloader(HttpClient httpClient) : ISiteSource<byte[]>
 {
+    public Uri BaseUri { get; } = httpClient.BaseAddress
+        ?? throw new ArgumentException("HttpClient must have a BaseAddress", nameof(httpClient));
+
     public bool CanGetFrom(Uri uri)
         => uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps;
 

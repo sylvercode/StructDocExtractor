@@ -18,7 +18,8 @@ public class ResourceDataExtractor<TExtractionData>(
             return;
 
         ExtractionResult result = extractor.Extract(extractionData);
-        using var stream = dataStore.GetStreamWriter(resource.DestinationUri);
+        // TODOL adapt using new translate url
+        using var stream = dataStore.GetStreamWriter(null!/*resource.DestinationUri*/);
         serisalizer.Serialize(stream, result.StructDocNodes[0]); // TODO: Handle multiple nodes
     }
 
