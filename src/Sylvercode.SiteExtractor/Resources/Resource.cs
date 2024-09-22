@@ -1,48 +1,33 @@
+using Sylvercode.SiteExtractor.UriUtils;
+
 namespace Sylvercode.SiteExtractor.Resources;
 
-public class Resource
+public class Resource(Uri sourceUri, bool isPullable = false)
 {
-    public ResourceState State { get; private set; }
+    public Uri Uri { get; } = sourceUri;
 
-    public Uri SourceUri { get; }
+    public ResourceState State { get; private set; } = new(isPullable);
 
-    private Uri? _DestinationUri;
+    public Uri? BaseSourceUri { get; set; }
 
-    public Resource(ResourcePullType pullType, Uri uri)
+    public IUriTranslater UriTranslater { get; private set; } = NoopUriTranslater.Default;
+
+    public Resource(Uri uri, Uri baseSourceUri, bool isPullable = false)
+        : this(uri, isPullable)
     {
-        State = new(pullType, ResourcePullState.Pending);
-        SourceUri = uri;
+        BaseSourceUri = baseSourceUri;
     }
 
-    public Uri GetDestinationFor(Uri uri)
-    {
-        if (State.PullType is ResourcePullType.NoPull)
-            return SourceUri;
-
-        // TODO: Implement this method
-        throw new NotImplementedException();
-    }
+    public Uri TranslateUri(Uri newBaseUri)
+        => UriTranslater.Translate(Uri, newBaseUri, BaseSourceUri);
 
     public void MarkAsPulling()
+        => State = State.AsPulling();
+
+    public void MarkAsPulled(IUriTranslater? uriTranslater)
     {
-        if (!State.IsPullNeeded)
-            throw new InvalidOperationException("Cannot mark a resource as pulling if it doesn't need to be pulled.");
-
-        if (!State.IsPulling)
-            throw new InvalidOperationException("Cannot mark a resource as pulling if it has already pulling.");
-
-        State = new ResourceState(State.PullType, ResourcePullState.Pulling);
-    }
-
-    public void MarkAsPulled(Uri destinationUri)
-    {
-        if (State.PullType is ResourcePullType.NoPull)
-            throw new InvalidOperationException("Cannot mark a resource as pulled if it doesn't need to be pulled.");
-
-        if (!string.IsNullOrEmpty(destinationUri.Fragment))
-            throw new InvalidOperationException("The destination URI cannot have a fragment.");
-
-        _DestinationUri = destinationUri;
-        State = new ResourceState(State.PullType, ResourcePullState.Pulled);
+        State = State.AsPulled();
+        if (uriTranslater is not null)
+            UriTranslater = uriTranslater;
     }
 }

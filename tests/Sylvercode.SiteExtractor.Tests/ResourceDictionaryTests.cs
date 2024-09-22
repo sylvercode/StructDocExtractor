@@ -4,15 +4,17 @@ namespace Sylvercode.SiteExtractor.Tests;
 
 public class ResourceDictionaryTests_Add
 {
-    [Fact]
-    public void TwoFragmentWithSamePullType_Valid()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void TwoFragmentWithSamePullType_Valid(bool isPullable)
     {
         // Given
         ResourceDictionary resourceDictionary = [];
-        resourceDictionary.Add(new Uri("https://example.com"), ResourcePullType.Extract);
+        resourceDictionary.Add(new Uri("https://example.com"), isPullable);
 
         // When
-        resourceDictionary.Add(new Uri("https://example.com#fragment1"), ResourcePullType.Extract);
+        resourceDictionary.Add(new Uri("https://example.com#fragment1"), isPullable);
 
         // Then
         Resource resource = Assert.Single(resourceDictionary.Values);
@@ -23,74 +25,13 @@ public class ResourceDictionaryTests_Add
     {
         // Given
         ResourceDictionary resourceDictionary = [];
-        resourceDictionary.Add(new Uri("https://example.com"), ResourcePullType.Extract);
+        resourceDictionary.Add(new Uri("https://example.com"), isPullable: true);
 
         // When
-        void action() => resourceDictionary.Add(new Uri("https://example.com#fragment1"), ResourcePullType.Download);
+        void action() => resourceDictionary.Add(new Uri("https://example.com#fragment1"), isPullable: false);
 
         // Then
         Assert.Throws<InvalidOperationException>(action);
-    }
-}
-
-public class ResourceDictionaryTests_GetDestinationFor
-{
-    [Fact]
-    public void ResourceDoesNotExist_Invalid()
-    {
-        // Given
-        ResourceDictionary resourceDictionary = [];
-
-        // When
-        void action() => resourceDictionary.GetDestinationFor(new Uri("https://example.com"));
-
-        // Then
-        Assert.Throws<InvalidOperationException>(action);
-    }
-
-    [Fact]
-    public void ResourceExists_Valid()
-    {
-        // Given
-        ResourceDictionary resourceDictionary = [];
-        resourceDictionary.Add(new Uri("https://example.com"), ResourcePullType.Extract);
-        resourceDictionary.Single().Value.MarkAsPulled(new Uri("https://other.example.org"));
-
-        // When
-        Uri destination = resourceDictionary.GetDestinationFor(new Uri("https://example.com"));
-
-        // Then
-        Assert.Equal("https://other.example.org/", destination.AbsoluteUri);
-    }
-
-    [Fact]
-    public void ResourceExistsWithFragment_Valid()
-    {
-        // Given
-        ResourceDictionary resourceDictionary = [];
-        resourceDictionary.Add(new Uri("https://example.com#fragment1"), ResourcePullType.Extract);
-        resourceDictionary.Single().Value.MarkAsPulled(new Uri("https://other.example.org"));
-
-        // When
-        Uri destination = resourceDictionary.GetDestinationFor(new Uri("https://example.com#fragment1"));
-
-        // Then
-        Assert.Equal("https://other.example.org/#fragment1", destination.AbsoluteUri);
-    }
-
-    [Fact]
-    public void ResourceExistsWithOtherFragment_Valid()
-    {
-        // Given
-        ResourceDictionary resourceDictionary = [];
-        resourceDictionary.Add(new Uri("https://example.com#fragment1"), ResourcePullType.Extract);
-        resourceDictionary.Single().Value.MarkAsPulled(new Uri("https://other.example.org"));
-
-        // When
-        Uri destination = resourceDictionary.GetDestinationFor(new Uri("https://example.org/#fragment2"));
-
-        // Then
-        Assert.Equal("https://other.example.org/#fragment1", destination.AbsoluteUri);
     }
 }
 
@@ -114,13 +55,13 @@ public class ResourceDictionaryTests_Index
     {
         // Given
         ResourceDictionary resourceDictionary = [];
-        resourceDictionary.Add(new Uri("https://example.com"), ResourcePullType.Extract);
+        resourceDictionary.Add(new Uri("https://example.com"), isPullable: true);
 
         // When
         Resource resource = resourceDictionary[new Uri("https://example.com")];
 
         // Then
-        Assert.Equal("https://example.com/", resource.SourceUri.AbsoluteUri);
+        Assert.Equal("https://example.com/", resource.Uri.AbsoluteUri);
     }
 
     [Fact]
@@ -128,13 +69,13 @@ public class ResourceDictionaryTests_Index
     {
         // Given
         ResourceDictionary resourceDictionary = [];
-        resourceDictionary.Add(new Uri("https://example.com#fragment1"), ResourcePullType.Extract);
+        resourceDictionary.Add(new Uri("https://example.com#fragment1"), isPullable: true);
 
         // When
         Resource resource = resourceDictionary[new Uri("https://example.com#fragment1")];
 
         // Then
-        Assert.Equal("https://example.com/", resource.SourceUri.AbsoluteUri);
+        Assert.Equal("https://example.com/", resource.Uri.AbsoluteUri);
     }
 
     [Fact]
@@ -142,13 +83,13 @@ public class ResourceDictionaryTests_Index
     {
         // Given
         ResourceDictionary resourceDictionary = [];
-        resourceDictionary.Add(new Uri("https://example.com#fragment1"), ResourcePullType.Extract);
+        resourceDictionary.Add(new Uri("https://example.com#fragment1"), isPullable: true);
 
         // When
         Resource resource = resourceDictionary[new Uri("https://example.com#fragment2")];
 
         // Then
-        Assert.Equal("https://example.com/", resource.SourceUri.AbsoluteUri);
+        Assert.Equal("https://example.com/", resource.Uri.AbsoluteUri);
     }
 }
 
@@ -172,7 +113,7 @@ public class ResourceDictionaryTests_Contains
     {
         // Given
         ResourceDictionary resourceDictionary = [];
-        resourceDictionary.Add(new Uri("https://example.com"), ResourcePullType.Extract);
+        resourceDictionary.Add(new Uri("https://example.com"), isPullable: true);
 
         // When
         bool contains = resourceDictionary.ContainsKey(new Uri("https://example.com/"));
@@ -186,7 +127,7 @@ public class ResourceDictionaryTests_Contains
     {
         // Given
         ResourceDictionary resourceDictionary = [];
-        resourceDictionary.Add(new Uri("https://example.com#fragment1"), ResourcePullType.Extract);
+        resourceDictionary.Add(new Uri("https://example.com#fragment1"), isPullable: true);
 
         // When
         bool contains = resourceDictionary.ContainsKey(new Uri("https://example.com/#fragment1"));
@@ -200,7 +141,7 @@ public class ResourceDictionaryTests_Contains
     {
         // Given
         ResourceDictionary resourceDictionary = [];
-        resourceDictionary.Add(new Uri("https://example.com#fragment1"), ResourcePullType.Extract);
+        resourceDictionary.Add(new Uri("https://example.com#fragment1"), isPullable: true);
 
         // When
         bool contains = resourceDictionary.ContainsKey(new Uri("https://example.com/#fragment2"));

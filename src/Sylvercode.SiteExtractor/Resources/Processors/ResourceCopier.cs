@@ -4,18 +4,12 @@ using Sylvercode.SiteExtractor.Store;
 
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
-public class ResourceCopierOptions
-{
-    public string OutputPath { get; set; } = string.Empty;
-    public bool IsOutputPathAbsolute { get; set; } = false;
-}
-
 public class ResourceCopier(ISiteSource<byte[]> siteSource, IDataStore dataStore, IOptions<ResourceCopierOptions> options) : IResourceCopiler
 {
     public void Download(Resource resource)
     {
-        byte[] file = siteSource.GetData(resource.SourceUri);
-        using var stream = dataStore.GetStream(GetDestinationUri(resource.SourceUri));
+        byte[] file = siteSource.GetData(resource.Uri);
+        using var stream = dataStore.GetStream(GetDestinationUri(resource.Uri));
         stream.Write(file);
     }
 
@@ -29,8 +23,6 @@ public class ResourceCopier(ISiteSource<byte[]> siteSource, IDataStore dataStore
     }
 
     #region IResourceProcessor
-    public ResourcePullType GetPullType() => ResourcePullType.Download;
-
     public void Process(Resource resource) => Download(resource);
     #endregion
 }

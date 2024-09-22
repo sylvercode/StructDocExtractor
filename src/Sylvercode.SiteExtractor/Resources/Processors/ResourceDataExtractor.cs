@@ -13,19 +13,16 @@ public class ResourceDataExtractor<TExtractionData>(
 {
     public void Extract(Resource resource)
     {
-        TExtractionData extractionData = siteSource.GetData(resource.SourceUri);
+        TExtractionData extractionData = siteSource.GetData(resource.Uri);
         if (extractionData is null)
             return;
 
         ExtractionResult result = extractor.Extract(extractionData);
-        // TODOL adapt using new translate url
-        using var stream = dataStore.GetStreamWriter(null!/*resource.DestinationUri*/);
+        using var stream = dataStore.GetStreamWriter(resource.TranslateUri(dataStore.BaseUri));
         serisalizer.Serialize(stream, result.StructDocNodes[0]); // TODO: Handle multiple nodes
     }
 
     #region IResourceProcessor
-    public ResourcePullType GetPullType() => ResourcePullType.Extract;
-
     public void Process(Resource resource) => Extract(resource);
     #endregion
 }

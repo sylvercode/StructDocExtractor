@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Resources;
 
@@ -7,36 +8,20 @@ public class ResourceDictionary() : IReadOnlyDictionary<Uri, Resource>
 {
     private readonly Dictionary<Uri, Resource> _resources = [];
 
-    public (Resource resource, bool isNew) Add(Uri uri, ResourcePullType pullType)
+    public (Resource resource, bool isNew) Add(Uri uri, bool isPullable)
     {
-        (Uri uriWithoutFragment, _) = GetUriAndFragment(uri);
-        var result = (resource: default(Resource), isNew: false);
-        if (!_resources.TryGetValue(uriWithoutFragment, out result.resource))
+        (Uri uriWithoutFragment, _) = uri.GetUriAndFragment();
+        if (_resources.TryGetValue(uriWithoutFragment, out Resource? resource))
         {
-            _resources[uriWithoutFragment] = result.resource = new Resource(pullType, uriWithoutFragment);
-            result.isNew = true;
-        }
-        else
-        {
-            if (result.resource.State.PullType != pullType)
+            if (resource.State.IsPullable != isPullable)
                 throw new InvalidOperationException("The resource already exists with a different pull type.");
+            return (resource, false);
         }
 
-        return result!;
-    }
-    public Uri GetDestinationFor(Uri uri)
-    {
-        (Uri uriWithoutFragment, _) = GetUriAndFragment(uri);
-        if (!_resources.TryGetValue(uriWithoutFragment, out Resource? resource))
-            throw new InvalidOperationException("The resource does not exist.");
-        return resource.GetDestinationFor(uri);
-    }
+        var result = (resource: new Resource(uriWithoutFragment, isPullable), isNew: true);
+        _resources[uriWithoutFragment] = result.resource;
 
-    private static Tuple<Uri, string> GetUriAndFragment(Uri uri)
-    {
-        string fragment = uri.IsAbsoluteUri ? uri.Fragment : string.Empty;
-        Uri uriWithoutFragment = new(uri.GetComponents(UriComponents.AbsoluteUri & ~UriComponents.Fragment, UriFormat.Unescaped));
-        return new Tuple<Uri, string>(uriWithoutFragment, fragment);
+        return result;
     }
 
     #region IReadOnlyDictionary<Uri, Resource> implementation
@@ -44,7 +29,7 @@ public class ResourceDictionary() : IReadOnlyDictionary<Uri, Resource>
     {
         get
         {
-            (Uri uriWithoutFragment, _) = GetUriAndFragment(key);
+            (Uri uriWithoutFragment, _) = key.GetUriAndFragment();
             var result = _resources[uriWithoutFragment];
             return result;
         }
@@ -58,7 +43,7 @@ public class ResourceDictionary() : IReadOnlyDictionary<Uri, Resource>
 
     public bool ContainsKey(Uri key)
     {
-        (Uri uriWithoutFragment, _) = GetUriAndFragment(key);
+        (Uri uriWithoutFragment, _) = key.GetUriAndFragment();
         return _resources.ContainsKey(uriWithoutFragment);
     }
 

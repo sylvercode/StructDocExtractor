@@ -20,7 +20,7 @@ public class ResourcesTrackerTests_OnTaskResult
     public void NewUriResult_UriAdded()
     {
         // Arrange
-        ResourcesTracker resourcesTracker = new(new FakeResourceProcessoProvider(ResourcePullType.NoPull), new BasicResourcesUriRetriver());
+        ResourcesTracker resourcesTracker = new(new FakeResourceProcessoProvider(returnsProcessor: false), new BasicResourcesUriRetriver());
         resourcesTracker.AddResource(new Uri("http://example.com"));
         UriNode uri = new("http://other.example.com");
         ExtractionTask task = AsTask(uri);
@@ -30,14 +30,14 @@ public class ResourcesTrackerTests_OnTaskResult
 
         // Assert
         Resource entry = Assert.Contains(uri.Uri, resourcesTracker.Resources);
-        Assert.Equal(ResourcePullType.NoPull, entry.State.PullType);
+        Assert.False(entry.State.IsPullable);
     }
 
     [Fact]
     public void ExistingUriResult_UriIgnored()
     {
         // Arrange
-        ResourcesTracker resourcesTracker = new(new FakeResourceProcessoProvider(ResourcePullType.Extract), new BasicResourcesUriRetriver());
+        ResourcesTracker resourcesTracker = new(new FakeResourceProcessoProvider(returnsProcessor: true), new BasicResourcesUriRetriver());
         resourcesTracker.AddResource(new Uri("http://example.com"));
         UriNode uri = new("http://example.com");
         ExtractionTask task = AsTask(uri);
@@ -47,6 +47,6 @@ public class ResourcesTrackerTests_OnTaskResult
 
         // Assert
         Resource entry = Assert.Contains(uri.Uri, resourcesTracker.Resources);
-        Assert.Equal(ResourcePullType.Extract, entry.State.PullType);
+        Assert.True(entry.State.IsPullable);
     }
 }
