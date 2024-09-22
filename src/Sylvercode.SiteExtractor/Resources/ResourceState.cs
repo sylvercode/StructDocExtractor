@@ -1,15 +1,7 @@
 namespace Sylvercode.SiteExtractor.Resources;
 
-public enum ResourcePullState
-{
-    Pending,
-    Pulling,
-    Pulled
-}
-
-public struct ResourceState(ResourcePullType pullType, ResourcePullState state)
+public struct ResourceState(ResourcePullType pullType, bool pulled = false)
 {
     public readonly ResourcePullType PullType => pullType;
-    public readonly bool IsPullNeeded => pullType is not ResourcePullType.NoPull && state != ResourcePullState.Pulled;
-    public readonly bool IsPulling => pullType is not ResourcePullType.NoPull && state == ResourcePullState.Pulling;
+    public readonly bool IsPullNeeded => pullType is not ResourcePullType.NoPull && !pulled;
 }

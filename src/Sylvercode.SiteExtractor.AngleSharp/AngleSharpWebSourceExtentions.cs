@@ -5,7 +5,6 @@ using Sylvercode.SiteExtractor;
 using Sylvercode.SiteExtractor.AngleSharp;
 using Sylvercode.SiteExtractor.Resources;
 using Sylvercode.SiteExtractor.Sources;
-using Sylvercode.StructDocExtractor.StdHtml.Resource;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Microsoft.Extensions.DependencyInjection;
@@ -24,7 +23,7 @@ public static class AngleSharpSiteExtractorExtentions
 
     public static IServiceCollection AddAngleSharpSiteExtractor(this IServiceCollection services)
     {
-        services.AddSingleton<IResourceUriRetriver, HtmlResourcesUriRetriver>();
+        //TODO: services.AddSingleton<IResourceUriRetriver, HtmlResourcesUriRetriver>();
         services.AddSingleton<ISiteExtractor, SiteExtractor>();
 
         return services;
