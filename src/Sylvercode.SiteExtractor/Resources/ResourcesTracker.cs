@@ -12,10 +12,14 @@ public class ResourcesTracker(IResourceProcessorProvider processorProvider,
 
     private ResourceQueue ResourceQueue { get; } = new();
 
-    public bool AddResource(Uri uri, IResourceProcessor resourceProcessor)
+    public bool AddResource(Uri uri) => AddResource(uri, out _);
+    public bool AddResource(Uri uri, out bool hasResourceProcessor)
     {
-        var (resource, isNew) = _resourceDictionary.Add(uri, resourceProcessor.GetPullType());
-        if (isNew)
+        IResourceProcessor? resourceProcessor = processorProvider.GetProcessor(uri);
+        hasResourceProcessor = resourceProcessor is not null;
+
+        var (resource, isNew) = _resourceDictionary.Add(uri, resourceProcessor is not null);
+        if (resourceProcessor is not null && isNew)
             ResourceQueue.Enqueue(resource, resourceProcessor);
 
         return isNew;
@@ -46,11 +50,7 @@ public class ResourcesTracker(IResourceProcessorProvider processorProvider,
         if (uri is null)
             return;
 
-        IResourceProcessor resourceProcessor = processorProvider.GetProcessor(uri);
-        ResourcePullType pullType = resourceProcessor.GetPullType();
-        var (resource, isNew) = _resourceDictionary.Add(uri, pullType);
-        if (isNew)
-            ResourceQueue.Enqueue(resource, resourceProcessor);
+        AddResource(uri);
     }
     #endregion
 }

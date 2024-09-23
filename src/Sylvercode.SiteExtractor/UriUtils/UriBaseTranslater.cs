@@ -4,18 +4,23 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Sylvercode.SiteExtractor.UriUtils;
 
-public partial class ProxyChangeBaseUriTransformer(Uri SourceBase, Uri ProxyBase, ProxyChangeBaseUriTransformer.Options options = new(), ILogger<ProxyChangeBaseUriTransformer>? logger = null) : IUriTransformer
+public partial class UriBaseTranslater(
+    UriBaseTranslater.Options options = new(),
+    ILogger<UriBaseTranslater>? logger = null) : IUriTranslater
 {
     public struct Options
     {
         public bool OtherBaseAsError { get; set; }
     }
 
-    private readonly ILogger<ProxyChangeBaseUriTransformer> _logger = logger ?? NullLogger<ProxyChangeBaseUriTransformer>.Instance;
+    private readonly ILogger<UriBaseTranslater> _logger = logger ?? NullLogger<UriBaseTranslater>.Instance;
 
-    public Uri Transform(Uri uri)
+
+    public Uri Translate(Uri uri, Uri storeBaseUri, Uri? sourceBaseUri = null)
     {
-        if (!SourceBase.IsBaseOf(uri))
+        sourceBaseUri ??= uri;
+
+        if (!sourceBaseUri.IsBaseOf(uri))
         {
             LogInvalidBase(options.OtherBaseAsError ? LogLevel.Error : LogLevel.Debug, uri);
             if (options.OtherBaseAsError)
@@ -23,8 +28,8 @@ public partial class ProxyChangeBaseUriTransformer(Uri SourceBase, Uri ProxyBase
             return uri;
         }
 
-        Uri relative = SourceBase.MakeRelativeUri(uri);
-        Uri proxyUri = new(ProxyBase, relative);
+        Uri relative = sourceBaseUri.MakeRelativeUri(uri);
+        Uri proxyUri = new(storeBaseUri, relative);
 
         LogProxyUri(uri, proxyUri);
         return proxyUri;

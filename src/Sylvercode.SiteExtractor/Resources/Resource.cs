@@ -1,75 +1,33 @@
+using Sylvercode.SiteExtractor.UriUtils;
+
 namespace Sylvercode.SiteExtractor.Resources;
 
-public class Resource
+public class Resource(Uri sourceUri, bool isPullable = false)
 {
-    public ResourceState State { get; private set; }
+    public Uri Uri { get; } = sourceUri;
 
-    public Uri SourceUri { get; }
+    public ResourceState State { get; private set; } = new(isPullable);
 
-    private readonly HashSet<string> _fragments;
-    public IReadOnlySet<string> Fragments => _fragments;
+    public Uri? BaseSourceUri { get; set; }
 
-    private bool _hasFragments;
+    public IUriTranslater UriTranslater { get; private set; } = NoopUriTranslater.Default;
 
-    private Uri? _DestinationUri;
-
-    public Resource(ResourcePullType pullType, Uri uri, string fragment = "")
+    public Resource(Uri uri, Uri baseSourceUri, bool isPullable = false)
+        : this(uri, isPullable)
     {
-        if (pullType != ResourcePullType.NoPull && !string.IsNullOrEmpty(fragment) && !fragment.StartsWith('#'))
-            throw new ArgumentException("The fragment must start with a #.", nameof(fragment));
-
-        State = new(pullType);
-        SourceUri = uri;
-        _fragments = [fragment];
-        _hasFragments = !string.IsNullOrEmpty(fragment);
+        BaseSourceUri = baseSourceUri;
     }
 
-    public Uri DestinationUri
+    public Uri TranslateUri(Uri newBaseUri)
+        => UriTranslater.Translate(Uri, newBaseUri, BaseSourceUri);
+
+    public void MarkAsPulling()
+        => State = State.AsPulling();
+
+    public void MarkAsPulled(IUriTranslater? uriTranslater)
     {
-        get
-        {
-            if (State.PullType is ResourcePullType.NoPull)
-                return SourceUri;
-
-            if (_DestinationUri is null)
-                throw new InvalidOperationException("The resource has not been pulled yet.");
-
-            if (_hasFragments)
-                throw new InvalidOperationException("The resource has fragments.");
-
-            return _DestinationUri;
-        }
-    }
-
-    public Uri GetDestinationFor(Uri uri)
-    {
-        if (State.PullType is ResourcePullType.NoPull)
-            return SourceUri;
-
-        if (!Fragments.Contains(uri.Fragment))
-            throw new InvalidOperationException("The fragment is not part of the resource.");
-
-        if (_DestinationUri is null)
-            throw new InvalidOperationException("The resource has not been pulled yet.");
-
-        return new Uri(_DestinationUri, uri.Fragment);
-    }
-
-    public void AddFragment(string fragment)
-    {
-        _fragments.Add(fragment);
-        _hasFragments = _hasFragments || Fragments.Count > 1 || !string.IsNullOrEmpty(fragment);
-    }
-
-    public void MarkAsPulled(Uri destinationUri)
-    {
-        if (State.PullType is ResourcePullType.NoPull)
-            throw new InvalidOperationException("Cannot mark a resource as pulled if it doesn't need to be pulled.");
-
-        if (!string.IsNullOrEmpty(destinationUri.Fragment))
-            throw new InvalidOperationException("The destination URI cannot have a fragment.");
-
-        _DestinationUri = destinationUri;
-        State = new ResourceState(State.PullType, true);
+        State = State.AsPulled();
+        if (uriTranslater is not null)
+            UriTranslater = uriTranslater;
     }
 }

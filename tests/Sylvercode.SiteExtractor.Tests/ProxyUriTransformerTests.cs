@@ -2,20 +2,20 @@ using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
-public class ProxyUriTransformerTests_Transform
+public class UriBaseTranslaterTests_Translaste
 {
     [Fact]
     public void ValidBase_ReturnsValidUri()
     {
         // Given
         Uri sourceBase = new("https://example.com/");
-        Uri proxyBase = new("https://proxy.com/");
+        Uri storeBase = new("https://proxy.com/");
         Uri uri = new("https://example.com/test");
 
-        ProxyChangeBaseUriTransformer transformer = new(sourceBase, proxyBase);
+        UriBaseTranslater transformer = new();
 
         // When
-        Uri result = transformer.Transform(uri);
+        Uri result = transformer.Translate(uri, storeBase, sourceBase);
 
         // Then
         Assert.Equal("https://proxy.com/test", result.ToString());
@@ -26,13 +26,13 @@ public class ProxyUriTransformerTests_Transform
     {
         // Given
         Uri sourceBase = new("https://example.com/");
-        Uri proxyBase = new("https://proxy.com/");
+        Uri storeBase = new("https://proxy.com/");
         Uri uri = new("https://example.org/test");
 
-        ProxyChangeBaseUriTransformer transformer = new(sourceBase, proxyBase, new() { OtherBaseAsError = true });
+        UriBaseTranslater transformer = new(new() { OtherBaseAsError = true });
 
         // When
-        void action() => transformer.Transform(uri);
+        void action() => transformer.Translate(uri, storeBase, sourceBase);
 
         // Then
         ArgumentException ex = Assert.Throws<ArgumentException>(action);
@@ -43,13 +43,13 @@ public class ProxyUriTransformerTests_Transform
     {
         // Given
         Uri sourceBase = new("https://example.com/");
-        Uri proxyBase = new("https://proxy.com/");
+        Uri storeBase = new("https://proxy.com/");
         Uri uri = new("https://example.org/test");
 
-        ProxyChangeBaseUriTransformer transformer = new(sourceBase, proxyBase);
+        UriBaseTranslater transformer = new();
 
         // When
-        Uri result = transformer.Transform(uri);
+        Uri result = transformer.Translate(uri, storeBase, sourceBase);
 
         // Then
         Assert.Equal(uri.ToString(), result.ToString());
