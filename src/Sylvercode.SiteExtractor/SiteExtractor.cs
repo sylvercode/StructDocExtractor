@@ -15,7 +15,7 @@ public class SiteExtractor(
         while (_resourcesTracker.ResourceQueue.HasQueuedResources)
         {
             var (resource, processor) = _resourcesTracker.ResourceQueue.Dequeue();
-            // TODO: resource.MarkAsPulling();
+            resource.MarkAsPulling();
             IResourceProcessorResult result = processor.Process(resource);
 
         }

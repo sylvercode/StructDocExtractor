@@ -6,8 +6,6 @@ public class NoPullProcessor : IResourceProcessor
 
     private NoPullProcessor() { }
 
-    public ResourcePullType GetPullType() => ResourcePullType.NoPull;
-
     public IResourceProcessorResult Process(Resource resource)
         => new NoPostProcessResult(this, resource);
 }

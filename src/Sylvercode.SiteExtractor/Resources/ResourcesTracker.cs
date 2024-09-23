@@ -12,11 +12,14 @@ public class ResourcesTracker(IResourceProcessorProvider processorProvider,
 
     public ResourceQueue ResourceQueue { get; } = new();
 
-    public bool AddResource(Uri uri)
+    public bool AddResource(Uri uri) => AddResource(uri, out _);
+    public bool AddResource(Uri uri, out bool hasResourceProcessor)
     {
-        IResourceProcessor resourceProcessor = processorProvider.GetProcessor(uri);
-        var (resource, isNew) = _resourceDictionary.Add(uri, resourceProcessor.GetPullType());
-        if (isNew)
+        IResourceProcessor? resourceProcessor = processorProvider.GetProcessor(uri);
+        hasResourceProcessor = resourceProcessor is not null;
+
+        var (resource, isNew) = _resourceDictionary.Add(uri, resourceProcessor is not null);
+        if (resourceProcessor is not null && isNew)
             ResourceQueue.Enqueue(resource, resourceProcessor);
 
         return isNew;

@@ -13,24 +13,22 @@ public class ResourceDataExtractor<TExtractionData>(
 {
     public IResourceProcessorResult Extract(Resource resource)
     {
-        TExtractionData extractionData = siteSource.GetData(resource.SourceUri);
+        TExtractionData extractionData = siteSource.GetData(resource.Uri);
         if (extractionData is null)
             return new NoPostProcessResult(this, resource);
 
         ExtractionResult result = extractor.Extract(extractionData);
+
         return new DataExtractedProcessorResult<TExtractionData>(this, resource, result);
     }
 
     public void OnPostExtraction(Resource resource, ExtractionResult result)
     {
-        // TODO: Complete destination uri
-        using var stream = dataStore.GetStreamWriter(null!);
+        using var stream = dataStore.GetStreamWriter(resource.TranslateUri(dataStore.BaseUri));
         serisalizer.Serialize(stream, result.StructDocNodes[0]); // TODO: Handle multiple nodes
     }
 
     #region IResourceProcessor
-    public ResourcePullType GetPullType() => ResourcePullType.Extract;
-
     public IResourceProcessorResult Process(Resource resource) => Extract(resource);
     #endregion
 }
