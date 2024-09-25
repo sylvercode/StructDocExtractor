@@ -24,7 +24,7 @@ public class Resource(Uri sourceUri, bool isPullable = false)
     public void MarkAsPulling()
         => State = State.AsPulling();
 
-    public void MarkAsPulled(IUriTranslater? uriTranslater)
+    public void MarkAsPulled(IUriTranslater? uriTranslater = null)
     {
         State = State.AsPulled();
         if (uriTranslater is not null)
