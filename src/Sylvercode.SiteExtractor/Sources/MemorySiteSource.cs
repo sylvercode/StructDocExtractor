@@ -1,22 +1,28 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Options;
 
 namespace Sylvercode.SiteExtractor.Sources;
 
-public class MemorySiteSource<TData>(TData? defaultData = default, Uri? baseUri = null) : ISiteSource<TData>, IDictionary<Uri, TData>
+public class MemorySiteSource<TData>(IOptions<MemorySiteSource<TData>.Options> options) : ISiteSource<TData>, IDictionary<Uri, TData>
 {
+    public class Options
+    {
+        public TData? DefaultData { get; set; }
+        public Uri? BaseUri { get; set; }
+    }
     private readonly Dictionary<Uri, TData> _data = [];
 
-    public Uri BaseUri { get; } = baseUri ?? new Uri("memory://");
+    public Uri BaseUri { get; } = options.Value.BaseUri ?? new Uri("memory://");
 
-    public bool CanGetFrom(Uri uri) => defaultData is not null || _data.ContainsKey(uri);
+    public bool CanGetFrom(Uri uri) => options.Value.DefaultData is not null || _data.ContainsKey(uri);
     public bool DataExists(Uri uri) => CanGetFrom(uri);
     public TData GetData(Uri uri)
     {
         if (!_data.TryGetValue(uri, out TData? data))
         {
-            if (defaultData is not null)
-                return defaultData;
+            if (options.Value.DefaultData is not null)
+                return options.Value.DefaultData;
             throw new InvalidOperationException($"No data found for {uri}");
         }
 
