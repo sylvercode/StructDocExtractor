@@ -8,4 +8,12 @@ public static class UriExtentions
         Uri uriWithoutFragment = new(uri.GetComponents(UriComponents.AbsoluteUri & ~UriComponents.Fragment, UriFormat.Unescaped));
         return new Tuple<Uri, string>(uriWithoutFragment, fragment);
     }
+
+    public static string AsDirPath(this string uriPath)
+    {
+        string noBackSlashPath = uriPath.Replace('\\', '/');
+        if (!noBackSlashPath.EndsWith('/'))
+            noBackSlashPath += '/';
+        return noBackSlashPath;
+    }
 }

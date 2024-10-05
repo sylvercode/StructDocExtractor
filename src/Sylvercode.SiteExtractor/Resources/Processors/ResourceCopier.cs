@@ -5,16 +5,13 @@ using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
-// TODO: Add tests
 public class ResourceCopier(ISiteSource<byte[]> siteSource, IDataStore dataStore, IOptions<ResourceCopierOptions> options) : IResourceCopiler
 {
-    public IResourceProcessorResult Download(Resource resource)
+    public void Download(Uri uri)
     {
-        byte[] file = siteSource.GetData(resource.Uri);
-        using var stream = dataStore.GetStream(UriTranslater.Translate(resource.Uri));
+        byte[] file = siteSource.GetData(uri);
+        using var stream = dataStore.GetStream(UriTranslater.Translate(uri));
         stream.Write(file);
-
-        return new FinishedProcessResult(this, resource, UriTranslater);
     }
 
     private CopiedResourceUriTranslater UriTranslater { get; } = new(siteSource, dataStore, options);
@@ -31,11 +28,16 @@ public class ResourceCopier(ISiteSource<byte[]> siteSource, IDataStore dataStore
             string path = uri.IsAbsoluteUri ? uri.AbsolutePath : uri.ToString();
             string fileName = Path.GetFileName(path);
 
+
             return new Uri(dirUri, fileName);
         }
     }
 
     #region IResourceProcessor
-    public IResourceProcessorResult Process(Resource resource) => Download(resource);
+    public IResourceProcessorResult Process(Resource resource)
+    {
+        Download(resource.Uri);
+        return new FinishedProcessResult(this, resource, UriTranslater);
+    }
     #endregion
 }
