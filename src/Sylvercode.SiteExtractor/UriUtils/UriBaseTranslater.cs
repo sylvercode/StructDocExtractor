@@ -1,7 +1,6 @@
 ﻿
 namespace Sylvercode.SiteExtractor.UriUtils;
 
-// TODO: Add tests.
 public class UriBaseTranslater(
     Uri oldBaseUri,
     Uri newBaseUri)

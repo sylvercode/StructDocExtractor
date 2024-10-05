@@ -18,6 +18,7 @@ public class Resource(Uri sourceUri, bool isPullable = false)
         BaseSourceUri = baseSourceUri;
     }
 
+    // TODO: Add tests
     public Uri TranslateUri(Uri sourceUri)
     {
         var (uri, _) = sourceUri.GetUriAndFragment();

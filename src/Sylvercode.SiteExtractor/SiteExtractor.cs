@@ -3,6 +3,7 @@ using Sylvercode.SiteExtractor.Resources.Processors;
 
 namespace Sylvercode.SiteExtractor;
 
+// TODO: Add tests
 public class SiteExtractor(
     IResourceProcessorProvider processorProvider) : ISiteExtractor
 {

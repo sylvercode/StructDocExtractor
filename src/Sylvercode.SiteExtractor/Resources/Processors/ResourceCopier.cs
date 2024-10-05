@@ -5,6 +5,7 @@ using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
+// TODO: Add tests
 public class ResourceCopier(ISiteSource<byte[]> siteSource, IDataStore dataStore, IOptions<ResourceCopierOptions> options) : IResourceCopiler
 {
     public IResourceProcessorResult Download(Resource resource)

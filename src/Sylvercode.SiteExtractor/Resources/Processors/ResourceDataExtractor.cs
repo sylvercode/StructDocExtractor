@@ -7,6 +7,7 @@ using Sylvercode.StructDocExtractor.Serialization;
 
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
+// TODO: add tests
 public class ResourceDataExtractor<TExtractionData>(
     IExtractor<TExtractionData> extractor,
     ISiteSource<TExtractionData> siteSource,
