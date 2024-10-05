@@ -7,7 +7,6 @@ using Sylvercode.StructDocExtractor.Serialization;
 
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
-// TODO: add tests
 public class ResourceDataExtractor<TExtractionData>(
     IExtractor<TExtractionData> extractor,
     ISiteSource<TExtractionData> siteSource,
@@ -36,10 +35,13 @@ public class ResourceDataExtractor<TExtractionData>(
         ExtractionTaskObserver observer = new();
         ExtractionResult result = extractor.Extract(extractionData, observer);
 
+        if (result.StructDocNodes.Count == 0)
+            return new FinishedProcessResult(this, resource);
+
         return new DataExtractedProcessorResult<TExtractionData>(this, resource, result, new UriBaseTranslater(siteSource.BaseUri, dataStore.BaseUri), observer.Referencers);
     }
 
-    public IResourceProcessorResult OnContinueExtraction(Resource resource, ExtractionResult result)
+    public IResourceProcessorResult ContinueExtraction(Resource resource, ExtractionResult result)
     {
         using var stream = dataStore.GetStreamWriter(resource.TranslateUri(dataStore.BaseUri));
         serisalizer.Serialize(stream, result.StructDocNodes[0]); // TODO: Handle multiple nodes
