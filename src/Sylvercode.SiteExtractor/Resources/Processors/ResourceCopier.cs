@@ -10,37 +10,31 @@ public class ResourceCopier(ISiteSource<byte[]> siteSource, IDataStore dataStore
     public IResourceProcessorResult Download(Resource resource)
     {
         byte[] file = siteSource.GetData(resource.Uri);
-        using var stream = dataStore.GetStream(GetDestinationUri(resource.Uri));
+        using var stream = dataStore.GetStream(UriTranslater.Translate(resource.Uri));
         stream.Write(file);
 
-        return new NoPostProcessResult(this, resource);
+        return new FinishedProcessResult(this, resource, UriTranslater);
     }
 
-    private Uri GetDestinationUri(Uri sourceUri)
-    {
-        if (options.Value.IsOutputPathAbsolute)
-            return new Uri(dataStore.BaseUri, options.Value.OutputPath);
+    private CopiedResourceUriTranslater UriTranslater { get; } = new(siteSource, dataStore, options);
 
-        // TODO: refactor this using new translate url
-        return new Uri(sourceUri, options.Value.OutputPath);
-    }
-
-    private CopiedResourceUriTranslater UriTranslater { get; } = new(this);
-    private class CopiedResourceUriTranslater(ResourceCopier copier) : IUriTranslater
+    private class CopiedResourceUriTranslater(ISiteSource<byte[]> siteSource, IDataStore dataStore, IOptions<ResourceCopierOptions> options) : IUriTranslater
     {
-        public Uri Translate(Uri uri, Uri storeBaseUri, Uri? sourceBaseUri = null)
+        public Uri Translate(Uri uri)
         {
-            // TODO: implement this
-            throw new NotImplementedException();
+            if (!options.Value.IsOutputPathAbsolute)
+                return UriBaseTranslater.Translate(uri, siteSource.BaseUri, dataStore.BaseUri);
+
+            Uri dirUri = new(dataStore.BaseUri, options.Value.OutputPath);
+
+            string path = uri.IsAbsoluteUri ? uri.AbsolutePath : uri.ToString();
+            string fileName = Path.GetFileName(path);
+
+            return new Uri(dirUri, fileName);
         }
     }
 
     #region IResourceProcessor
-    public IResourceProcessorResult Process(Resource resource)
-    {
-        resource.MarkAsPulling();
-        Download(resource);
-        resource.MarkAsPulled(new CopiedResourceUriTranslater(this));
-    }
+    public IResourceProcessorResult Process(Resource resource) => Download(resource);
     #endregion
 }

@@ -7,7 +7,7 @@ using Sylvercode.StructDocExtractor.Tests.Stubs;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
-public class ResourcesTrackerTests_OnTaskResult
+public class ResourcesTrackerTests_AddResource
 {
     private static ExtractionTask AsTask(UriNode uri)
     {
@@ -20,16 +20,15 @@ public class ResourcesTrackerTests_OnTaskResult
     public void NewUriResult_UriAdded()
     {
         // Arrange
-        ResourcesTracker resourcesTracker = new(new FakeResourceProcessoProvider(returnsProcessor: false), new BasicResourcesUriRetriver());
+        ResourcesTracker resourcesTracker = new(new FakeResourceProcessoProvider(returnsProcessor: false));
         resourcesTracker.AddResource(new Uri("http://example.com"));
-        UriNode uri = new("http://other.example.com");
-        ExtractionTask task = AsTask(uri);
+        Uri uri = new("http://other.example.com");
 
         // Act
-        resourcesTracker.OnNext(task);
+        resourcesTracker.AddResource(uri);
 
         // Assert
-        Resource entry = Assert.Contains(uri.Uri, resourcesTracker.Resources);
+        Resource entry = Assert.Contains(uri, resourcesTracker.Resources);
         Assert.False(entry.State.IsPullable);
     }
 
@@ -37,16 +36,15 @@ public class ResourcesTrackerTests_OnTaskResult
     public void ExistingUriResult_UriIgnored()
     {
         // Arrange
-        ResourcesTracker resourcesTracker = new(new FakeResourceProcessoProvider(returnsProcessor: true), new BasicResourcesUriRetriver());
+        ResourcesTracker resourcesTracker = new(new FakeResourceProcessoProvider(returnsProcessor: true));
         resourcesTracker.AddResource(new Uri("http://example.com"));
-        UriNode uri = new("http://example.com");
-        ExtractionTask task = AsTask(uri);
+        Uri uri = new("http://example.com");
 
         // Act
-        resourcesTracker.OnNext(task);
+        resourcesTracker.AddResource(uri);
 
         // Assert
-        Resource entry = Assert.Contains(uri.Uri, resourcesTracker.Resources);
+        Resource entry = Assert.Contains(uri, resourcesTracker.Resources);
         Assert.True(entry.State.IsPullable);
     }
 }

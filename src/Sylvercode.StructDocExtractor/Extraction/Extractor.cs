@@ -15,7 +15,7 @@ public class Extractor<TExtractionData, TDataDiscriminator>(
     )
     : IExtractor<TExtractionData>
 {
-    public ExtractionResult Extract([DisallowNull] TExtractionData data)
+    public ExtractionResult Extract([DisallowNull] TExtractionData data, IObserver<ExtractionTask>? observer = null)
     {
         ExtractorTaskSequencerHandler<TExtractionData, TDataDiscriminator> handler = new(
             defaultNodeFactoryProvider,
@@ -26,49 +26,11 @@ public class Extractor<TExtractionData, TDataDiscriminator>(
             loggerFactory
             );
         ExtractorTaskSequencer<TExtractionData, TDataDiscriminator> extractorTaskSequencer = new(handler);
-        extractorTaskSequencer.TaskResultSet += OnTaskResult;
+        if (observer is not null)
+            extractorTaskSequencer.Subscribe(observer);
 
         extractorTaskSequencer.AddTask(data);
         ExtractionResult result = extractorTaskSequencer.ProcessTasks();
-        OnCompleted();
         return result;
     }
-
-    private void OnTaskResult(object? sender, EventArgs e)
-    {
-        if (sender is not ExtractionTask task)
-            return;
-
-        foreach (var observer in observers)
-            observer.OnNext(task);
-    }
-
-    private void OnCompleted()
-    {
-        foreach (var observer in observers)
-            observer.OnCompleted();
-    }
-
-    #region IObservable
-    private readonly List<IObserver<ExtractionTask>> observers = [];
-    public IDisposable Subscribe(IObserver<ExtractionTask> observer)
-    {
-        if (!observers.Contains(observer))
-            observers.Add(observer);
-        return new Unsubscriber(observers, observer);
-    }
-
-    private sealed class Unsubscriber(List<IObserver<ExtractionTask>> observers, IObserver<ExtractionTask> observer) : IDisposable
-    {
-        private readonly List<IObserver<ExtractionTask>> _observers = observers;
-        private readonly IObserver<ExtractionTask> _observer = observer;
-
-        public void Dispose()
-        {
-            if (_observer != null && _observers.Contains(_observer))
-                _observers.Remove(_observer);
-        }
-    }
-    #endregion
-
 }

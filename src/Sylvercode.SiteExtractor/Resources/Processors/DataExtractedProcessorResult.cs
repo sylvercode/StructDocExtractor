@@ -1,16 +1,19 @@
+using Sylvercode.SiteExtractor.UriUtils;
 using Sylvercode.StructDocExtractor.Extraction;
+using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
 public class DataExtractedProcessorResult<TExtractionData>(
     IResourceDataExtractor<TExtractionData> processor,
     Resource resource,
-    ExtractionResult result) : BaseResourceProcessorResult(processor, resource)
+    ExtractionResult result,
+    IUriTranslater? resourceUriTranslaterToSet,
+    List<IStructDocReferencer> referencers) : BaseResourceProcessorResult(processor, resource, resourceUriTranslaterToSet, isUnfinished: false)
 {
     public new IResourceDataExtractor<TExtractionData> Processor => (IResourceDataExtractor<TExtractionData>)base.Processor;
     public ExtractionResult Result => result;
-    public override void OnPostExtraction()
-    {
-        Processor.OnPostExtraction(Resource, Result);
-    }
+    public List<IStructDocReferencer> Referencers { get; } = referencers;
+    public override IResourceProcessorResult ContinueProcess() => Processor.OnContinueExtraction(Resource, Result);
+    public override IEnumerable<Uri> GetResourceDependencies() => Referencers.Select(r => new Uri(r.GetReference()));
 }

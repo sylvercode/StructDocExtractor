@@ -4,16 +4,15 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 
-public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>(
-        IExtractorTaskSequencerHandler<TExtractionData, TDataDiscriminator> handler)
+public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
+    (IExtractorTaskSequencerHandler<TExtractionData, TDataDiscriminator> handler)
+    : IObservable<ExtractionTask>
 {
     private readonly ILogger _logger = handler.CreateLogger<ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>>();
 
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
 
     public bool HasPendingTask => _pendingTacks.First is not null;
-
-    public event EventHandler? TaskResultSet;
 
     public ExtractionResult ProcessTasks()
     {
@@ -34,6 +33,8 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
                     LogRootTaskWithNoNodeResultOnSuccessOrWarning(handler.GetDataPreview((TExtractionData)task.ExtractionData));
             }
         }
+        
+        OnCompleted();
         return new(summery, result);
     }
 
@@ -110,8 +111,7 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
 
     private void AddTask(ExtractionTask task, bool asNext = false)
     {
-        if (TaskResultSet is not null)
-            task.ResultSet += TaskResultSet;
+        task.ResultSet += OnTaskResult;
 
         LogTaskAdded(handler.GetDataPreview((TExtractionData)task.ExtractionData),
                          asNext ? "Next" : "Last");
@@ -120,6 +120,43 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
         else
             _pendingTacks.AddLast(task);
     }
+
+    private void OnTaskResult(object? sender, EventArgs e)
+    {
+        if (sender is not ExtractionTask task)
+            return;
+
+        foreach (var observer in observers)
+            observer.OnNext(task);
+    }
+
+    private void OnCompleted()
+    {
+        foreach (var observer in observers)
+            observer.OnCompleted();
+    }
+
+    #region IObservable
+    private readonly List<IObserver<ExtractionTask>> observers = [];
+    public IDisposable Subscribe(IObserver<ExtractionTask> observer)
+    {
+        if (!observers.Contains(observer))
+            observers.Add(observer);
+        return new Unsubscriber(observers, observer);
+    }
+
+    private sealed class Unsubscriber(List<IObserver<ExtractionTask>> observers, IObserver<ExtractionTask> observer) : IDisposable
+    {
+        private readonly List<IObserver<ExtractionTask>> _observers = observers;
+        private readonly IObserver<ExtractionTask> _observer = observer;
+
+        public void Dispose()
+        {
+            if (_observer != null && _observers.Contains(_observer))
+                _observers.Remove(_observer);
+        }
+    }
+    #endregion
 
     [LoggerMessage(
         Message = "Exception cath while processing task.")]

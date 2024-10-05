@@ -2,7 +2,7 @@ using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
-public class UriBaseTranslaterTests_Translaste
+public class UriBaseTranslater_Translaste
 {
     [Fact]
     public void ValidBase_ReturnsValidUri()
@@ -12,10 +12,10 @@ public class UriBaseTranslaterTests_Translaste
         Uri storeBase = new("https://proxy.com/");
         Uri uri = new("https://example.com/test");
 
-        UriBaseTranslater transformer = new();
+        UriBaseTranslater transformer = new(sourceBase, storeBase);
 
         // When
-        Uri result = transformer.Translate(uri, storeBase, sourceBase);
+        Uri result = transformer.Translate(uri);
 
         // Then
         Assert.Equal("https://proxy.com/test", result.ToString());
@@ -29,29 +29,12 @@ public class UriBaseTranslaterTests_Translaste
         Uri storeBase = new("https://proxy.com/");
         Uri uri = new("https://example.org/test");
 
-        UriBaseTranslater transformer = new(new() { OtherBaseAsError = true });
+        UriBaseTranslater transformer = new(sourceBase, storeBase);
 
         // When
-        void action() => transformer.Translate(uri, storeBase, sourceBase);
+        void action() => transformer.Translate(uri);
 
         // Then
         ArgumentException ex = Assert.Throws<ArgumentException>(action);
-    }
-
-    [Fact]
-    public void InvalidBase_WithoutOtherBaseAsError_ReturnsUri()
-    {
-        // Given
-        Uri sourceBase = new("https://example.com/");
-        Uri storeBase = new("https://proxy.com/");
-        Uri uri = new("https://example.org/test");
-
-        UriBaseTranslater transformer = new();
-
-        // When
-        Uri result = transformer.Translate(uri, storeBase, sourceBase);
-
-        // Then
-        Assert.Equal(uri.ToString(), result.ToString());
     }
 }

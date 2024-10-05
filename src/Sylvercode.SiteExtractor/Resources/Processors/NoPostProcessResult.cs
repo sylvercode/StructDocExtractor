@@ -1,9 +1,10 @@
+using Sylvercode.SiteExtractor.UriUtils;
+
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
-public class NoPostProcessResult(IResourceProcessor processor, Resource resource) : BaseResourceProcessorResult(processor, resource)
+public class FinishedProcessResult(IResourceProcessor processor, Resource resource, IUriTranslater? resourceUriTranslaterToSet = null)
+    : BaseResourceProcessorResult(processor, resource, resourceUriTranslaterToSet, isUnfinished: true)
 {
-    public override void OnPostExtraction()
-    {
-        // NOOP
-    }
+    public override IResourceProcessorResult ContinueProcess()
+        => throw new InvalidOperationException($"Cannot continue processing a {nameof(FinishedProcessResult)}.");
 }
