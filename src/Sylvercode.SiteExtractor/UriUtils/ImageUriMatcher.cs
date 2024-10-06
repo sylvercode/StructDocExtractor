@@ -1,6 +1,5 @@
 ﻿namespace Sylvercode.SiteExtractor.UriUtils;
 
-// TODO: Add tests
 public class ImageUriMatcher : IUriMatcher
 {
     public static readonly ImageUriMatcher Default = new();
