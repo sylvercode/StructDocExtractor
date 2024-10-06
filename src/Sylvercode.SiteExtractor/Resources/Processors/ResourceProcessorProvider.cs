@@ -2,7 +2,6 @@ using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
-// TODO: Add tests
 public class ResourceProcessorProvider : IResourceProcessorProvider
 {
     private class Entry(IUriMatcher matcher, IResourceProcessor processor)

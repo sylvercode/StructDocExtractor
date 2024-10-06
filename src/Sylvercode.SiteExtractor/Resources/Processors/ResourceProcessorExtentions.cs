@@ -11,15 +11,19 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ResourceProcessorProviderExtentions
 {
-    public static IServiceCollection AddResourceProcessorProvider<TExtractionData>(this IServiceCollection services, bool addDefaultProcessors = true)
+    public static IServiceCollection AddResourceProcessorProviderWithDefault<TExtractionData>(this IServiceCollection services)
     {
-        if (addDefaultProcessors)
-        {
-            services.AddResourceProcessor<ResourceDataExtractor<TExtractionData>, IOptions<SiteExtractorOptions>>((options)
-                => new UriMatcherByBase(options.Value.GetSourceBaseUri()));
-            services.AddResourceProcessor<ResourceCopier>(ImageUriMatcher.Default);
-        }
+        services.AddResourceProcessor<ResourceCopier>(ImageUriMatcher.Default);
+        services.AddResourceProcessor<ResourceDataExtractor<TExtractionData>, IOptions<SiteExtractorOptions>>((options)
+            => new UriMatcherByBase(options.Value.GetSourceBaseUri()));
 
+        services.AddResourceProcessorProvider();
+
+        return services;
+    }
+
+    public static IServiceCollection AddResourceProcessorProvider(this IServiceCollection services)
+    {
         services.AddSingleton<IResourceProcessorProvider>((serviceProvider) =>
         {
             var ResourceProcessorCollection = serviceProvider.GetRequiredService<IOptions<ResourceProcessorCollection>>();
@@ -50,6 +54,12 @@ public static class ResourceProcessorProviderExtentions
     {
         services.TryAddSingleton<TProcessor>();
         services.AddOptions<ResourceProcessorCollection>().Configure<TProcessor, TDep>((col, p, dep) => col.Add(uriMatcherProvider(dep), p));
+        return services;
+    }
+
+    public static IServiceCollection AddResourceProcessor(this IServiceCollection services, IResourceProcessor resourceProcessor, IUriMatcher uriMatcherProvider)
+    {
+        services.AddOptions<ResourceProcessorCollection>().Configure(col => col.Add(uriMatcherProvider, resourceProcessor));
         return services;
     }
 
