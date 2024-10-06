@@ -8,17 +8,8 @@ public class Resource(Uri sourceUri, bool isPullable = false)
 
     public ResourceState State { get; private set; } = new(isPullable);
 
-    public Uri? BaseSourceUri { get; set; }
-
     public IUriTranslater UriTranslater { get; set; } = NoopUriTranslater.Default;
 
-    public Resource(Uri uri, Uri baseSourceUri, bool isPullable = false)
-        : this(uri, isPullable)
-    {
-        BaseSourceUri = baseSourceUri;
-    }
-
-    // TODO: Add tests
     public Uri TranslateUri(Uri sourceUri)
     {
         var (uri, _) = sourceUri.GetUriAndFragment();
