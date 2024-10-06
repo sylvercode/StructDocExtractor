@@ -1,16 +1,16 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Sylvercode.SiteExtractor.Resources.Processors;
-using Sylvercode.SiteExtractor.Tests.Fakes;
+using Sylvercode.SiteExtractor.Tests.Mocks;
 using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
 public class ResourceProcessorProviderTests_GetProcessor
 {
-    private static FakeResourceProcessor ImageProcessor { get; } = new();
+    private static ResourceProcessorMock ImageProcessor { get; } = new();
 
-    private static FakeResourceProcessor BaseProcessor { get; } = new();
+    private static ResourceProcessorMock BaseProcessor { get; } = new();
 
     public static IHost GetDefaultHost()
     {

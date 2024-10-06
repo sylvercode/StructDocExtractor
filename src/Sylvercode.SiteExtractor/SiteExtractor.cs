@@ -3,7 +3,6 @@ using Sylvercode.SiteExtractor.Resources.Processors;
 
 namespace Sylvercode.SiteExtractor;
 
-// TODO: Add tests
 public class SiteExtractor(
     IResourceProcessorProvider processorProvider) : ISiteExtractor
 {
@@ -30,7 +29,7 @@ public class SiteExtractor(
             if (result.ResourceUriTranslaterToSet != null)
                 resource.UriTranslater = result.ResourceUriTranslaterToSet;
 
-            if (!result.IsUnfinished)
+            if (result.IsUnfinished)
                 UnfinishProcess.Add(result);
             else
                 resource.MarkAsPulled();
@@ -44,10 +43,10 @@ public class SiteExtractor(
             {
                 IResourceProcessorResult nextResult = result.ContinueProcess();
 
-                if (nextResult.GetResourceDependencies().Count() != 0)
+                if (nextResult.GetResourceDependencies().Any())
                     throw new InvalidOperationException("Resource dependencies are not allowed in the continue process.");
 
-                if (!nextResult.IsUnfinished)
+                if (nextResult.IsUnfinished)
                     UnfinishProcessNext.Add(nextResult);
                 else
                     result.Resource.MarkAsPulled();
