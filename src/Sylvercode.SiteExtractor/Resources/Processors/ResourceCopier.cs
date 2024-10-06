@@ -1,28 +1,43 @@
 ﻿using Microsoft.Extensions.Options;
 using Sylvercode.SiteExtractor.Sources;
 using Sylvercode.SiteExtractor.Store;
+using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
 public class ResourceCopier(ISiteSource<byte[]> siteSource, IDataStore dataStore, IOptions<ResourceCopierOptions> options) : IResourceCopiler
 {
-    public void Download(Resource resource)
+    public void Download(Uri uri)
     {
-        byte[] file = siteSource.GetData(resource.Uri);
-        using var stream = dataStore.GetStream(GetDestinationUri(resource.Uri));
+        byte[] file = siteSource.GetData(uri);
+        using var stream = dataStore.GetStream(UriTranslater.Translate(uri));
         stream.Write(file);
     }
 
-    private Uri GetDestinationUri(Uri sourceUri)
-    {
-        if (options.Value.IsOutputPathAbsolute)
-            return new Uri(dataStore.BaseUri, options.Value.OutputPath);
+    private CopiedResourceUriTranslater UriTranslater { get; } = new(siteSource, dataStore, options);
 
-        // TODO: refactor this using new translate url
-        return new Uri(sourceUri, options.Value.OutputPath);
+    private class CopiedResourceUriTranslater(ISiteSource<byte[]> siteSource, IDataStore dataStore, IOptions<ResourceCopierOptions> options) : IUriTranslater
+    {
+        public Uri Translate(Uri uri)
+        {
+            if (!options.Value.IsOutputPathAbsolute)
+                return UriBaseTranslater.Translate(uri, siteSource.BaseUri, dataStore.BaseUri);
+
+            Uri dirUri = new(dataStore.BaseUri, options.Value.OutputPath);
+
+            string path = uri.IsAbsoluteUri ? uri.AbsolutePath : uri.ToString();
+            string fileName = Path.GetFileName(path);
+
+
+            return new Uri(dirUri, fileName);
+        }
     }
 
     #region IResourceProcessor
-    public void Process(Resource resource) => Download(resource);
+    public IResourceProcessorResult Process(Resource resource)
+    {
+        Download(resource.Uri);
+        return new FinishedProcessResult(this, resource, UriTranslater);
+    }
     #endregion
 }

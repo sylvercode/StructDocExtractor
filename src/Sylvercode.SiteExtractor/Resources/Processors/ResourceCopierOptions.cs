@@ -1,7 +1,14 @@
+using Sylvercode.SiteExtractor.UriUtils;
+
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
 public class ResourceCopierOptions
 {
-    public string OutputPath { get; set; } = string.Empty;
+    private string outputPath = string.Empty;
+    public string OutputPath
+    {
+        get => outputPath;
+        set => outputPath = value.AsDirPath();
+    }
     public bool IsOutputPathAbsolute { get; set; } = false;
 }

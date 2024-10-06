@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Sylvercode.StructDocExtractor.Model.Init;
 
 namespace Sylvercode.StructDocExtractor.Model.Base;

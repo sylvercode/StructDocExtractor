@@ -1,16 +1,13 @@
 ﻿using Sylvercode.SiteExtractor.Resources.Processors;
-using Sylvercode.StructDocExtractor.Extraction;
-using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.SiteExtractor.Resources;
 
-public class ResourcesTracker(IResourceProcessorProvider processorProvider,
-                              IResourceUriRetriver resourceUriRetriver) : IObserver<ExtractionTask>
+public class ResourcesTracker(IResourceProcessorProvider processorProvider)
 {
     private readonly ResourceDictionary _resourceDictionary = [];
     public IReadOnlyDictionary<Uri, Resource> Resources => _resourceDictionary;
 
-    private ResourceQueue ResourceQueue { get; } = new();
+    public ResourceQueue ResourceQueue { get; } = new();
 
     public bool AddResource(Uri uri) => AddResource(uri, out _);
     public bool AddResource(Uri uri, out bool hasResourceProcessor)
@@ -24,33 +21,4 @@ public class ResourcesTracker(IResourceProcessorProvider processorProvider,
 
         return isNew;
     }
-
-    #region IObserver<ExtractionTask>
-    public void OnCompleted()
-    {
-    }
-
-    public void OnError(Exception error)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnNext(ExtractionTask value)
-    {
-        ExtractionTaskResult? result = value.TaskResult;
-        if (result is null)
-            return;
-
-        IStructDocNode? node = result.SrcNode;
-
-        if (node is null)
-            return;
-
-        Uri? uri = resourceUriRetriver.GetResourceUri(node);
-        if (uri is null)
-            return;
-
-        AddResource(uri);
-    }
-    #endregion
 }

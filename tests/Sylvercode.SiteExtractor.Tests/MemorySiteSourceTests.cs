@@ -1,4 +1,5 @@
-﻿using Sylvercode.SiteExtractor.Sources;
+﻿using Microsoft.Extensions.Options;
+using Sylvercode.SiteExtractor.Sources;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
@@ -12,7 +13,7 @@ public class MemorySiteSourceTests
         string data = nameof(data);
 
         // When
-        MemorySiteSource<string> source = new()
+        MemorySiteSource<string> source = new(Options.Create(new MemorySiteSource<string>.Options()))
         {
             [uri] = data
         };
@@ -30,7 +31,7 @@ public class MemorySiteSourceTests
         Uri uri = new("https://example.com");
 
         // When
-        MemorySiteSource<string> source = new()
+        MemorySiteSource<string> source = new(Options.Create(new MemorySiteSource<string>.Options()))
         {
             [new Uri("https://other.example.org")] = "data"
         };
@@ -48,8 +49,13 @@ public class MemorySiteSourceTests
         Uri uri = new("https://example.com");
         string defaultData = nameof(defaultData);
 
+        var options = Options.Create(new MemorySiteSource<string>.Options()
+        {
+            DefaultData = defaultData
+        });
+
         // When
-        MemorySiteSource<string> source = new(defaultData)
+        MemorySiteSource<string> source = new(options)
         {
             [new Uri("https://other.example.org")] = "data"
         };

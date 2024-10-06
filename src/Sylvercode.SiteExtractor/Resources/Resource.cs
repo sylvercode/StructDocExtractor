@@ -8,26 +8,20 @@ public class Resource(Uri sourceUri, bool isPullable = false)
 
     public ResourceState State { get; private set; } = new(isPullable);
 
-    public Uri? BaseSourceUri { get; set; }
+    public IUriTranslater UriTranslater { get; set; } = NoopUriTranslater.Default;
 
-    public IUriTranslater UriTranslater { get; private set; } = NoopUriTranslater.Default;
-
-    public Resource(Uri uri, Uri baseSourceUri, bool isPullable = false)
-        : this(uri, isPullable)
+    public Uri TranslateUri(Uri sourceUri)
     {
-        BaseSourceUri = baseSourceUri;
-    }
+        var (uri, _) = sourceUri.GetUriAndFragment();
+        if (uri != sourceUri)
+            throw new ArgumentException("Not a fragment uri of the resouce.", nameof(sourceUri));
 
-    public Uri TranslateUri(Uri newBaseUri)
-        => UriTranslater.Translate(Uri, newBaseUri, BaseSourceUri);
+        return UriTranslater.Translate(sourceUri);
+    }
 
     public void MarkAsPulling()
         => State = State.AsPulling();
 
-    public void MarkAsPulled(IUriTranslater? uriTranslater)
-    {
-        State = State.AsPulled();
-        if (uriTranslater is not null)
-            UriTranslater = uriTranslater;
-    }
+    public void MarkAsPulled()
+        => State = State.AsPulled();
 }

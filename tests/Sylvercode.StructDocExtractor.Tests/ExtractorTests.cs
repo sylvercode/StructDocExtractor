@@ -1,5 +1,4 @@
 ﻿using Sylvercode.StructDocExtractor.Extraction;
-using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Tests.Fakes;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
 
@@ -7,7 +6,6 @@ namespace Sylvercode.StructDocExtractor.Tests;
 
 public class ExtractorTests
 {
-
     class ExtractionObserver : IObserver<ExtractionTask>
     {
         public List<string?> CallbackIds { get; } = [];
@@ -30,7 +28,6 @@ public class ExtractorTests
         Extractor<FakeStructDocData, BasicNodeDiscriminator> extractor = new(
             BasicStructDocNodeFactoryProvider.Default,
             dataDiscriminatorFactory: FakeStructDocDataDiscriminatorProvider.Default);
-        extractor.Subscribe(observer);
 
         FakeStructDocData data = FakeStructDocData.New().WithId("1")
             .NewChildrenBuilder()
@@ -42,7 +39,7 @@ public class ExtractorTests
 
 
         // When
-        extractor.Extract(data);
+        extractor.Extract(data, observer);
 
         // Then
         Assert.Collection(observer.CallbackIds,
