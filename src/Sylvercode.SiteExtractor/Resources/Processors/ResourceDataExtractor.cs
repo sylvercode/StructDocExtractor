@@ -41,11 +41,11 @@ public class ResourceDataExtractor<TExtractionData>(
         return new DataExtractedProcessorResult<TExtractionData>(this, resource, result, new UriBaseTranslater(siteSource.BaseUri, dataStore.BaseUri), observer.Referencers);
     }
 
-    public IResourceProcessorResult ContinueExtraction(Resource resource, ExtractionResult result)
+    public IResourceProcessorResult ContinueExtraction(DataExtractedProcessorResult<TExtractionData> lastResult)
     {
-        using var stream = dataStore.GetStreamWriter(resource.TranslateUri(dataStore.BaseUri));
-        serisalizer.Serialize(stream, result.StructDocNodes[0]); // TODO: Handle multiple nodes
-        return new FinishedProcessResult(this, resource);
+        using var stream = dataStore.GetStreamWriter(lastResult.Resource.TranslateUri(dataStore.BaseUri));
+        serisalizer.Serialize(stream, lastResult.Result.StructDocNodes[0]); // TODO: Handle multiple nodes
+        return new FinishedProcessResult(this, lastResult.Resource);
     }
 
     #region IResourceProcessor
