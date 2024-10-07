@@ -3,9 +3,9 @@ using Sylvercode.StructDocExtractor.Model.Base;
 
 namespace Sylvercode.SiteExtractor.Tests.Stubs;
 
-public class UriReferenceNode(string uri) : BaseStructDocNode(uri), IStructDocReferencer
+public class UriReferenceNode(string uri, string reference) : BaseStructDocNode(uri), IStructDocReferencer
 {
-    public string Reference { get; set; } = uri;
+    public string Reference { get; set; } = reference;
 
     public string GetReference()
         => Reference;

@@ -16,12 +16,14 @@ public class ExtractorMock(MockCallTracker tracker, bool extractNothing = false)
 
         tracker.TrackCall(this, nameof(Extract), [data, observer]);
 
-        List<Uri> references = GetUriReference(data);
-        foreach (var reference in references)
+        List<(Uri resUri, Uri refUri)> references = GetUriReference(data);
+        foreach ( (Uri resUri, Uri refUri) in references)
         {
-            ExtractionTask task = new(reference);
+            ExtractionTask task = new(resUri);
 
-            ProcessTaskResult<Uri, Uri> taskResult = new(TaskResultType.Success, new UriReferenceNode(reference.ToString()));
+            ProcessTaskResult<Uri, Uri> taskResult = new(
+                TaskResultType.Success, 
+                new UriReferenceNode(resUri.ToString(), refUri.ToString()));
             task.SetResult(taskResult, childrenTaskInfoFactory);
 
             observer?.OnNext(task);
@@ -35,15 +37,17 @@ public class ExtractorMock(MockCallTracker tracker, bool extractNothing = false)
         return new ExtractionResult(summery, srcNodes);
     }
 
-    private static List<Uri> GetUriReference(Uri source)
+    private static List<(Uri resUri, Uri refUri)> GetUriReference(Uri source)
     {
         Uri baseUri = new(source.GetLeftPart(UriPartial.Authority));
-        List<Uri> result = [];
+        List<(Uri resUri, Uri refUri)> result = [];
         NameValueCollection query = System.Web.HttpUtility.ParseQueryString(source.Query);
 
-        foreach (var value in query.GetValues("ref") ?? [])
+        foreach (var key in query.AllKeys ?? [])
         {
-            result.Add(new Uri(baseUri, value));
+            var value = query[key];
+            if (value is not null)
+                result.Add((new Uri(baseUri, key), new Uri(baseUri, value)));
         }
 
         return result;
