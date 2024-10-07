@@ -1,5 +1,6 @@
 using AngleSharp;
 using AngleSharp.Dom;
+using AngleSharp.Io;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Sylvercode.SiteExtractor;
 using Sylvercode.SiteExtractor.AngleSharp;
@@ -13,7 +14,9 @@ public static class AngleSharpSiteExtractorExtentions
 {
     public static IServiceCollection AddAngleSharpWebSource(this IServiceCollection services)
     {
-        services.TryAddSingleton(AngleSharp.Configuration.Default);
+        services.TryAddSingleton<MemoryCookieProvider>();
+        services.TryAddSingleton((sp) => sp.GetRequiredService<MemoryCookieProvider>().Container);
+        services.TryAddSingleton((sp) => AngleSharp.Configuration.Default.With(sp.GetRequiredService<MemoryCookieProvider>()));
         services.TryAddSingleton<IBrowsingContext, BrowsingContext>();
         services.AddSingleton<ISiteSource<IElement>, AngleSharpWebSource>();
 

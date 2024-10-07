@@ -2,8 +2,6 @@
 
 namespace Sylvercode.SiteExtractor.Downloader.Http;
 
-
-
 public class HttpDownloader(HttpClient httpClient) : ISiteSource<byte[]>
 {
     public Uri BaseUri { get; } = httpClient.BaseAddress
@@ -18,6 +16,7 @@ public class HttpDownloader(HttpClient httpClient) : ISiteSource<byte[]>
     {
         try
         {
+            
             fileBytes = httpClient.GetByteArrayAsync(uri).Result;
             return true;
         }
