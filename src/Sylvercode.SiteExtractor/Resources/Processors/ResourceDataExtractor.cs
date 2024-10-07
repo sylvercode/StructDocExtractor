@@ -26,7 +26,7 @@ public class ResourceDataExtractor<TExtractionData>(
         }
     }
 
-    public IResourceProcessorResult Extract(Resource resource)
+    public IResourceProcessorResult Extract(Resource resource, IReadOnlyDictionary<Uri, Resource> trackedResources)
     {
         TExtractionData extractionData = siteSource.GetData(resource.Uri);
         if (extractionData is null)
@@ -38,7 +38,7 @@ public class ResourceDataExtractor<TExtractionData>(
         if (result.StructDocNodes.Count == 0)
             return new FinishedProcessResult(this, resource);
 
-        return new DataExtractedProcessorResult<TExtractionData>(this, resource, result, new UriBaseTranslater(siteSource.BaseUri, dataStore.BaseUri), observer.Referencers);
+        return new DataExtractedProcessorResult<TExtractionData>(this, resource, trackedResources, result, new UriBaseTranslater(siteSource.BaseUri, dataStore.BaseUri), observer.Referencers);
     }
 
     public IResourceProcessorResult ContinueExtraction(DataExtractedProcessorResult<TExtractionData> lastResult)
@@ -49,6 +49,6 @@ public class ResourceDataExtractor<TExtractionData>(
     }
 
     #region IResourceProcessor
-    public IResourceProcessorResult Process(Resource resource) => Extract(resource);
+    public IResourceProcessorResult Process(Resource resource, IReadOnlyDictionary<Uri, Resource> trackedResources) => Extract(resource, trackedResources);
     #endregion
 }

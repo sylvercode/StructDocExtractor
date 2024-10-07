@@ -7,10 +7,12 @@ namespace Sylvercode.SiteExtractor.Resources.Processors;
 public class DataExtractedProcessorResult<TExtractionData>(
     ResourceDataExtractor<TExtractionData> processor,
     Resource resource,
+    IReadOnlyDictionary<Uri, Resource> trackedResources,
     ExtractionResult result,
     IUriTranslater? resourceUriTranslaterToSet,
     List<IStructDocReferencer> referencers) : BaseResourceProcessorResult(processor, resource, resourceUriTranslaterToSet, isUnfinished: true)
 {
+    public IReadOnlyDictionary<Uri, Resource> TrackedResources { get; } = trackedResources;
     public ExtractionResult Result => result;
     public List<IStructDocReferencer> Referencers { get; } = referencers;
     public override IResourceProcessorResult ContinueProcess() => processor.ContinueExtraction(this);

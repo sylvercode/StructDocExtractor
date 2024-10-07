@@ -21,7 +21,7 @@ public class SiteExtractor(
             var (resource, processor) = _resourcesTracker.ResourceQueue.Dequeue();
             resource.MarkAsPulling();
 
-            IResourceProcessorResult result = processor.Process(resource);
+            IResourceProcessorResult result = processor.Process(resource, _resourcesTracker.Resources);
 
             foreach (var dependency in result.GetResourceDependencies())
                 _resourcesTracker.AddResource(dependency);
