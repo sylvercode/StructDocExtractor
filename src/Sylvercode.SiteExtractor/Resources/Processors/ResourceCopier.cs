@@ -34,7 +34,7 @@ public class ResourceCopier(ISiteSource<byte[]> siteSource, IDataStore dataStore
     }
 
     #region IResourceProcessor
-    public IResourceProcessorResult Process(Resource resource)
+    public IResourceProcessorResult Process(Resource resource, IReadOnlyDictionary<Uri, Resource> trackedResources)
     {
         Download(resource.Uri);
         return new FinishedProcessResult(this, resource, UriTranslater);

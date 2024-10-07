@@ -11,7 +11,9 @@ public class ResourceDataExtractor<TExtractionData>(
     IExtractor<TExtractionData> extractor,
     ISiteSource<TExtractionData> siteSource,
     IStructDocSerializer serisalizer,
-    IDataStore dataStore) : IResourceDataExtractor<TExtractionData>
+    IDataStore dataStore,
+    IUriTranslater? uriTranslater = null,
+    IReferencerUpdater? referencerUpdater = null) : IResourceDataExtractor<TExtractionData>
 {
     private class ExtractionTaskObserver : IObserver<ExtractionTask>
     {
@@ -26,7 +28,9 @@ public class ResourceDataExtractor<TExtractionData>(
         }
     }
 
-    public IResourceProcessorResult Extract(Resource resource)
+    private IUriTranslater UriTransler { get; } = uriTranslater ?? new UriBaseTranslater(siteSource.BaseUri, dataStore.BaseUri);
+
+    public IResourceProcessorResult Extract(Resource resource, IReadOnlyDictionary<Uri, Resource> trackedResources)
     {
         TExtractionData extractionData = siteSource.GetData(resource.Uri);
         if (extractionData is null)
@@ -38,17 +42,21 @@ public class ResourceDataExtractor<TExtractionData>(
         if (result.StructDocNodes.Count == 0)
             return new FinishedProcessResult(this, resource);
 
-        return new DataExtractedProcessorResult<TExtractionData>(this, resource, result, new UriBaseTranslater(siteSource.BaseUri, dataStore.BaseUri), observer.Referencers);
+        return new DataExtractedProcessorResult<TExtractionData>(this, resource, trackedResources, result, UriTransler, observer.Referencers);
     }
 
-    public IResourceProcessorResult ContinueExtraction(Resource resource, ExtractionResult result)
+    public IResourceProcessorResult ContinueExtraction(DataExtractedProcessorResult<TExtractionData> lastResult)
     {
-        using var stream = dataStore.GetStreamWriter(resource.TranslateUri(dataStore.BaseUri));
-        serisalizer.Serialize(stream, result.StructDocNodes[0]); // TODO: Handle multiple nodes
-        return new FinishedProcessResult(this, resource);
+        referencerUpdater?.UpdateReferencers(lastResult.Referencers, lastResult.TrackedResources);
+
+        using var stream = dataStore.GetStreamWriter(lastResult.Resource.TranslateUri(dataStore.BaseUri));
+
+        serisalizer.Serialize(stream, lastResult.Result.StructDocNodes[0]); // TODO: Handle multiple nodes
+
+        return new FinishedProcessResult(this, lastResult.Resource);
     }
 
     #region IResourceProcessor
-    public IResourceProcessorResult Process(Resource resource) => Extract(resource);
+    public IResourceProcessorResult Process(Resource resource, IReadOnlyDictionary<Uri, Resource> trackedResources) => Extract(resource, trackedResources);
     #endregion
 }

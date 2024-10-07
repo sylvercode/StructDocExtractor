@@ -50,7 +50,7 @@ public class ResourceDataExtractorTests_Extract
         Uri input = new("test://mock-input");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input));
+        IResourceProcessorResult result = extractor.Extract(new Resource(input), new Dictionary<Uri, Resource>());
 
         // Then
         var dataResult = Assert.IsType<DataExtractedProcessorResult<Uri>>(result);
@@ -83,7 +83,7 @@ public class ResourceDataExtractorTests_Extract
         Uri input = new("test://mock-input");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input));
+        IResourceProcessorResult result = extractor.Extract(new Resource(input), new Dictionary<Uri, Resource>());
 
         // Then
         Assert.False(result.IsUnfinished);
@@ -107,7 +107,7 @@ public class ResourceDataExtractorTests_Extract
         Uri input = new("test://mock-input");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input));
+        IResourceProcessorResult result = extractor.Extract(new Resource(input), new Dictionary<Uri, Resource>());
 
         // Then
         Assert.False(result.IsUnfinished);
@@ -132,10 +132,10 @@ public class ResourceDataExtractorTests_Extract
         MockCallTracker callTracker = new();
         IHost host = GetDefaultHost(callTracker);
         var extractor = host.Services.GetRequiredService<IResourceDataExtractor<Uri>>();
-        Uri input = new("test://mock-input?ref=foo&ref=bar");
+        Uri input = new("test://mock-input?referencer1=foo&referencer2=bar");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input));
+        IResourceProcessorResult result = extractor.Extract(new Resource(input), new Dictionary<Uri, Resource>());
 
         // Then
         var dataResult = Assert.IsType<DataExtractedProcessorResult<Uri>>(result);
@@ -172,7 +172,7 @@ public class ResourceDataExtractorContinueExtraction_Extract
         IHost host = ResourceDataExtractorTests_Extract.GetDefaultHost(calTracker);
         var extractor = host.Services.GetRequiredService<IResourceDataExtractor<Uri>>();
         Uri input = new("test://mock-input");
-        var result = (DataExtractedProcessorResult<Uri>)extractor.Extract(new Resource(input));
+        var result = (DataExtractedProcessorResult<Uri>)extractor.Extract(new Resource(input), new Dictionary<Uri, Resource>());
         calTracker.Calls.Clear();
 
         // When
