@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using Sylvercode.SiteExtractor.Tests.Stubs;
 using Sylvercode.StructDocExtractor.Extraction;
 using Sylvercode.StructDocExtractor.Extraction.Factory;
-using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.SiteExtractor.Tests.Mocks;
 
@@ -17,24 +16,28 @@ public class ExtractorMock(MockCallTracker tracker, bool extractNothing = false)
         tracker.TrackCall(this, nameof(Extract), [data, observer]);
 
         List<(Uri resUri, Uri refUri)> references = GetUriReference(data);
-        foreach ( (Uri resUri, Uri refUri) in references)
+        foreach ((Uri resUri, Uri refUri) in references)
         {
             ExtractionTask task = new(resUri);
 
             ProcessTaskResult<Uri, Uri> taskResult = new(
-                TaskResultType.Success, 
+                TaskResultType.Success,
                 new UriReferenceNode(resUri.ToString(), refUri.ToString()));
             task.SetResult(taskResult, childrenTaskInfoFactory);
 
             observer?.OnNext(task);
         }
 
-        ExtractionResult.ExtractionSummery summery = new();
-        summery.CountTaskResult(extractNothing ? TaskResultType.Skipped : TaskResultType.Success);
+        ExtractionResult result = new();
+        if (extractNothing)
+            result.Summery.CountTaskResult(TaskResultType.Skipped);
+        else
+        {
+            result.StructDocNodes.Add(new UriNode(data.ToString()));
+            result.Summery.CountTaskResult(TaskResultType.Success);
+        }
 
-        IReadOnlyList<IStructDocNode> srcNodes = extractNothing ? [] : [new UriNode(data.ToString())];
-
-        return new ExtractionResult(summery, srcNodes);
+        return result;
     }
 
     private static List<(Uri resUri, Uri refUri)> GetUriReference(Uri source)
