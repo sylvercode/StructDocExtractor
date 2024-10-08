@@ -20,6 +20,7 @@ public abstract class BaseAngleSharpSiteSource : ISiteSource<IElement>
         BaseUri = new Uri(options.Value.OutputDirectory);
         Config = config ?? Configuration.Default;
         BrowsingContext = browsingContext ?? global::AngleSharp.BrowsingContext.New(Config);
+        
     }
 
     protected static Url AsAngleSharpUrl(Uri uri)

@@ -1,3 +1,5 @@
+using System.Net;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Sylvercode.SiteExtractor;
 using Sylvercode.SiteExtractor.Downloader.Http;
@@ -11,9 +13,17 @@ public static class HttpDownloaderExtentions
 {
     public static IServiceCollection AddHttpDownloader(this IServiceCollection services)
     {
-        services.AddHttpClient<ISiteSource<byte[]>, HttpDownloader>((sp, client) => {
+        services.TryAddSingleton<CookieContainer>();
+        services.AddHttpClient<ISiteSource<byte[]>, HttpDownloader>((sp, client) =>
+        {
             var options = sp.GetRequiredService<IOptions<SiteExtractorOptions>>().Value;
             client.BaseAddress = options.GetSourceBaseUri();
+        })
+        .ConfigurePrimaryHttpMessageHandler((sp) => new HttpClientHandler
+        {
+            AllowAutoRedirect = true,
+            UseCookies = true,
+            CookieContainer = sp.GetRequiredService<CookieContainer>()
         });
 
         return services;

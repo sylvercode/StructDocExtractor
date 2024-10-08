@@ -1,6 +1,9 @@
+using System.Net;
 using AngleSharp;
 using AngleSharp.Dom;
+using AngleSharp.Io;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Sylvercode.SiteExtractor;
 using Sylvercode.SiteExtractor.AngleSharp;
 using Sylvercode.SiteExtractor.Sources;
@@ -11,12 +14,34 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class AngleSharpSiteExtractorExtentions
 {
+    private const string AngleSharpCookieColKey = nameof(AngleSharpCookieColKey);
+
     public static IServiceCollection AddAngleSharpWebSource(this IServiceCollection services)
     {
-        services.TryAddSingleton(AngleSharp.Configuration.Default);
+        services.AddMemoryCookieProvider();
+        services.TryAddSingleton((sp) => AngleSharp.Configuration.Default.With(sp.GetRequiredService<MemoryCookieProvider>()));
         services.TryAddSingleton<IBrowsingContext, BrowsingContext>();
         services.AddSingleton<ISiteSource<IElement>, AngleSharpWebSource>();
 
+        return services;
+    }
+
+    private static IServiceCollection AddMemoryCookieProvider(this IServiceCollection services)
+    {
+        services.TryAddSingleton((sp) =>
+        {
+            MemoryCookieProvider provider = new();
+            provider.Container.Add(sp.GetRequiredKeyedService<IOptions<CookieCollection>>(AngleSharpCookieColKey).Value);
+            return provider;
+        });
+        services.TryAddSingleton((sp) => sp.GetRequiredService<MemoryCookieProvider>().Container);
+        return services;
+    }
+
+    public static IServiceCollection ConfigreAngleSharpCookies<TDep>(this IServiceCollection services, Action<CookieCollection, TDep> configure)
+        where TDep : class
+    {
+        services.AddOptions<CookieCollection>(AngleSharpCookieColKey).Configure(configure);
         return services;
     }
 
