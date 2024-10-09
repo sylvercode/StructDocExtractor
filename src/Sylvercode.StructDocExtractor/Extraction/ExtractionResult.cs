@@ -30,9 +30,7 @@ public class ExtractionResult
     }
 
     public ExtractionResult(TaskResultType resultType)
-    {
-        Summery.CountTaskResult(resultType);
-    }
+        => Summery.CountTaskResult(resultType);
 
     public ExtractionSummery Summery { get; } = new();
     public List<IStructDocNode> StructDocNodes { get; } = [];
