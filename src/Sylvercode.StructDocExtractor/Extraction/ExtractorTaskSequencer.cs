@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
-using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 
@@ -16,26 +15,25 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
 
     public ExtractionResult ProcessTasks()
     {
-        ExtractionResult.ExtractionSummery summery = new();
-        List<IStructDocNode> result = [];
+        ExtractionResult result = new();
         while (HasPendingTask)
         {
             ExtractionTask task = GetNextTask();
             IProcessTaskResult taskResult = ProcessTask(task);
 
-            summery.CountTaskResult(taskResult.ResultType);
+            result.Summery.CountTaskResult(taskResult.ResultType);
 
             if (task.ParentTaskInfo?.ParentTask is null)
             {
                 if (taskResult.SrcNode is not null)
-                    result.Add(taskResult.SrcNode);
+                    result.StructDocNodes.Add(taskResult.SrcNode);
                 else if (taskResult.ResultType is TaskResultType.Success or TaskResultType.Warning)
                     LogRootTaskWithNoNodeResultOnSuccessOrWarning(handler.GetDataPreview((TExtractionData)task.ExtractionData));
             }
         }
-        
+
         OnCompleted();
-        return new(summery, result);
+        return result;
     }
 
     private ExtractionTask GetNextTask()

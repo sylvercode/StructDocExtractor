@@ -2,8 +2,7 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 
-public class ExtractionResult(ExtractionResult.ExtractionSummery summery,
-                              IReadOnlyList<IStructDocNode> srcNodes)
+public class ExtractionResult
 {
     public class ExtractionSummery
     {
@@ -26,6 +25,13 @@ public class ExtractionResult(ExtractionResult.ExtractionSummery summery,
         }
     }
 
-    public ExtractionSummery Summery { get; } = summery;
-    public IReadOnlyList<IStructDocNode> StructDocNodes { get; } = srcNodes;
+    public ExtractionResult()
+    {
+    }
+
+    public ExtractionResult(TaskResultType resultType)
+        => Summery.CountTaskResult(resultType);
+
+    public ExtractionSummery Summery { get; } = new();
+    public List<IStructDocNode> StructDocNodes { get; } = [];
 }
