@@ -1,10 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Options;
 using Sylvercode.StructDocExtractor.Extraction;
 using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Tests.Mocks;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Sylvercode.StructDocExtractor.Tests;
 
@@ -44,15 +45,26 @@ public class RouterExtractorTests
             => throw new NotImplementedException();
     }
 
+    public static IHost GetDefaultHost(bool noExtractorAsError = false)
+        => Host.CreateDefaultBuilder().ConfigureServices(services =>
+            services
+                .AddRouterExtractor<string>(b =>
+            {
+                b.AddExtractor<ThrowExtractorMock>(new RouterExtractorSelectorMock());
+                b.AddExtractor<ToUpperExtractorMock>(new RouterExtractorSelectorMock("ToUpper"));
+                b.AddExtractor<ThrowExtractorMock>(new RouterExtractorSelectorMock("ToUpper"));
+                if (noExtractorAsError)
+                    b.NoExtractorAsError();
+
+            }))
+            .Build();
+
     [Fact]
     public void MatchingExtractor_RouteToExtractor()
     {
         // Given
-        RouterExtractorList<string> extractors = [];
-        extractors.Add(new RouterExtractorSelectorMock(), new ThrowExtractorMock());
-        extractors.Add(new RouterExtractorSelectorMock("ToUpper"), new ToUpperExtractorMock());
-        extractors.Add(new RouterExtractorSelectorMock("ToUpper"), new ThrowExtractorMock());
-        RouterExtractor<string> router = new(extractors, Options.Create(new RouterExtractor<string>.RouterExtractorOptions()));
+        IHost host = GetDefaultHost();
+        var router = host.Services.GetRequiredService<IExtractor<string>>();
         ExtractionTaskObserverMock observer = new();
 
         // When
@@ -72,11 +84,8 @@ public class RouterExtractorTests
     public void NoMatchingExtractor_Skipped()
     {
         // Given
-        RouterExtractorList<string> extractors = [];
-        extractors.Add(new RouterExtractorSelectorMock(), new ThrowExtractorMock());
-        extractors.Add(new RouterExtractorSelectorMock("ToUpper"), new ToUpperExtractorMock());
-        extractors.Add(new RouterExtractorSelectorMock("ToUpper"), new ThrowExtractorMock());
-        RouterExtractor<string> router = new(extractors, Options.Create(new RouterExtractor<string>.RouterExtractorOptions()));
+        IHost host = GetDefaultHost();
+        var router = host.Services.GetRequiredService<IExtractor<string>>();
         ExtractionTaskObserverMock observer = new();
 
         // When
@@ -94,12 +103,8 @@ public class RouterExtractorTests
     public void NoMatchingExtractor_Error()
     {
         // Given
-        RouterExtractorList<string> extractors = [];
-        extractors.Add(new RouterExtractorSelectorMock(), new ThrowExtractorMock());
-        extractors.Add(new RouterExtractorSelectorMock("ToUpper"), new ToUpperExtractorMock());
-        extractors.Add(new RouterExtractorSelectorMock("ToUpper"), new ThrowExtractorMock());
-        RouterExtractor<string> router = new(extractors, Options.Create(
-            new RouterExtractor<string>.RouterExtractorOptions() { NoExtractorAsError = true }));
+        IHost host = GetDefaultHost(noExtractorAsError: true);
+        var router = host.Services.GetRequiredService<IExtractor<string>>();
         ExtractionTaskObserverMock observer = new();
 
         // When
