@@ -8,7 +8,7 @@ public static class DirectoryDataStoreExtensions
 {
     public static IServiceCollection AddDirectoryDataStore(this IServiceCollection services)
     {
-        services.AddOptions<DirectoryDataStoreOptions>().BindConfiguration(nameof(DirectoryDataStore));
+        services.AddOptions<DirectoryDataStoreOptions>().BindConfiguration(DirectoryDataStoreOptions.DirectoryDataStore);
         services.AddSingleton<IDataStore, DirectoryDataStore>();
 
         return services;
