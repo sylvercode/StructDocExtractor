@@ -66,7 +66,7 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
                     result.SrcNode?.DebugName,
                     result.NodeFactoryProvider?.DebugName);
 
-                task.SetResult(result, handler.ChildrenTaskInfoFactory);
+                task.SetResult(result);
 
                 IReadOnlyList<ExtractionTask> subTask = task.ChildrenTaskInfo!.ChildrenTasks;
                 LogChildrenTaskCount(subTask.Count);

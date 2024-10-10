@@ -1,5 +1,4 @@
 namespace Sylvercode.StructDocExtractor.Extraction;
-using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 
 public interface IExtractionTask
@@ -11,5 +10,5 @@ public interface IExtractionTask
 
     event EventHandler? ResultSet;
 
-    void SetResult(IProcessTaskResult processTaskResult, IChildrenTaskInfoFactory childrenTaskInfoFactory);
+    void SetResult(IProcessTaskResult processTaskResult);
 }

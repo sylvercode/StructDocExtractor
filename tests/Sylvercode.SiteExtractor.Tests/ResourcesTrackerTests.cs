@@ -2,7 +2,6 @@
 using Sylvercode.SiteExtractor.Tests.Fakes;
 using Sylvercode.SiteExtractor.Tests.Stubs;
 using Sylvercode.StructDocExtractor.Extraction;
-using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
 
 namespace Sylvercode.SiteExtractor.Tests;
@@ -12,7 +11,7 @@ public class ResourcesTrackerTests_AddResource
     private static ExtractionTask AsTask(UriNode uri)
     {
         ExtractionTask result = new(uri.Uri);
-        result.SetResult(new BasicProcessTaskResult(uri), ChildrenTaskInfoFactory.Default);
+        result.SetResult(new BasicProcessTaskResult(uri));
         return result;
     }
 

@@ -1,5 +1,4 @@
 ﻿using Sylvercode.StructDocExtractor.Extraction;
-using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
@@ -16,7 +15,7 @@ public class ChildrenTaskInfoTests_ctor
     {
         ExtractionTask result = new(DefaultTaskValue);
         if (taskResult is not null)
-            result.SetResult(taskResult, ChildrenTaskInfoFactory.Default);
+            result.SetResult(taskResult);
         return result;
     }
 
@@ -103,7 +102,7 @@ public class ChildrenTaskInfoTests_SubTaskResultSet
     {
         ExtractionTask result = new(DefaultTaskValue);
         if (taskResult is not null)
-            result.SetResult(taskResult, ChildrenTaskInfoFactory.Default);
+            result.SetResult(taskResult);
         return result;
     }
 
@@ -125,7 +124,7 @@ public class ChildrenTaskInfoTests_SubTaskResultSet
         BasicSrcNode resultNode = new();
 
         // When
-        childTask.SetResult(NewTaskResult(resultNode), ChildrenTaskInfoFactory.Default);
+        childTask.SetResult(NewTaskResult(resultNode));
 
         // Then
         Assert.Single(childrenTaskInfo.PendingSubTaskIndex, new TaskIndex(1));
@@ -143,7 +142,7 @@ public class ChildrenTaskInfoTests_SubTaskResultSet
         BasicSrcNode resultNode = new();
 
         // When
-        childTask.SetResult(NewTaskResult(resultNode), ChildrenTaskInfoFactory.Default);
+        childTask.SetResult(NewTaskResult(resultNode));
 
         // Then
         Assert.Empty(childrenTaskInfo.PendingSubTaskIndex);

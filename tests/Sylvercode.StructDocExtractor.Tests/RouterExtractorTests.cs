@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using Sylvercode.StructDocExtractor.Extraction;
-using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Tests.Mocks;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
@@ -29,7 +28,7 @@ public class RouterExtractorTests
             BasicSrcRootBlock node = new(data.ToUpperInvariant());
 
             ExtractionTask task = new(data);
-            task.SetResult(new BasicProcessTaskResult(node), ChildrenTaskInfoFactory.Default);
+            task.SetResult(new BasicProcessTaskResult(node));
             observer?.OnNext(task);
 
             ExtractionResult result = new();

@@ -8,7 +8,6 @@ public interface IExtractorTaskSequencerHandler<TExtractionData, TDataDiscrimina
     ExtractorOption ExtractorOption { get; }
     string GetDataPreview(TExtractionData? data);
     IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> DefaultNodeFactoryProvider { get; }
-    IChildrenTaskInfoFactory ChildrenTaskInfoFactory { get; }
     ILogger<TCategoryName> CreateLogger<TCategoryName>();
 
     IProcessTaskResult<TExtractionData, TDataDiscriminator>

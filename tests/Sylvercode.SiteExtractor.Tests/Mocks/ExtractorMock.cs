@@ -2,14 +2,11 @@ using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using Sylvercode.SiteExtractor.Tests.Stubs;
 using Sylvercode.StructDocExtractor.Extraction;
-using Sylvercode.StructDocExtractor.Extraction.Factory;
 
 namespace Sylvercode.SiteExtractor.Tests.Mocks;
 
 public class ExtractorMock(MockCallTracker tracker, bool extractNothing = false) : IExtractor<Uri>
 {
-    private readonly IChildrenTaskInfoFactory childrenTaskInfoFactory = new ChildrenTaskInfoFactory();
-
     public ExtractionResult Extract([DisallowNull] Uri data, IObserver<ExtractionTask>? observer = null)
     {
 
@@ -23,7 +20,7 @@ public class ExtractorMock(MockCallTracker tracker, bool extractNothing = false)
             ProcessTaskResult<Uri, Uri> taskResult = new(
                 TaskResultType.Success,
                 new UriReferenceNode(resUri.ToString(), refUri.ToString()));
-            task.SetResult(taskResult, childrenTaskInfoFactory);
+            task.SetResult(taskResult);
 
             observer?.OnNext(task);
         }

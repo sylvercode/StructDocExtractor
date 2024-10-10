@@ -8,14 +8,12 @@ namespace Sylvercode.StructDocExtractor.Extraction;
 public abstract class BaseExtractorTaskSequencerHandler<TExtractionData, TDataDiscriminator>(
     IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider,
     ExtractorOption extractorOption = default,
-    IChildrenTaskInfoFactory? childrenTaskInfoFactory = null,
     IDataPreviewProvider<TExtractionData>? dataPreviewProvider = null,
     ILoggerFactory? loggerFactory = null)
     : IExtractorTaskSequencerHandler<TExtractionData, TDataDiscriminator>
 {
     public ExtractorOption ExtractorOption { get; } = extractorOption;
     public IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> DefaultNodeFactoryProvider { get; } = defaultNodeFactoryProvider;
-    public IChildrenTaskInfoFactory ChildrenTaskInfoFactory { get; } = childrenTaskInfoFactory ?? Factory.ChildrenTaskInfoFactory.Default;
     public IDataPreviewProvider<TExtractionData> DataPreviewProvider { get; } = dataPreviewProvider ?? new ToStringPreviewProvider<TExtractionData>();
     public ILoggerFactory LoggerFactory { get; } = loggerFactory ?? NullLoggerFactory.Instance;
 

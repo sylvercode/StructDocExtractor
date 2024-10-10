@@ -16,11 +16,10 @@ public partial class ExtractorTaskSequencerHandler<TExtractionData, TDataDiscrim
     public ExtractorTaskSequencerHandler(
         IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator> defaultNodeFactoryProvider,
         ExtractorOption option = default,
-        IChildrenTaskInfoFactory? childrenTaskInfoFactory = null,
         IDataDiscriminatorFactory<TExtractionData, TDataDiscriminator>? dataDiscriminatorFactory = null,
         IDataPreviewProvider<TExtractionData>? dataPreviewProvider = null,
         ILoggerFactory? loggerFactory = null)
-        : base(defaultNodeFactoryProvider, option, childrenTaskInfoFactory, dataPreviewProvider, loggerFactory)
+        : base(defaultNodeFactoryProvider, option, dataPreviewProvider, loggerFactory)
     {
         _sequencer = new(this);
         _dataDiscriminatorFactory = dataDiscriminatorFactory;

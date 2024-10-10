@@ -19,7 +19,7 @@ public class TaskContextTests_GetSrcNodeStack
     {
         ExtractionTask result = new(DefaultTaskValue);
         if (taskResult is not null)
-            result.SetResult(taskResult, ChildrenTaskInfoFactory.Default);
+            result.SetResult(taskResult);
         return result;
     }
 
@@ -70,7 +70,7 @@ public class TaskContextTests_GetSrcNodeStack
         ExtractionTask taskNode = NewTask(NewTaskResult(parentNode, [DefaultTaskValue1]));
         BasicSrcNode childNode = new(DefaultTaskValue1);
         ExtractionTask childTask = taskNode.ChildrenTaskInfo!.ChildrenTasks[0];
-        childTask.SetResult(NewTaskResult(childNode), ChildrenTaskInfoFactory.Default);
+        childTask.SetResult(NewTaskResult(childNode));
 
         TaskContext<string, BasicNodeDiscriminator> context = new(childTask, DefaultNodeFactoryProvider);
 
@@ -99,7 +99,7 @@ public class TaskContextTests_GetStructDataStack
     {
         ExtractionTask result = new(DefaultTaskValue);
         if (taskResult is not null)
-            result.SetResult(taskResult, ChildrenTaskInfoFactory.Default);
+            result.SetResult(taskResult);
         return result;
     }
 
@@ -158,7 +158,7 @@ public class TaskContextTests_GetStructDataStack
         BasicSrcNode childNode = new(DefaultTaskValue1);
         ExtractionTask childTask = taskNode.ChildrenTaskInfo!.ChildrenTasks[0];
         BasicNodeDiscriminator childDiscriminator = new(DefaultDiscriminatorValue1);
-        childTask.SetResult(NewTaskResult(childNode, childDiscriminator), ChildrenTaskInfoFactory.Default);
+        childTask.SetResult(NewTaskResult(childNode, childDiscriminator));
 
         TaskContext<string, BasicNodeDiscriminator> context = new(childTask, DefaultNodeFactoryProvider);
 
@@ -182,12 +182,12 @@ public class TaskContextTests_GetStructDataStack
 
         BasicSrcNode extraNode = new(DefaultTaskValue2);
         ExtractionTask extraTask = taskNode.ChildrenTaskInfo!.ChildrenTasks[0];
-        extraTask.SetResult(NewTaskResult(extraNode, null, [DefaultTaskValue1]), ChildrenTaskInfoFactory.Default);
+        extraTask.SetResult(NewTaskResult(extraNode, null, [DefaultTaskValue1]));
 
         BasicSrcNode childNode = new(DefaultTaskValue1);
         ExtractionTask childTask = extraTask.ChildrenTaskInfo!.ChildrenTasks[0];
         BasicNodeDiscriminator childDiscriminator = new(DefaultDiscriminatorValue1);
-        childTask.SetResult(NewTaskResult(childNode, childDiscriminator), ChildrenTaskInfoFactory.Default);
+        childTask.SetResult(NewTaskResult(childNode, childDiscriminator));
 
         TaskContext<string, BasicNodeDiscriminator> context = new(childTask, DefaultNodeFactoryProvider);
 
@@ -211,7 +211,7 @@ public class TaskContextTests_GetStructDataStack
         BasicSrcNode childNode = new(DefaultTaskValue1);
         ExtractionTask childTask = taskNode.ChildrenTaskInfo!.ChildrenTasks[0];
         BasicNodeDiscriminator childDiscriminator = new(DefaultDiscriminatorValue1);
-        childTask.SetResult(NewTaskResult(childNode, childDiscriminator), ChildrenTaskInfoFactory.Default);
+        childTask.SetResult(NewTaskResult(childNode, childDiscriminator));
 
         TaskContext<string, BasicNodeDiscriminator> context = new(childTask, DefaultNodeFactoryProvider);
 
