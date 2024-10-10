@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="../Sylvercode.SiteExtractor/Sylvercode.SiteExtractor.csproj" />
     <ProjectReference Include="..\Sylvercode.SiteExtractor.StdHtml\Sylvercode.SiteExtractor.StdHtml.csproj" />
+    <ProjectReference Include="..\Sylvercode.StructDocExtractor.AngleSharp\Sylvercode.StructDocExtractor.AngleSharp.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -11,20 +11,17 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ResourceProcessorProviderExtentions
 {
-    public static IServiceCollection AddResourceProcessorProviderWithDefault<TExtractionData>(this IServiceCollection services)
-    {
+    public static IServiceCollection AddImageCopierProcessor(this IServiceCollection services) =>
         services.AddResourceProcessor<ResourceCopier>(ImageUriMatcher.Default);
+
+    public static IServiceCollection AddResourceDataExtractorProcessor<TExtractionData>(this IServiceCollection services) =>
         services.AddResourceProcessor<ResourceDataExtractor<TExtractionData>, IOptions<SiteExtractorOptions>>((options)
             => new UriMatcherByBase(options.Value.GetSourceBaseUri()));
 
-        services.AddResourceProcessorProvider();
-
-        return services;
-    }
-
     public static IServiceCollection AddResourceProcessorProvider(this IServiceCollection services)
     {
-        services.AddSingleton<IResourceProcessorProvider>((serviceProvider) =>
+        services.AddOptions<ResourceProcessorCollection>();
+        services.TryAddSingleton<IResourceProcessorProvider>((serviceProvider) =>
         {
             var ResourceProcessorCollection = serviceProvider.GetRequiredService<IOptions<ResourceProcessorCollection>>();
             ResourceProcessorProvider provider = new();

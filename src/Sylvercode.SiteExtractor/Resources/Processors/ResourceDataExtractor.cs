@@ -8,10 +8,10 @@ using Sylvercode.StructDocExtractor.Serialization;
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
 public class ResourceDataExtractor<TExtractionData>(
-    IExtractor<TExtractionData> extractor,
     ISiteSource<TExtractionData> siteSource,
-    IStructDocSerializer serisalizer,
+    IExtractor<TExtractionData> extractor,
     IDataStore dataStore,
+    IStructDocSerializer serisalizer,
     IUriTranslater? uriTranslater = null,
     IReferencerUpdater? referencerUpdater = null) : IResourceDataExtractor<TExtractionData>
 {

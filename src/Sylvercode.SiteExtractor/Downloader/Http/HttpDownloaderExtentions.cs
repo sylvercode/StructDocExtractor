@@ -15,16 +15,16 @@ public static class HttpDownloaderExtentions
     {
         services.TryAddSingleton<CookieContainer>();
         services.AddHttpClient<ISiteSource<byte[]>, HttpDownloader>((sp, client) =>
-        {
-            var options = sp.GetRequiredService<IOptions<SiteExtractorOptions>>().Value;
-            client.BaseAddress = options.GetSourceBaseUri();
-        })
-        .ConfigurePrimaryHttpMessageHandler((sp) => new HttpClientHandler
-        {
-            AllowAutoRedirect = true,
-            UseCookies = true,
-            CookieContainer = sp.GetRequiredService<CookieContainer>()
-        });
+            {
+                var options = sp.GetRequiredService<IOptions<SiteExtractorOptions>>().Value;
+                client.BaseAddress = options.GetSourceBaseUri();
+            })
+            .ConfigurePrimaryHttpMessageHandler((sp) => new HttpClientHandler
+            {
+                AllowAutoRedirect = true,
+                UseCookies = true,
+                CookieContainer = sp.GetRequiredService<CookieContainer>()
+            });
 
         return services;
     }

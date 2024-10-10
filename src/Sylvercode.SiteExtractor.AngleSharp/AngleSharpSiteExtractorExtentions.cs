@@ -4,9 +4,12 @@ using AngleSharp.Dom;
 using AngleSharp.Io;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using Sylvercode.SiteExtractor;
 using Sylvercode.SiteExtractor.AngleSharp;
 using Sylvercode.SiteExtractor.Sources;
+using Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
+using Sylvercode.StructDocExtractor.Extraction.Factory;
+using Sylvercode.StructDocExtractor.Extraction.PreviewProvider;
+using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Microsoft.Extensions.DependencyInjection;
@@ -21,7 +24,7 @@ public static class AngleSharpSiteExtractorExtentions
         services.AddMemoryCookieProvider();
         services.TryAddSingleton((sp) => AngleSharp.Configuration.Default.With(sp.GetRequiredService<MemoryCookieProvider>()));
         services.TryAddSingleton<IBrowsingContext, BrowsingContext>();
-        services.AddSingleton<ISiteSource<IElement>, AngleSharpWebSource>();
+        services.TryAddSingleton<ISiteSource<IElement>, AngleSharpWebSource>();
 
         return services;
     }
@@ -45,9 +48,26 @@ public static class AngleSharpSiteExtractorExtentions
         return services;
     }
 
-    public static IServiceCollection AddAngleSharpSiteExtractor(this IServiceCollection services)
+    public static IServiceCollection AddAngleSharpSiteExtractor(this IServiceCollection services, bool withDefaultSource = true, bool withImageCopier = true)
     {
-        services.AddSingleton<ISiteExtractor, SiteExtractor>();
+        services.AddSiteExtractor()
+            .AddResourceProcessorProvider()
+            .AddResourceDataExtractorProcessor<IElement>();
+
+        if (withDefaultSource)
+            // Must be added before AddHttpDownloader so its cookie container can be share.
+            services.AddAngleSharpWebSource();
+
+        if (withImageCopier)
+        {
+            services.AddImageCopierProcessor();
+            if (withDefaultSource)
+                services.AddHttpDownloader();
+        }
+
+        services.AddRouterExtractor<IElement>();
+        services.TryAddSingleton<IDataDiscriminatorFactory<IElement, HtmlNodeDiscriminator>, HtmlNodeDiscriminatorFactory>();
+        services.TryAddSingleton<IDataPreviewProvider<IElement>, HtmlDataPreviewProvider>();
 
         return services;
     }
