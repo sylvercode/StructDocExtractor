@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using Sylvercode.StructDocExtractor.Extraction;
+﻿using Sylvercode.StructDocExtractor.Extraction;
 using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
 
@@ -16,7 +15,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
     {
         ExtractionTask result = new(DefaultTaskValue);
         if (taskResult is not null)
-            result.SetResult(taskResult, ChildrenTaskInfoFactory.Default);
+            result.SetResult(taskResult);
         return result;
     }
 
@@ -72,7 +71,7 @@ public class FactoryProviderStackByTaskTests_GetActiveSrcNodeFactoryProvider
         // Given
         var parentTask = NewTask(NewTaskResult(providerId: 1, [DefaultTaskValue]));
         var childTask = parentTask.ChildrenTaskInfo!.ChildrenTasks[0];
-        childTask.SetResult(NewTaskResult(), ChildrenTaskInfoFactory.Default);
+        childTask.SetResult(NewTaskResult());
         FactoryProviderStackByTask<string, BasicNodeDiscriminator> provider =
             new(childTask, DefaultNodeFactoryProvider);
 

@@ -1,5 +1,4 @@
 ﻿using Sylvercode.StructDocExtractor.Extraction;
-using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
 
@@ -31,7 +30,7 @@ public class FakeStructDocData(string? id = null, string? data = null)
             IProcessTaskResult<FakeStructDocData, BasicNodeDiscriminator> TaskResult =
                 BasicStructDocNodeFactoryProvider.Default.GetFactoryForStack(
                     new BasicNodeStructDataStack(discriminator))!.NewNode(this);
-            result.SetResult(TaskResult, ChildrenTaskInfoFactory.Default);
+            result.SetResult(TaskResult);
         }
 
         return result;

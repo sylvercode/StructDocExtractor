@@ -54,7 +54,7 @@ public class ExtractorTaskSequencerTests_ExtractAll
     {
         ExtractionTask result = new(DefaultTaskValue);
         if (taskResult is not null)
-            result.SetResult(taskResult, ChildrenTaskInfoFactory.Default);
+            result.SetResult(taskResult);
         return result;
     }
 

@@ -11,6 +11,7 @@ public partial class ExtractionTask(
     ILogger<ExtractionTask>? logger = null)
     : IExtractionTask
 {
+    private readonly ChildrenTaskInfoFactory _childrenTaskInfoFactory = ChildrenTaskInfoFactory.Default;
     protected ILogger<ExtractionTask> Logger { get; } = logger ?? NullLogger<ExtractionTask>.Instance;
 
     public object ExtractionData { get; } = extractionData;
@@ -22,15 +23,14 @@ public partial class ExtractionTask(
     protected void OnResultSet() => ResultSet?.Invoke(this, EventArgs.Empty);
 
     public void SetResult(
-        IProcessTaskResult processTaskResult,
-        IChildrenTaskInfoFactory childrenTaskInfoFactory)
+        IProcessTaskResult processTaskResult)
     {
         if (Logger.IsEnabled(LogLevel.Trace))
             LogSetResult(Logger, TaskSnippet(true)); ;
 
         TaskResult = new ExtractionTaskResult(processTaskResult);
 
-        ChildrenTaskInfo = childrenTaskInfoFactory.NewChildrenTaskInfo(this, processTaskResult?.SubTasksExtractionData);
+        ChildrenTaskInfo = _childrenTaskInfoFactory.NewChildrenTaskInfo(this, processTaskResult?.SubTasksExtractionData);
 
         OnResultSet();
     }

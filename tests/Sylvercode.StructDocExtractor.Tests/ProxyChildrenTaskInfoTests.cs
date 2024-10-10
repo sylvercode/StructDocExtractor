@@ -1,5 +1,4 @@
 ﻿using Sylvercode.StructDocExtractor.Extraction;
-using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.Extraction.TaskInfo;
 using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
@@ -16,7 +15,7 @@ public class ProxyChildrenTaskInfoTests_ctor
     {
         ExtractionTask result = new(DefaultTaskValue);
         if (taskResult is not null)
-            result.SetResult(taskResult, ChildrenTaskInfoFactory.Default);
+            result.SetResult(taskResult);
         return result;
     }
 
@@ -69,7 +68,7 @@ public class ProxyChildrenTaskInfoTests_RegisterChildTaskResultSet
     {
         ExtractionTask result = new(extractionData, parentTaskInfo);
         if (taskResult is not null)
-            result.SetResult(taskResult, ChildrenTaskInfoFactory.Default);
+            result.SetResult(taskResult);
         return result;
     }
 
@@ -90,7 +89,7 @@ public class ProxyChildrenTaskInfoTests_RegisterChildTaskResultSet
         ExtractionTask childTask = parentTask.ChildrenTaskInfo!.ChildrenTasks[0];
 
         // When
-        childTask.SetResult(NewTaskResult(null, [DefaultTaskValue2]), ChildrenTaskInfoFactory.Default);
+        childTask.SetResult(NewTaskResult(null, [DefaultTaskValue2]));
 
         // Then
         Assert.IsType<ProxyChildrenTaskInfo>(childTask.ChildrenTaskInfo);
@@ -105,13 +104,13 @@ public class ProxyChildrenTaskInfoTests_RegisterChildTaskResultSet
         // Given
         ExtractionTask parentTask = NewTask(taskResult: NewTaskResult(new BasicSrcRootBlock(DefaultTaskValue), [DefaultTaskValue1]));
         ExtractionTask childTask = parentTask.ChildrenTaskInfo!.ChildrenTasks[0];
-        childTask.SetResult(NewTaskResult(null, [DefaultTaskValue2, DefaultTaskValue3]), ChildrenTaskInfoFactory.Default);
+        childTask.SetResult(NewTaskResult(null, [DefaultTaskValue2, DefaultTaskValue3]));
         ExtractionTask grandChildTask0 = childTask.ChildrenTaskInfo!.ChildrenTasks[0];
         ExtractionTask grandChildTask1 = childTask.ChildrenTaskInfo!.ChildrenTasks[1];
 
         // When
-        grandChildTask0.SetResult(NewTaskResult(null, [DefaultTaskValue4]), ChildrenTaskInfoFactory.Default);
-        grandChildTask1.SetResult(NewTaskResult(null, [DefaultTaskValue5]), ChildrenTaskInfoFactory.Default);
+        grandChildTask0.SetResult(NewTaskResult(null, [DefaultTaskValue4]));
+        grandChildTask1.SetResult(NewTaskResult(null, [DefaultTaskValue5]));
 
         // Then
         Assert.IsType<ProxyChildrenTaskInfo>(grandChildTask0.ChildrenTaskInfo);
