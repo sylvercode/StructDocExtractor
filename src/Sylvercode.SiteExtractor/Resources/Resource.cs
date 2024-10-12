@@ -10,6 +10,8 @@ public class Resource(Uri sourceUri, bool isPullable = false)
 
     public IResourceUriTranslater UriTranslater { get; set; } = ResourceUriTranslater.NoopInstance;
 
+    public ResourceMetadataDictionary Metadata { get; } = [];
+
     public Uri TranslateUri(Uri sourceUri)
     {
         var (uri, _) = sourceUri.GetUriAndFragment();
