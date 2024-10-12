@@ -15,4 +15,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Sylvercode.StructDocExtractor\Sylvercode.StructDocExtractor.csproj" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <AnalysisMode>Recommended</AnalysisMode>
+  </PropertyGroup>
 </Project>
