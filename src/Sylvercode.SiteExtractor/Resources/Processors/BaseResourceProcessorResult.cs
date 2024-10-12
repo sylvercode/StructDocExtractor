@@ -1,5 +1,5 @@
 
-using Sylvercode.StructDocExtractor.Metadata;
+using Sylvercode.StructDocExtractor.Metadatas;
 
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
@@ -13,7 +13,7 @@ public abstract class BaseResourceProcessorResult(
 
     public Resource Resource => resource;
 
-    public ResourceMetadataDictionary NewMetadata { get; } = [];
+    public MetadataDictionary NewMetadata { get; } = [];
 
     public IResourceUriTranslater? ResourceUriTranslaterToSet => resourceUriTranslaterToSet;
 

@@ -1,8 +1,8 @@
 using System.Globalization;
 
-namespace Sylvercode.StructDocExtractor.Metadata;
+namespace Sylvercode.StructDocExtractor.Metadatas;
 
-public class ResourceMetadata(string name, object? value)
+public class Metadata(string name, object? value)
 {
     public string Name { get; } = name;
     public TValue? GetValue<TValue>() => (TValue?)Convert.ChangeType(value, typeof(TValue), CultureInfo.InvariantCulture);

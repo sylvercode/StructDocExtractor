@@ -1,6 +1,6 @@
 using Sylvercode.SiteExtractor.Resources;
 using Sylvercode.SiteExtractor.Resources.Processors;
-using Sylvercode.StructDocExtractor.Metadata;
+using Sylvercode.StructDocExtractor.Metadatas;
 
 namespace Sylvercode.SiteExtractor.Tests.Mocks;
 
@@ -15,7 +15,7 @@ public class ResourceProcessorResultMock(
 
     public Resource Resource => resource;
 
-    public ResourceMetadataDictionary NewMetadata { get; } = [];
+    public MetadataDictionary NewMetadata { get; } = [];
 
     public IResourceUriTranslater? ResourceUriTranslaterToSet { get; set; }
 
