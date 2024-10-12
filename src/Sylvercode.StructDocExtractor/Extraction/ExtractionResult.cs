@@ -1,3 +1,4 @@
+using Sylvercode.StructDocExtractor.Metadatas;
 using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
@@ -33,5 +34,6 @@ public class ExtractionResult
         => Summery.CountTaskResult(resultType);
 
     public ExtractionSummery Summery { get; } = new();
+    public MetadataDictionary Metadatas { get; } = [];
     public List<IStructDocNode> StructDocNodes { get; } = [];
 }

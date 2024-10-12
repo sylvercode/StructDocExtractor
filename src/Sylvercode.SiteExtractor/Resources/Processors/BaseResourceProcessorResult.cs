@@ -7,13 +7,14 @@ public abstract class BaseResourceProcessorResult(
     IResourceProcessor processor,
     Resource resource,
     IResourceUriTranslater? resourceUriTranslaterToSet,
-    bool isUnfinished) : IResourceProcessorResult
+    bool isUnfinished,
+    MetadataDictionary? newMetadatas = null) : IResourceProcessorResult
 {
     public IResourceProcessor Processor => processor;
 
     public Resource Resource => resource;
 
-    public MetadataDictionary NewMetadata { get; } = [];
+    public MetadataDictionary NewMetadata { get; } = newMetadatas ?? [];
 
     public IResourceUriTranslater? ResourceUriTranslaterToSet => resourceUriTranslaterToSet;
 

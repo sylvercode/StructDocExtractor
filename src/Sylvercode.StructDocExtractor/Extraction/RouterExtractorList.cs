@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using Sylvercode.StructDocExtractor.Metadatas;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 
@@ -19,6 +20,8 @@ public class RouterExtractorList<TExtractionData> : IList<RouterExtractorList<TE
         public IExtractor<TExtractionData> Extractor => extractor;
         [NotNull]
         public TExtractionData RootData => rootData;
+
+        public MetadataDictionary Metadatas { get; } = [];
     }
 
     private readonly List<Entry> _extractors = [];

@@ -1,4 +1,5 @@
 using Sylvercode.StructDocExtractor.Extraction.Factory;
+using Sylvercode.StructDocExtractor.Metadatas;
 using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
@@ -9,6 +10,7 @@ public interface IProcessTaskResult
     public IStructDocNode? SrcNode { get; }
     public object? DataDiscriminator { get; }
     public object? NodeFactoryProvider { get; }
+    public MetadataDictionary Metadatas { get; }
     public IEnumerable<object> SubTasksExtractionData { get; }
     public IEnumerable<object> ExtraTasksExtractionData { get; }
 }
