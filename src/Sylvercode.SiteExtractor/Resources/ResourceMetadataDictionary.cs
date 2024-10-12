@@ -8,8 +8,12 @@ public class ResourceMetadataDictionary : IDictionary<string, ResourceMetadata>
     private readonly Dictionary<string, ResourceMetadata> _dictionary = [];
 
     public void AddMetadata(string name, object? value)
+        => _dictionary[name] = new ResourceMetadata(name, value);
+
+    public void CopyMetadataFrom(ResourceMetadataDictionary other)
     {
-        _dictionary.Add(name, new ResourceMetadata(name, value));
+        foreach (var (name, metadata) in other)
+            _dictionary[name] = metadata;
     }
 
     public bool TryGetValue<TValue>(string name, out TValue? value)
