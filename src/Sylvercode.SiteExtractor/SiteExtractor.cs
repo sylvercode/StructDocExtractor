@@ -42,6 +42,17 @@ public partial class SiteExtractor(
                 _resourcesTracker.AddResource(dependency);
             }
 
+            if (result.NewMetadata.Count != 0)
+            {
+                if (_logger.IsEnabled(LogLevel.Trace))
+                {
+                    foreach (var (name, metadata) in result.NewMetadata)
+                        LogNewMetadata(name, metadata.GetStrValue());
+                }
+
+                resource.Metadata.CopyMetadataFrom(result.NewMetadata);
+            }
+
             if (result.ResourceUriTranslaterToSet != null)
             {
                 LogUriTranslaterToSet(result.ResourceUriTranslaterToSet.GetType().Name);
@@ -105,6 +116,11 @@ public partial class SiteExtractor(
         Level = LogLevel.Debug,
         Message = "Adding dependency: {Dependency}")]
     private partial void LogAddDependency(Uri dependency);
+
+    [LoggerMessage(
+        Level = LogLevel.Trace,
+        Message = "New metadata: {Name} = {Value}")]
+    private partial void LogNewMetadata(string name, string? value);
 
     [LoggerMessage(
         Level = LogLevel.Debug,
