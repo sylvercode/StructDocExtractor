@@ -1,9 +1,13 @@
-﻿using Sylvercode.SiteExtractor.Sources;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Sylvercode.SiteExtractor.Sources;
 
 namespace Sylvercode.SiteExtractor.Downloader.Http;
 
-public class HttpDownloader(HttpClient httpClient) : ISiteSource<byte[]>
+public partial class HttpDownloader(HttpClient httpClient, ILogger<HttpDownloader>? logger) : ISiteSource<byte[]>
 {
+    private readonly ILogger<HttpDownloader> _logger = logger ?? NullLogger<HttpDownloader>.Instance;
+
     public Uri BaseUri { get; } = httpClient.BaseAddress
         ?? throw new ArgumentException("HttpClient must have a BaseAddress", nameof(httpClient));
 
@@ -14,14 +18,16 @@ public class HttpDownloader(HttpClient httpClient) : ISiteSource<byte[]>
 
     public bool Download(Uri uri, out byte[] fileBytes)
     {
+        _logger.BeginScope(new { Uri = uri });
         try
         {
-            
             fileBytes = httpClient.GetByteArrayAsync(uri).Result;
+            LogGetSuccess(uri);
             return true;
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            LogGetFailure(uri, e);
             fileBytes = [];
             return false;
         }
@@ -34,4 +40,14 @@ public class HttpDownloader(HttpClient httpClient) : ISiteSource<byte[]>
 
         return fileBytes;
     }
+
+    [LoggerMessage(
+        LogLevel.Trace,
+        Message = "Successfully fetched file at {Uri}")]
+    private partial void LogGetSuccess(Uri uri);
+
+    [LoggerMessage(
+        LogLevel.Debug,
+        Message = "Failed to fetch file at {Uri}")]
+    private partial void LogGetFailure(Uri uri, Exception exception);
 }
