@@ -1,4 +1,5 @@
 using Sylvercode.SiteExtractor.UriUtils;
+using Sylvercode.StructDocExtractor.Metadata;
 
 namespace Sylvercode.SiteExtractor.Resources;
 

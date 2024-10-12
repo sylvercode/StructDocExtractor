@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Sylvercode.SiteExtractor.Resources;
+namespace Sylvercode.StructDocExtractor.Metadata;
 
 public class ResourceMetadataDictionary : IDictionary<string, ResourceMetadata>
 {
