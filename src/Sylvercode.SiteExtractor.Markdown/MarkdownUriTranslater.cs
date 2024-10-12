@@ -1,10 +1,10 @@
-using Sylvercode.SiteExtractor.UriUtils;
+using Sylvercode.SiteExtractor.Resources;
 
 namespace Sylvercode.SiteExtractor.Markdown;
 
-public class MarkdownUriTranslater : IUriTranslater
+public class MarkdownUriTranslater : ResourceUriTranslater
 {
-    public Uri Translate(Uri uri)
+    public override Uri Translate(Resource resource, Uri uri)
     {
         // TODO: Implement
         throw new NotImplementedException();

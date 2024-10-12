@@ -12,7 +12,6 @@ public class ResourceUriTranslater(IUriTranslater? uriTranslater = null) : IReso
 
     protected IUriTranslater? UriTranslater { get; private set; } = uriTranslater;
 
-    public Uri Translate(Resource resource, Uri uri) =>
+    public virtual Uri Translate(Resource resource, Uri uri) =>
         UriTranslater?.Translate(uri) ?? uri;
-
 }
