@@ -35,7 +35,7 @@ public class SerializerProvider : ISerializerProvider, IEnumerable<KeyValuePair<
 
     public ISerializer GetSerializerFor(IStructDocNode obj)
     {
-        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(obj, nameof(obj));
 
         if (!_serializers.TryGetValue(obj.GetType(), out ISerializer? serializer))
             throw new InvalidOperationException($"No serializer found for type {obj.GetType().Name}");
@@ -49,6 +49,7 @@ public class SerializerProvider : ISerializerProvider, IEnumerable<KeyValuePair<
             throw new InvalidOperationException($"A serializer for type {type.Name} already exists");
     }
 
+    #region IEnumerable<KeyValuePair<Type, ISerializer>>
     public IEnumerator<KeyValuePair<Type, ISerializer>> GetEnumerator()
     {
         return ((IEnumerable<KeyValuePair<Type, ISerializer>>)_serializers).GetEnumerator();
@@ -58,4 +59,5 @@ public class SerializerProvider : ISerializerProvider, IEnumerable<KeyValuePair<
     {
         return ((IEnumerable)_serializers).GetEnumerator();
     }
+    #endregion
 }
