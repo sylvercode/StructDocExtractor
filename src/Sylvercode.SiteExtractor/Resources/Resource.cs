@@ -8,7 +8,7 @@ public class Resource(Uri sourceUri, bool isPullable = false)
 
     public ResourceState State { get; private set; } = new(isPullable);
 
-    public IUriTranslater UriTranslater { get; set; } = NoopUriTranslater.Default;
+    public IResourceUriTranslater UriTranslater { get; set; } = ResourceUriTranslater.NoopInstance;
 
     public Uri TranslateUri(Uri sourceUri)
     {
@@ -16,7 +16,7 @@ public class Resource(Uri sourceUri, bool isPullable = false)
         if (uri != sourceUri)
             throw new ArgumentException("Not a fragment uri of the resouce.", nameof(sourceUri));
 
-        return UriTranslater.Translate(sourceUri);
+        return UriTranslater.Translate(this, sourceUri);
     }
 
     public void MarkAsPulling()

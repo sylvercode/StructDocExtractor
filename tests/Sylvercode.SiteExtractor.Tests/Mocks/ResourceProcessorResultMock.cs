@@ -1,6 +1,5 @@
 using Sylvercode.SiteExtractor.Resources;
 using Sylvercode.SiteExtractor.Resources.Processors;
-using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Tests.Mocks;
 
@@ -15,7 +14,7 @@ public class ResourceProcessorResultMock(
 
     public Resource Resource => resource;
 
-    public IUriTranslater? ResourceUriTranslaterToSet { get; set; }
+    public IResourceUriTranslater? ResourceUriTranslaterToSet { get; set; }
 
     public bool IsUnfinished { get; } = continuProcessResult != null;
 

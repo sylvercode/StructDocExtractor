@@ -7,21 +7,8 @@ using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
-public partial class ResourceCopier(
-    ISiteSource<byte[]> siteSource,
-    IDataStore dataStore,
-    IOptions<ResourceCopierOptions> options,
-    ILoggerFactory? loggerFactory = null) : IResourceCopiler
+public partial class ResourceCopier : IResourceCopiler
 {
-    public void Download(Uri uri)
-    {
-        byte[] file = siteSource.GetData(uri);
-        using var stream = dataStore.GetStream(UriTranslater.Translate(uri));
-        stream.Write(file);
-    }
-
-    private CopiedResourceUriTranslater UriTranslater { get; } = new(siteSource, dataStore, options, loggerFactory?.CreateLogger<CopiedResourceUriTranslater>());
-
     private partial class CopiedResourceUriTranslater(
         ISiteSource<byte[]> siteSource,
         IDataStore dataStore,
@@ -73,11 +60,38 @@ public partial class ResourceCopier(
         private partial void LogFileNameDestiantion(string fileName);
     }
 
+    private readonly ISiteSource<byte[]> _siteSource;
+
+    private readonly IDataStore _dataStore;
+
+    private readonly CopiedResourceUriTranslater _uriTranslater;
+
+    private readonly ResourceUriTranslater _resourceUriTranslater;
+
+    public ResourceCopier(
+        ISiteSource<byte[]> siteSource,
+        IDataStore dataStore,
+        IOptions<ResourceCopierOptions> options,
+        ILoggerFactory? loggerFactory = null)
+    {
+        _siteSource = siteSource;
+        _dataStore = dataStore;
+        _uriTranslater = new(siteSource, dataStore, options, loggerFactory?.CreateLogger<CopiedResourceUriTranslater>());
+        _resourceUriTranslater = new(_uriTranslater);
+    }
+
+    public void Download(Uri uri)
+    {
+        byte[] file = _siteSource.GetData(uri);
+        using var stream = _dataStore.GetStream(_uriTranslater.Translate(uri));
+        stream.Write(file);
+    }
+
     #region IResourceProcessor
     public IResourceProcessorResult Process(Resource resource, IReadOnlyDictionary<Uri, Resource> trackedResources)
     {
         Download(resource.Uri);
-        return new FinishedProcessResult(this, resource, UriTranslater);
+        return new FinishedProcessResult(this, resource, _resourceUriTranslater);
     }
     #endregion
 }

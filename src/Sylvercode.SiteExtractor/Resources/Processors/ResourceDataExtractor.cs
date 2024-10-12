@@ -2,7 +2,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Sylvercode.SiteExtractor.Sources;
 using Sylvercode.SiteExtractor.Store;
-using Sylvercode.SiteExtractor.UriUtils;
 using Sylvercode.StructDocExtractor.Extraction;
 using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Serialization;
@@ -14,7 +13,7 @@ public partial class ResourceDataExtractor<TExtractionData>(
     IExtractor<TExtractionData> extractor,
     IDataStore dataStore,
     IStructDocSerializer serisalizer,
-    IUriTranslater? uriTranslater = null,
+    IResourceUriTranslater? uriTranslater = null,
     IReferencerUpdater? referencerUpdater = null,
     ILogger<ResourceDataExtractor<TExtractionData>>? logger = null) : IResourceDataExtractor<TExtractionData>
 {
@@ -33,7 +32,8 @@ public partial class ResourceDataExtractor<TExtractionData>(
 
     private readonly ILogger<ResourceDataExtractor<TExtractionData>> _logger = logger ?? new NullLogger<ResourceDataExtractor<TExtractionData>>();
 
-    private IUriTranslater UriTransler { get; } = uriTranslater ?? new UriBaseTranslater(siteSource.BaseUri, dataStore.BaseUri);
+    private IResourceUriTranslater UriTransler { get; } =
+        uriTranslater ?? ResourceUriTranslater.NewBaseTranslater(siteSource.BaseUri, dataStore.BaseUri);
 
     public IResourceProcessorResult Extract(Resource resource, IReadOnlyDictionary<Uri, Resource> trackedResources)
     {
