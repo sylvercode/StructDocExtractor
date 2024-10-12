@@ -10,10 +10,15 @@ public class MetadataDictionary : IDictionary<string, Metadata>
     public void AddMetadata(string name, object? value)
         => _dictionary[name] = new Metadata(name, value);
 
-    public void CopyMetadataFrom(MetadataDictionary other)
+    public void CopyMetadataFrom(MetadataDictionary other, bool newOnly = true)
     {
         foreach (var (name, metadata) in other)
-            _dictionary[name] = metadata;
+        {
+            if (newOnly)
+                _dictionary.TryAdd(name, metadata);
+            else
+                _dictionary[name] = metadata;
+        }
     }
 
     public bool TryGetValue<TValue>(string name, out TValue? value)
