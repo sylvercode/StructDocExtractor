@@ -6,21 +6,20 @@ public class SiteExtractorOptions
 {
     public const string SiteExtractor = nameof(SiteExtractor);
 
-
     public string SourceAuthority { get; set; } = string.Empty;
 
-    private string sourceBasePath = string.Empty;
-    private string outputDirectory = string.Empty;
+    private string _sourceBasePath = string.Empty;
+    private string _outputDirectory = string.Empty;
 
     public string SourceBasePath
     {
-        get => sourceBasePath; set => sourceBasePath = value.AsDirPath();
+        get => _sourceBasePath; set => _sourceBasePath = value.AsDirPath();
     }
 
     public string OutputDirectory
     {
-        get => outputDirectory;
-        set => outputDirectory = value.AsDirPath();
+        get => _outputDirectory;
+        set => _outputDirectory = value.AsDirPath();
     }
     public Uri GetSourceBaseUri()
     {

@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.SiteExtractor", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.StructDocExtractor.Markdown", "src\Sylvercode.StructDocExtractor.Markdown\Sylvercode.StructDocExtractor.Markdown.csproj", "{AF3C0FF8-7F12-4B71-A09C-859DA0C17C45}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sylvercode.SiteExtractor.Markdown.Tests", "tests\Sylvercode.SiteExtractor.Markdown.Tests\Sylvercode.SiteExtractor.Markdown.Tests.csproj", "{1B8B892F-34BA-4C7F-8C81-BD9088FDB1CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +69,10 @@ Global
 		{AF3C0FF8-7F12-4B71-A09C-859DA0C17C45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF3C0FF8-7F12-4B71-A09C-859DA0C17C45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF3C0FF8-7F12-4B71-A09C-859DA0C17C45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B8B892F-34BA-4C7F-8C81-BD9088FDB1CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B8B892F-34BA-4C7F-8C81-BD9088FDB1CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B8B892F-34BA-4C7F-8C81-BD9088FDB1CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B8B892F-34BA-4C7F-8C81-BD9088FDB1CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,5 +87,6 @@ Global
 		{76CA1F0D-4BB3-4BC4-A3AF-A2187001F91E} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
 		{D8CA3526-FCF0-4F63-941D-4A55087C2E4F} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
 		{AF3C0FF8-7F12-4B71-A09C-859DA0C17C45} = {3DE7BD21-8890-43AE-9AC0-3B5119D4B6BD}
+		{1B8B892F-34BA-4C7F-8C81-BD9088FDB1CE} = {7DD327A8-8077-48C0-AB26-892B6BAC2D6B}
 	EndGlobalSection
 EndGlobal
