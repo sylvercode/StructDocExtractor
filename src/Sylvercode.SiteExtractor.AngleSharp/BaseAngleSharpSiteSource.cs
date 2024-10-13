@@ -17,7 +17,7 @@ public abstract class BaseAngleSharpSiteSource : ISiteSource<IElement>
 
     public BaseAngleSharpSiteSource(IOptions<SiteExtractorOptions> options, IConfiguration? config, IBrowsingContext? browsingContext)
     {
-        BaseUri = new Uri(options.Value.OutputDirectory);
+        BaseUri = options.Value.GetOutputUri();
         Config = config ?? Configuration.Default;
         BrowsingContext = browsingContext ?? global::AngleSharp.BrowsingContext.New(Config);
         

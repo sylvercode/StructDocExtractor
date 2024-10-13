@@ -37,7 +37,7 @@ public class MetadataDictionary : IDictionary<string, Metadata>
     {
         if (!_dictionary.TryGetValue(name, out var entry))
         {
-            value = "";
+            value = null;
             return false;
         }
 
