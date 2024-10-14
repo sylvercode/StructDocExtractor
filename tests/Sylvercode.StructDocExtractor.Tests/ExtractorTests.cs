@@ -1,4 +1,5 @@
 ﻿using Sylvercode.StructDocExtractor.Extraction;
+using Sylvercode.StructDocExtractor.Metadatas;
 using Sylvercode.StructDocExtractor.Tests.Fakes;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
 
@@ -30,18 +31,38 @@ public class ExtractorTests
             dataDiscriminatorFactory: FakeStructDocDataDiscriminatorProvider.Default);
 
         FakeStructDocData data = FakeStructDocData.New().WithId("1")
+            .WithMetadata("RootKey", "RootValue")
             .NewChildrenBuilder()
                 .WithId("2")
+                .WithMetadata("MetaKey", "MetaValue")
                 .NewChildrenBuilder()
                     .WithId("3")
+                    .WithMetadata("MetaKey", "OverrideValue")
                 .BuildChildren()
             .BuildChildren();
 
 
         // When
-        extractor.Extract(data, observer);
+        ExtractionResult result = extractor.Extract(data, observer);
 
         // Then
+        var rootNode = Assert.IsType<BasicSrcRootBlock>(Assert.Single(result.StructDocNodes));
+        Assert.Equal("1", rootNode.Id);
+        Assert.Collection(rootNode.Content,
+            node =>
+            {
+                var block = Assert.IsType<BasicSrcBloc>(node);
+                Assert.Equal("2", block.Id);
+                var child = Assert.Single(block.Content);
+                Assert.Equal("3", child.Id);
+            });
+
+        Assert.Equal(2, result.Metadatas.Count);
+        Metadata rootKey = Assert.Contains("RootKey", result.Metadatas);
+        Assert.Equal("RootValue", rootKey.GetStrValue());
+        Metadata metaKey = Assert.Contains("MetaKey", result.Metadatas);
+        Assert.Equal("OverrideValue", metaKey.GetStrValue());
+
         Assert.Collection(observer.CallbackIds,
             id => Assert.Equal("1", id),
             id => Assert.Equal("2", id),

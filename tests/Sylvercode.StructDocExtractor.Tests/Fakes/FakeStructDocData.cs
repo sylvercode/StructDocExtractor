@@ -1,5 +1,6 @@
 ﻿using Sylvercode.StructDocExtractor.Extraction;
 using Sylvercode.StructDocExtractor.Extraction.TaskInfo;
+using Sylvercode.StructDocExtractor.Metadatas;
 using Sylvercode.StructDocExtractor.Tests.Stubs;
 
 namespace Sylvercode.StructDocExtractor.Tests.Fakes;
@@ -11,6 +12,7 @@ public class FakeStructDocData(string? id = null, string? data = null)
     public FakeStructDocData? Parent { get; set; }
     public string Id { get; set; } = id ?? "";
     public string Data { get; set; } = data ?? "";
+    public MetadataDictionary Metadatas { get; } = [];
     public List<FakeStructDocData> Children { get; } = [];
     public TaskResultType ResultType { get; set; } = TaskResultType.Success;
 

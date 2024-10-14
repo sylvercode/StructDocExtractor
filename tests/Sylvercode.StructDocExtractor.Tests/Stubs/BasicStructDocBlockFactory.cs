@@ -13,6 +13,7 @@ public class BasicStructDocBlockFactory : IStructDocNodeFactory<FakeStructDocDat
         {
             DataDiscriminator = FakeStructDocDataDiscriminatorProvider.Default.CreateDataDiscriminator(data)
         };
+        result.Metadatas.CopyMetadataFrom(data.Metadatas);
         result.SubTasksExtractionData.AddRange(data.Children);
 
         return result;
