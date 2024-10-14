@@ -11,9 +11,14 @@ public class UriBaseTranslater(
         if (!oldBaseUri.IsBaseOf(uri))
             throw new ArgumentException("Invalid base URI", nameof(uri));
 
-        Uri relative = oldBaseUri.MakeRelativeUri(uri);
-        return new(newBaseUri, relative);
+        Uri relative = oldBaseUri.MakeRelativeUri(new Uri(uri.GetLeftPart(UriPartial.Path)));
+        UriBuilder uriBuilder = new(new Uri(newBaseUri, relative))
+        {
+            Query = uri.Query,
+            Fragment = uri.Fragment
+        };
+        return uriBuilder.Uri;
     }
-    
+
     public Uri Translate(Uri uri) => Translate(uri, oldBaseUri, newBaseUri);
 }

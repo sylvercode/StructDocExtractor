@@ -16,26 +16,27 @@ public partial class MarkdownUriTranslater(
 
     public override Uri Translate(Resource resource, Uri uri)
     {
-        Uri rebaseUri = base.Translate(resource, uri);
-        string path = rebaseUri.IsAbsoluteUri ? rebaseUri.AbsolutePath : uri.ToString();
+        UriBuilder uriBuilder = new(base.Translate(resource, uri));
         if (!resource.Metadata.TryGetStrValue(PageTopHeadingKey, out string? pageTopHeading)
             || string.IsNullOrEmpty(pageTopHeading))
         {
-            string pathWithRenameExtention = Path.ChangeExtension(path, MarkdownExtension);
-            LogNoPageTopHeading(uri, pathWithRenameExtention);
-            return new Uri(pathWithRenameExtention);
+            LogNoPageTopHeading(uri);
+            uriBuilder.Path = Path.ChangeExtension(uriBuilder.Path, MarkdownExtension);
+        }
+        else
+        {
+            string dirPath = Path.GetDirectoryName(uriBuilder.Path)?.AsDirPath() ?? string.Empty;
+            uriBuilder.Path = Path.Combine(dirPath, pageTopHeading + MarkdownExtension);
         }
 
-        string dirPath = Path.GetDirectoryName(path)?.AsDirPath() ?? string.Empty;
-        Uri result = new(new Uri(dirPath), pageTopHeading + MarkdownExtension);
-        LogUriTransalted(uri, result);
-        return result;
+        LogUriTransalted(uri, uriBuilder.Uri);
+        return uriBuilder.Uri;
     }
 
     [LoggerMessage(
         Level = LogLevel.Debug,
-        Message = "No page top heading found for uri {Uri}. Using {PathWithRenameExtention}")]
-    private partial void LogNoPageTopHeading(Uri uri, string pathWithRenameExtention);
+        Message = "No page top heading found for uri {Uri}")]
+    private partial void LogNoPageTopHeading(Uri uri);
 
     [LoggerMessage(
         Level = LogLevel.Debug,
