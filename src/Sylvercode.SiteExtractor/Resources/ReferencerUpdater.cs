@@ -8,12 +8,12 @@ public partial class ReferencerUpdater(ILogger<ReferencerUpdater>? logger = null
 {
     private readonly ILogger<ReferencerUpdater> _logger = logger ?? NullLogger<ReferencerUpdater>.Instance;
 
-    public void UpdateReferencers(List<IStructDocReferencer> referencers, IReadOnlyDictionary<Uri, Resource> trackedResources)
+    public void UpdateReferencers(List<IStructDocReferencer> referencers, IReadOnlyResourceRepository resourceRepository)
     {
         foreach (var referencer in referencers)
         {
             Uri refUri = new(referencer.GetReference());
-            if (trackedResources.TryGetValue(refUri, out var resource))
+            if (resourceRepository.TryGetResourceForUri(refUri, out var resource))
                 referencer.UpdateReference(resource.TranslateUri(refUri).ToString());
             else
                 LogNotFoundReference(refUri);

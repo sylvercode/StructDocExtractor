@@ -50,7 +50,7 @@ public class ResourceDataExtractorTests_Extract
         Uri input = new("test://mock-input");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input), new Dictionary<Uri, Resource>());
+        IResourceProcessorResult result = extractor.Extract(new Resource(input), new ResourceRepository());
 
         // Then
         var dataResult = Assert.IsType<DataExtractedProcessorResult<Uri>>(result);
@@ -83,7 +83,7 @@ public class ResourceDataExtractorTests_Extract
         Uri input = new("test://mock-input");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input), new Dictionary<Uri, Resource>());
+        IResourceProcessorResult result = extractor.Extract(new Resource(input), new ResourceRepository());
 
         // Then
         Assert.False(result.IsUnfinished);
@@ -107,7 +107,7 @@ public class ResourceDataExtractorTests_Extract
         Uri input = new("test://mock-input");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input), new Dictionary<Uri, Resource>());
+        IResourceProcessorResult result = extractor.Extract(new Resource(input), new ResourceRepository());
 
         // Then
         Assert.False(result.IsUnfinished);
@@ -136,7 +136,7 @@ public class ResourceDataExtractorTests_Extract
         Uri input = new("test://mock-input?referencer1=foo&referencer2=bar");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input), new Dictionary<Uri, Resource>());
+        IResourceProcessorResult result = extractor.Extract(new Resource(input), new ResourceRepository());
 
         // Then
         var dataResult = Assert.IsType<DataExtractedProcessorResult<Uri>>(result);
@@ -170,7 +170,7 @@ public class ResourceDataExtractorTests_Extract
         Uri input = new($"test://mock-input?{ExtractorMock.MetaKey}1=data1&{ExtractorMock.MetaKey}2=data2");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input), new Dictionary<Uri, Resource>());
+        IResourceProcessorResult result = extractor.Extract(new Resource(input), new ResourceRepository());
 
         // Then
         Assert.Collection(result.NewMetadata,
@@ -200,7 +200,7 @@ public class ResourceDataExtractorTests_ContinueProcess
         IHost host = ResourceDataExtractorTests_Extract.GetDefaultHost(calTracker);
         var extractor = host.Services.GetRequiredService<IResourceDataExtractor<Uri>>();
         Uri input = new("test://mock-input");
-        var result = (DataExtractedProcessorResult<Uri>)extractor.Extract(new Resource(input), new Dictionary<Uri, Resource>());
+        var result = (DataExtractedProcessorResult<Uri>)extractor.Extract(new Resource(input), new ResourceRepository());
         calTracker.Calls.Clear();
 
         // When

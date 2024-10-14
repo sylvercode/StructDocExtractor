@@ -6,7 +6,7 @@ namespace Sylvercode.SiteExtractor.Tests.Mocks;
 public class ResourceProcessorMock(bool returnsFinishedResultByDefault = true) : IResourceProcessor
 {
     private readonly Queue<Func<IResourceProcessor, Resource, IResourceProcessorResult>> _results = new();
-    public IResourceProcessorResult Process(Resource resource, IReadOnlyDictionary<Uri, Resource> trackedResources)
+    public IResourceProcessorResult Process(Resource resource, IReadOnlyResourceRepository resourceRepository)
         => (_results.Count > 0)
             ? _results.Dequeue().Invoke(this, resource)
             : returnsFinishedResultByDefault

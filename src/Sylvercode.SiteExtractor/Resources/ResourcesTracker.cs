@@ -4,8 +4,8 @@ namespace Sylvercode.SiteExtractor.Resources;
 
 public class ResourcesTracker(IResourceProcessorProvider processorProvider)
 {
-    private readonly ResourceDictionary _resourceDictionary = [];
-    public IReadOnlyDictionary<Uri, Resource> Resources => _resourceDictionary;
+    private readonly ResourceRepository _resourceRepository = [];
+    public IReadOnlyResourceRepository Resources => _resourceRepository;
 
     public ResourceQueue ResourceQueue { get; } = new();
 
@@ -15,7 +15,7 @@ public class ResourcesTracker(IResourceProcessorProvider processorProvider)
         IResourceProcessor? resourceProcessor = processorProvider.GetProcessor(uri);
         hasResourceProcessor = resourceProcessor is not null;
 
-        var (resource, isNew) = _resourceDictionary.Add(uri, resourceProcessor is not null);
+        var (resource, isNew) = _resourceRepository.Add(uri, resourceProcessor is not null);
         if (resourceProcessor is not null && isNew)
             ResourceQueue.Enqueue(resource, resourceProcessor);
 
