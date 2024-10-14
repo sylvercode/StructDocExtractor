@@ -2,5 +2,5 @@ namespace Sylvercode.SiteExtractor.Resources.Processors;
 
 public interface IResourceDataExtractor<TExtractionData> : IResourceProcessor
 {
-    IResourceProcessorResult Extract(Resource resource, IReadOnlyDictionary<Uri, Resource> trackedResources);
+    IResourceProcessorResult Extract(Resource resource, IReadOnlyResourceRepository resourceRepository);
 }

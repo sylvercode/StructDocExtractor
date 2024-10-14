@@ -11,17 +11,17 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
 
     public void UpdateReferencers(Resource referencerResource,
                                   List<IStructDocReferencer> referencers,
-                                  IReadOnlyDictionary<Uri, Resource> trackedResources)
+                                  IReadOnlyResourceRepository resourceRepository)
     {
-        Dictionary<Resource, string> uniqueFileNameRes = GetUniqueFileNameResource(trackedResources);
+        Dictionary<Resource, string> uniqueFileNameRes = GetUniqueFileNameResource(resourceRepository);
 
         foreach (IStructDocReferencer referencer in referencers)
-            UpdateReferencers(referencerResource, referencer, trackedResources, uniqueFileNameRes);
+            UpdateReferencers(referencerResource, referencer, resourceRepository, uniqueFileNameRes);
     }
 
     private void UpdateReferencers(Resource referencerResource,
                                    IStructDocReferencer referencer,
-                                   IReadOnlyDictionary<Uri, Resource> trackedResources,
+                                   IReadOnlyResourceRepository resourceRepository,
                                    Dictionary<Resource, string> uniqueFileNameRes)
     {
         if (referencer.GetReference().StartsWith('#'))
@@ -31,7 +31,7 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
         }
 
         Uri refUri = new(referencer.GetReference());
-        if (!trackedResources.TryGetValue(refUri, out Resource? reference))
+        if (!resourceRepository.TryGetResourceForUri(refUri, out Resource? reference))
         {
             LogNotFoundReference(refUri);
             return;
@@ -56,10 +56,10 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
         referencer.UpdateReference(translateUri);
     }
 
-    private static Dictionary<Resource, string> GetUniqueFileNameResource(IReadOnlyDictionary<Uri, Resource> trackedResources)
+    private static Dictionary<Resource, string> GetUniqueFileNameResource(IReadOnlyResourceRepository resourceRepository)
     {
         Dictionary<string, (int count, Resource resource)> fileNameMap = [];
-        foreach (Resource resource in trackedResources.Values)
+        foreach (Resource resource in resourceRepository)
         {
             UriBuilder uriBuilder = new(resource.TranslatedResourceUri);
             string fileName = Path.GetFileName(uriBuilder.Path);

@@ -119,7 +119,7 @@ public class ResourceCopierTests_Process
         Resource resource = new(sourceUri);
 
         // When
-        IResourceProcessorResult result = copier.Process(resource, new Dictionary<Uri, Resource>());
+        IResourceProcessorResult result = copier.Process(resource, new ResourceRepository());
 
         // Then
         Assert.Same(copier, result.Processor);

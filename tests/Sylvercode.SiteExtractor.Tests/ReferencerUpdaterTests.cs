@@ -14,19 +14,15 @@ public class ReferencerUpdaterTests_UpdateReferencers
             new UriReferenceNode("https://example.com/referencer1", "https://example.com/ref1"),
             new UriReferenceNode("https://example.com/referencer2", "https://example.com/ref2#frag")
         ];
-        IReadOnlyDictionary<Uri, Resource> trackedResources = new Dictionary<Uri, Resource>
-        {
-            { new Uri("https://example.com/ref1"), new Resource(new Uri("https://example.com/ref1")) },
-            { new Uri("https://example.com/ref2"), new Resource(new Uri("https://example.com/ref2")) }
-        };
+        ResourceRepository resourceRepository = new(["https://example.com/ref1", "https://example.com/ref2"]);
         ResourceUriTranslater uriTranslater = ResourceUriTranslater.NewBaseTranslater(new Uri("https://example.com/"), new Uri("https://test.com/"));
-        foreach (var resource in trackedResources)
-            resource.Value.UriTranslater = uriTranslater;
+        foreach (var resource in resourceRepository)
+            resource.UriTranslater = uriTranslater;
 
         ReferencerUpdater referencerUpdater = new();
 
         // When
-        referencerUpdater.UpdateReferencers(referencers, trackedResources);
+        referencerUpdater.UpdateReferencers(referencers, resourceRepository);
 
         // Then
         Assert.Equal("https://test.com/ref1", referencers[0].GetReference());
@@ -41,19 +37,15 @@ public class ReferencerUpdaterTests_UpdateReferencers
             new UriReferenceNode("https://example.com/referencer1", "https://example.com/ref1"),
             new UriReferenceNode("https://example.com/referencer2", "https://example.com/ref2#frag")
         ];
-        IReadOnlyDictionary<Uri, Resource> trackedResources = new Dictionary<Uri, Resource>
-        {
-            { new Uri("https://example.com/ref3"), new Resource(new Uri("https://example.com/ref3")) },
-            { new Uri("https://example.com/ref4"), new Resource(new Uri("https://example.com/ref4")) }
-        };
+        ResourceRepository resourceRepository = new(["https://example.com/ref3", "https://example.com/ref4"]);
         ResourceUriTranslater uriTranslater = ResourceUriTranslater.NewBaseTranslater(new Uri("https://example.com/"), new Uri("https://test.com/"));
-        foreach (var resource in trackedResources)
-            resource.Value.UriTranslater = uriTranslater;
+        foreach (var resource in resourceRepository)
+            resource.UriTranslater = uriTranslater;
 
         ReferencerUpdater referencerUpdater = new();
 
         // When
-        referencerUpdater.UpdateReferencers(referencers, trackedResources);
+        referencerUpdater.UpdateReferencers(referencers, resourceRepository);
 
         // Then
         Assert.Equal("https://example.com/ref1", referencers[0].GetReference());

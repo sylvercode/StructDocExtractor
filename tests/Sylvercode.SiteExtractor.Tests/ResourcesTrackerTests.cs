@@ -27,7 +27,7 @@ public class ResourcesTrackerTests_AddResource
         resourcesTracker.AddResource(uri);
 
         // Assert
-        Resource entry = Assert.Contains(uri, resourcesTracker.Resources);
+        Resource entry = Assert.Contains(uri, resourcesTracker.Resources.AsDictionary());
         Assert.False(entry.State.IsPullable);
     }
 
@@ -43,7 +43,7 @@ public class ResourcesTrackerTests_AddResource
         resourcesTracker.AddResource(uri);
 
         // Assert
-        Resource entry = Assert.Contains(uri, resourcesTracker.Resources);
+        Resource entry = Assert.Contains(uri, resourcesTracker.Resources.AsDictionary());
         Assert.True(entry.State.IsPullable);
     }
 }
