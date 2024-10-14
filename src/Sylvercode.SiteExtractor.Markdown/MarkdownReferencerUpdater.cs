@@ -26,7 +26,7 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
     {
         if (referencer.GetReference().StartsWith('#'))
         {
-            UpdatelocalFragmentReferencer(referencerResource, referencer);
+            LogFragmentReferencer(referencer.GetReference());
             return;
         }
 
@@ -39,7 +39,8 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
 
         if (reference == referencerResource)
         {
-            UpdatelocalFragmentReferencer(referencerResource, referencer);
+            LogKepFragmentOnly(refUri);
+            referencer.UpdateReference(refUri.Fragment);
             return;
         }
 
@@ -53,11 +54,6 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
         string translateUri = reference.TranslateUri(refUri).ToString();
         LogUpdateToNoneUniqueRes(refUri, translateUri);
         referencer.UpdateReference(translateUri);
-    }
-
-    private void UpdatelocalFragmentReferencer(Resource referencerResource, IStructDocReferencer referencers)
-    {
-        throw new NotImplementedException();
     }
 
     private static Dictionary<Resource, string> GetUniqueFileNameResource(IReadOnlyDictionary<Uri, Resource> trackedResources)
@@ -90,4 +86,14 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
         Level = LogLevel.Debug,
         Message = "Update reference {RefUri} to no unique resource: {TranslateUri}")]
     private partial void LogUpdateToNoneUniqueRes(Uri refUri, string translateUri);
+
+    [LoggerMessage(
+        Level = LogLevel.Debug,
+        Message = "Skip fragmentonly  referencer: {Referencer}")]
+    private partial void LogFragmentReferencer(string referencer);
+
+    [LoggerMessage(
+        Level = LogLevel.Debug,
+        Message = "Updated to keep fragment only: {RefUri}")]
+    private partial void LogKepFragmentOnly(Uri refUri);
 }
