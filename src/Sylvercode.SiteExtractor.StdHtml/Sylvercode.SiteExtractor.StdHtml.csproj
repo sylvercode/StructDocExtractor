@@ -12,4 +12,8 @@
     <ProjectReference Include="..\Sylvercode.SiteExtractor\Sylvercode.SiteExtractor.csproj" />
     <ProjectReference Include="..\Sylvercode.StructDocExtractor.StdHtml\Sylvercode.StructDocExtractor.StdHtml.csproj" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <AnalysisMode>Recommended</AnalysisMode>
+  </PropertyGroup>
 </Project>

@@ -1,5 +1,4 @@
 using Sylvercode.SiteExtractor.Resources;
-using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
@@ -12,7 +11,7 @@ public class ResourceTests_TranslateUri
         Uri sourceUri = new("https://example.com/resource");
         Resource resource = new(sourceUri)
         {
-            UriTranslater = new UriBaseTranslater(new Uri("https://example.com/"), new Uri("https://test.com/"))
+            UriTranslater = ResourceUriTranslater.NewBaseTranslater(new Uri("https://example.com/"), new Uri("https://test.com/"))
         };
 
         // When
@@ -29,7 +28,7 @@ public class ResourceTests_TranslateUri
         Uri sourceUri = new("https://example.com/resource");
         Resource resource = new(sourceUri)
         {
-            UriTranslater = new UriBaseTranslater(new Uri("https://example.com/"), new Uri("https://test.com/"))
+            UriTranslater = ResourceUriTranslater.NewBaseTranslater(new Uri("https://example.com/"), new Uri("https://test.com/"))
         };
 
         // When
@@ -46,7 +45,7 @@ public class ResourceTests_TranslateUri
         Uri sourceUri = new("https://example.com/resource");
         Resource resource = new(sourceUri)
         {
-            UriTranslater = new UriBaseTranslater(new Uri("https://example.com/"), new Uri("https://test.com/"))
+            UriTranslater = ResourceUriTranslater.NewBaseTranslater(new Uri("https://example.com/"), new Uri("https://test.com/"))
         };
 
         // When

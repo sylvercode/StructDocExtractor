@@ -1,6 +1,5 @@
 using Sylvercode.SiteExtractor.Resources;
 using Sylvercode.SiteExtractor.Tests.Stubs;
-using Sylvercode.SiteExtractor.UriUtils;
 using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.SiteExtractor.Tests;
@@ -20,7 +19,7 @@ public class ReferencerUpdaterTests_UpdateReferencers
             { new Uri("https://example.com/ref1"), new Resource(new Uri("https://example.com/ref1")) },
             { new Uri("https://example.com/ref2"), new Resource(new Uri("https://example.com/ref2")) }
         };
-        UriBaseTranslater uriTranslater = new(new Uri("https://example.com/"), new Uri("https://test.com/"));
+        ResourceUriTranslater uriTranslater = ResourceUriTranslater.NewBaseTranslater(new Uri("https://example.com/"), new Uri("https://test.com/"));
         foreach (var resource in trackedResources)
             resource.Value.UriTranslater = uriTranslater;
 
@@ -47,7 +46,7 @@ public class ReferencerUpdaterTests_UpdateReferencers
             { new Uri("https://example.com/ref3"), new Resource(new Uri("https://example.com/ref3")) },
             { new Uri("https://example.com/ref4"), new Resource(new Uri("https://example.com/ref4")) }
         };
-        UriBaseTranslater uriTranslater = new(new Uri("https://example.com/"), new Uri("https://test.com/"));
+        ResourceUriTranslater uriTranslater = ResourceUriTranslater.NewBaseTranslater(new Uri("https://example.com/"), new Uri("https://test.com/"));
         foreach (var resource in trackedResources)
             resource.Value.UriTranslater = uriTranslater;
 

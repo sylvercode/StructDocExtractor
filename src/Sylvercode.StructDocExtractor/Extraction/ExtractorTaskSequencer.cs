@@ -23,6 +23,8 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
 
             result.Summery.CountTaskResult(taskResult.ResultType);
 
+            result.Metadatas.CopyMetadataFrom(taskResult.Metadatas, newOnly: false);
+
             if (task.ParentTaskInfo?.ParentTask is null)
             {
                 if (taskResult.SrcNode is not null)

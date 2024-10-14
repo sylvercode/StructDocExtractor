@@ -49,6 +49,13 @@ public class FakeStructDocDataBuilder(FakeStructDocData? data = null)
         return this;
     }
 
+    public FakeStructDocDataBuilder WithMetadata(string name, object value)
+    {
+        InitData();
+        _data.Metadatas.AddMetadata(name, value);
+        return this;
+    }
+
     public FakeStructDocDataBuilder WithId(string id)
     {
         InitData();

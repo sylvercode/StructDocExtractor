@@ -9,7 +9,7 @@ public abstract partial class BaseDataStore(
     ILogger? logger = null) : IDataStore
 {
     private readonly ILogger _logger = logger ?? NullLogger.Instance;
-    public Uri BaseUri => new(options.Value.OutputDirectory);
+    public Uri BaseUri => options.Value.GetOutputUri();
     public abstract Stream GetStream(Uri uri);
     public virtual StreamWriter GetStreamWriter(Uri uri) => new(GetStream(uri));
 

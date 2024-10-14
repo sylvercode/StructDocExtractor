@@ -2,7 +2,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Sylvercode.SiteExtractor.Sources;
 using Sylvercode.SiteExtractor.Store;
-using Sylvercode.SiteExtractor.UriUtils;
 using Sylvercode.StructDocExtractor.Extraction;
 using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Serialization;
@@ -14,7 +13,7 @@ public partial class ResourceDataExtractor<TExtractionData>(
     IExtractor<TExtractionData> extractor,
     IDataStore dataStore,
     IStructDocSerializer serisalizer,
-    IUriTranslater? uriTranslater = null,
+    IResourceUriTranslater? uriTranslater = null,
     IReferencerUpdater? referencerUpdater = null,
     ILogger<ResourceDataExtractor<TExtractionData>>? logger = null) : IResourceDataExtractor<TExtractionData>
 {
@@ -33,7 +32,8 @@ public partial class ResourceDataExtractor<TExtractionData>(
 
     private readonly ILogger<ResourceDataExtractor<TExtractionData>> _logger = logger ?? new NullLogger<ResourceDataExtractor<TExtractionData>>();
 
-    private IUriTranslater UriTransler { get; } = uriTranslater ?? new UriBaseTranslater(siteSource.BaseUri, dataStore.BaseUri);
+    private IResourceUriTranslater UriTransler { get; } =
+        uriTranslater ?? ResourceUriTranslater.NewBaseTranslater(siteSource.BaseUri, dataStore.BaseUri);
 
     public IResourceProcessorResult Extract(Resource resource, IReadOnlyDictionary<Uri, Resource> trackedResources)
     {
@@ -48,6 +48,15 @@ public partial class ResourceDataExtractor<TExtractionData>(
         ExtractionTaskObserver observer = new();
         ExtractionResult result = extractor.Extract(extractionData, observer);
 
+        if (result.Metadatas.Count != 0)
+        {
+            if (_logger.IsEnabled(LogLevel.Trace))
+            {
+                foreach (var metadata in result.Metadatas)
+                    LogMetadatas(metadata.Key, metadata.Value.GetStrValue());
+            }
+        }
+
         if (result.StructDocNodes.Count == 0)
         {
             LogNoNodeFromSource();
@@ -60,7 +69,14 @@ public partial class ResourceDataExtractor<TExtractionData>(
                 LogReferencer(referencer.GetReference());
         }
 
-        return new DataExtractedProcessorResult<TExtractionData>(this, resource, trackedResources, result, UriTransler, observer.Referencers);
+        return new DataExtractedProcessorResult<TExtractionData>(
+            this,
+            resource,
+            trackedResources,
+            result,
+            UriTransler,
+            observer.Referencers,
+            result.Metadatas);
     }
 
     public IResourceProcessorResult ContinueExtraction(DataExtractedProcessorResult<TExtractionData> lastResult)
@@ -78,6 +94,12 @@ public partial class ResourceDataExtractor<TExtractionData>(
         Level = LogLevel.Information,
         Message = "No data found.")]
     private partial void LogNoDataFromSource();
+
+    [LoggerMessage(
+        SkipEnabledCheck = true,
+        Level = LogLevel.Trace,
+        Message = "Metadata: {Key} = {Value}.")]
+    private partial void LogMetadatas(string key, string? value);
 
     [LoggerMessage(
         Level = LogLevel.Information,

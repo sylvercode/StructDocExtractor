@@ -1,5 +1,5 @@
-using Sylvercode.SiteExtractor.UriUtils;
 using Sylvercode.StructDocExtractor.Extraction;
+using Sylvercode.StructDocExtractor.Metadatas;
 using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.SiteExtractor.Resources.Processors;
@@ -9,8 +9,9 @@ public class DataExtractedProcessorResult<TExtractionData>(
     Resource resource,
     IReadOnlyDictionary<Uri, Resource> trackedResources,
     ExtractionResult result,
-    IUriTranslater? resourceUriTranslaterToSet,
-    List<IStructDocReferencer> referencers) : BaseResourceProcessorResult(processor, resource, resourceUriTranslaterToSet, isUnfinished: true)
+    IResourceUriTranslater? resourceUriTranslaterToSet,
+    List<IStructDocReferencer> referencers,
+    MetadataDictionary newMetadatas) : BaseResourceProcessorResult(processor, resource, resourceUriTranslaterToSet, isUnfinished: true, newMetadatas)
 {
     public IReadOnlyDictionary<Uri, Resource> TrackedResources { get; } = trackedResources;
     public ExtractionResult Result => result;
