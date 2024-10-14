@@ -9,7 +9,7 @@ namespace Sylvercode.SiteExtractor.Resources.Processors;
 
 public partial class ResourceCopier : IResourceCopiler
 {
-    private partial class CopiedResourceUriTranslater(
+    private sealed partial class CopiedResourceUriTranslater(
         ISiteSource<byte[]> siteSource,
         IDataStore dataStore,
         IOptions<ResourceCopierOptions> options,

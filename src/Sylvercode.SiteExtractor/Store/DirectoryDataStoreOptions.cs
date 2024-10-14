@@ -5,6 +5,6 @@ namespace Sylvercode.SiteExtractor.Store;
 public class DirectoryDataStoreOptions
 {
     public const string DirectoryDataStore = nameof(DirectoryDataStore);
-    public bool AutoCreateBaseDir { get; set; } = false;
+    public bool AutoCreateBaseDir { get; set; }
     public static IOptions<DirectoryDataStoreOptions> NewOption() => Options.Create(new DirectoryDataStoreOptions());
 }
