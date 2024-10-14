@@ -4,7 +4,9 @@ using Microsoft.Extensions.Options;
 
 namespace Sylvercode.SiteExtractor.Store;
 
+#pragma warning disable CA1710 // Identifiers should have correct suffix
 public class MemoryDataStore(IOptions<SiteExtractorOptions> options) : BaseDataStore(options), IReadOnlyDictionary<Uri, MemoryStream>
+#pragma warning restore CA1710 // Identifiers should have correct suffix
 {
     private readonly Dictionary<Uri, MemoryStream> _data = [];
 

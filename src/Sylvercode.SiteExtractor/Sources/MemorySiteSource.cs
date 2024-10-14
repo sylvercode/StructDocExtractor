@@ -4,7 +4,9 @@ using Microsoft.Extensions.Options;
 
 namespace Sylvercode.SiteExtractor.Sources;
 
+#pragma warning disable CA1710 // Identifiers should have correct suffix
 public class MemorySiteSource<TData>(IOptions<MemorySiteSource<TData>.Options> options) : ISiteSource<TData>, IDictionary<Uri, TData>
+#pragma warning restore CA1710 // Identifiers should have correct suffix
 {
     public class Options
     {

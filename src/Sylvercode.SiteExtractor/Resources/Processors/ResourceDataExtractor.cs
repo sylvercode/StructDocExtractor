@@ -17,7 +17,7 @@ public partial class ResourceDataExtractor<TExtractionData>(
     IReferencerUpdater? referencerUpdater = null,
     ILogger<ResourceDataExtractor<TExtractionData>>? logger = null) : IResourceDataExtractor<TExtractionData>
 {
-    private class ExtractionTaskObserver : IObserver<ExtractionTask>
+    private sealed class ExtractionTaskObserver : IObserver<ExtractionTask>
     {
         public List<IStructDocReferencer> Referencers { get; } = [];
 

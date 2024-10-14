@@ -10,5 +10,5 @@ public class ResourceCopierOptions
         get => outputPath;
         set => outputPath = value.AsDirPath();
     }
-    public bool IsOutputPathAbsolute { get; set; } = false;
+    public bool IsOutputPathAbsolute { get; set; }
 }

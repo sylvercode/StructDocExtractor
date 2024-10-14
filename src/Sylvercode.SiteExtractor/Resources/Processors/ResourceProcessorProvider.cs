@@ -4,7 +4,7 @@ namespace Sylvercode.SiteExtractor.Resources.Processors;
 
 public class ResourceProcessorProvider : IResourceProcessorProvider
 {
-    private class Entry(IUriMatcher matcher, IResourceProcessor processor)
+    private sealed class Entry(IUriMatcher matcher, IResourceProcessor processor)
     {
         public IUriMatcher Matcher { get; } = matcher;
         public IResourceProcessor Processor { get; } = processor;
