@@ -125,6 +125,7 @@ public class ResourceDataExtractorTests_Extract
                 Assert.Equal(input, call.Arguments[0]);
             });
     }
+
     [Fact]
     public void ExtractExistingWithReferences_Unfinish()
     {
@@ -158,11 +159,38 @@ public class ResourceDataExtractorTests_Extract
                 Assert.Equal(nameof(IExtractor<Uri>.Extract), call.MethodName);
                 Assert.Equal(input, call.Arguments[0]);
             });
+    }
+
+    [Fact]
+    public void ExtractWithMetadata_MetatdaFilled()
+    {
+        MockCallTracker callTracker = new();
+        IHost host = GetDefaultHost(callTracker);
+        var extractor = host.Services.GetRequiredService<IResourceDataExtractor<Uri>>();
+        Uri input = new($"test://mock-input?{ExtractorMock.MetaKey}1=data1&{ExtractorMock.MetaKey}2=data2");
+
+        // When
+        IResourceProcessorResult result = extractor.Extract(new Resource(input), new Dictionary<Uri, Resource>());
+
+        // Then
+        Assert.Collection(result.NewMetadata,
+            md =>
+            {
+                Assert.Equal(ExtractorMock.MetaKey + "1", md.Key);
+                Assert.Equal(md.Key, md.Value.Name);
+                Assert.Equal("data1", md.Value.GetStrValue());
+            },
+            md =>
+            {
+                Assert.Equal(ExtractorMock.MetaKey + "2", md.Key);
+                Assert.Equal(md.Key, md.Value.Name);
+                Assert.Equal("data2", md.Value.GetStrValue());
+            });
 
     }
 }
 
-public class ResourceDataExtractorContinueExtraction_Extract
+public class ResourceDataExtractorTests_ContinueProcess
 {
     [Fact]
     public void StadardNode_Finished()

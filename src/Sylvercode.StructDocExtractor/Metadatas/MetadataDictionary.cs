@@ -5,7 +5,18 @@ namespace Sylvercode.StructDocExtractor.Metadatas;
 
 public class MetadataDictionary : IDictionary<string, Metadata>
 {
-    private readonly Dictionary<string, Metadata> _dictionary = [];
+    private readonly Dictionary<string, Metadata> _dictionary;
+
+    public MetadataDictionary()
+    {
+        _dictionary = [];
+    }
+
+    public MetadataDictionary(IEnumerable<KeyValuePair<string, object?>> collection)
+    {
+        _dictionary = new(collection.Select(
+            kv => new KeyValuePair<string, Metadata>(kv.Key, new Metadata(kv.Key, kv.Value))));
+    }
 
     public void AddMetadata(string name, object? value)
         => _dictionary[name] = new Metadata(name, value);
