@@ -35,7 +35,7 @@ public partial class ResourceDataExtractor<TExtractionData>(
     private IResourceUriTranslater UriTransler { get; } =
         uriTranslater ?? ResourceUriTranslater.NewBaseTranslater(siteSource.BaseUri, dataStore.BaseUri);
 
-    public IResourceProcessorResult Extract(Resource resource, IReadOnlyDictionary<Uri, Resource> trackedResources)
+    public IResourceProcessorResult Extract(Resource resource, IReadOnlyResourceRepository resourceRepository)
     {
         using var scope = _logger.BeginScope((ResourceUri: resource.Uri, SiteUri: siteSource.BaseUri));
         TExtractionData extractionData = siteSource.GetData(resource.Uri);
@@ -72,7 +72,7 @@ public partial class ResourceDataExtractor<TExtractionData>(
         return new DataExtractedProcessorResult<TExtractionData>(
             this,
             resource,
-            trackedResources,
+            resourceRepository,
             result,
             UriTransler,
             observer.Referencers,
@@ -81,7 +81,7 @@ public partial class ResourceDataExtractor<TExtractionData>(
 
     public IResourceProcessorResult ContinueExtraction(DataExtractedProcessorResult<TExtractionData> lastResult)
     {
-        referencerUpdater?.UpdateReferencers(lastResult.Referencers, lastResult.TrackedResources);
+        referencerUpdater?.UpdateReferencers(lastResult.Referencers, lastResult.ResourceRepository);
 
         using var stream = dataStore.GetStreamWriter(lastResult.Resource.TranslateUri(dataStore.BaseUri));
 
@@ -113,6 +113,6 @@ public partial class ResourceDataExtractor<TExtractionData>(
     private partial void LogReferencer(string referencer);
 
     #region IResourceProcessor
-    public IResourceProcessorResult Process(Resource resource, IReadOnlyDictionary<Uri, Resource> trackedResources) => Extract(resource, trackedResources);
+    public IResourceProcessorResult Process(Resource resource, IReadOnlyResourceRepository resourceRepository) => Extract(resource, resourceRepository);
     #endregion
 }

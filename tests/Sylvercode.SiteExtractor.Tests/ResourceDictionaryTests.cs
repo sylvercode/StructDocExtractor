@@ -10,21 +10,21 @@ public class ResourceDictionaryTests_Add
     public void TwoFragmentWithSamePullType_Valid(bool isPullable)
     {
         // Given
-        ResourceDictionary resourceDictionary = [];
+        ResourceRepository resourceDictionary = [];
         resourceDictionary.Add(new Uri("https://example.com"), isPullable);
 
         // When
         resourceDictionary.Add(new Uri("https://example.com#fragment1"), isPullable);
 
         // Then
-        Resource resource = Assert.Single(resourceDictionary.Values);
+        Resource resource = Assert.Single(resourceDictionary);
     }
 
     [Fact]
     public void TwoFragmentWithDifferentPullType_Invalid()
     {
         // Given
-        ResourceDictionary resourceDictionary = [];
+        ResourceRepository resourceDictionary = [];
         resourceDictionary.Add(new Uri("https://example.com"), isPullable: true);
 
         // When
@@ -41,7 +41,7 @@ public class ResourceDictionaryTests_Index
     public void ResourceDoesNotExist_Invalid()
     {
         // Given
-        ResourceDictionary resourceDictionary = [];
+        ResourceRepository resourceDictionary = [];
 
         // When
         void action() => _ = resourceDictionary[new Uri("https://example.com")];
@@ -54,7 +54,7 @@ public class ResourceDictionaryTests_Index
     public void ResourceExists_Valid()
     {
         // Given
-        ResourceDictionary resourceDictionary = [];
+        ResourceRepository resourceDictionary = [];
         resourceDictionary.Add(new Uri("https://example.com"), isPullable: true);
 
         // When
@@ -68,7 +68,7 @@ public class ResourceDictionaryTests_Index
     public void ResourceExistsWithFragment_Valid()
     {
         // Given
-        ResourceDictionary resourceDictionary = [];
+        ResourceRepository resourceDictionary = [];
         resourceDictionary.Add(new Uri("https://example.com#fragment1"), isPullable: true);
 
         // When
@@ -82,7 +82,7 @@ public class ResourceDictionaryTests_Index
     public void ResourceExistsWithOtherFragment_Valid()
     {
         // Given
-        ResourceDictionary resourceDictionary = [];
+        ResourceRepository resourceDictionary = [];
         resourceDictionary.Add(new Uri("https://example.com#fragment1"), isPullable: true);
 
         // When
@@ -99,10 +99,10 @@ public class ResourceDictionaryTests_Contains
     public void ResourceDoesNotExist_Invalid()
     {
         // Given
-        ResourceDictionary resourceDictionary = [];
+        ResourceRepository resourceDictionary = [];
 
         // When
-        bool contains = resourceDictionary.ContainsKey(new Uri("https://example.com/"));
+        bool contains = resourceDictionary.ContainsResourceForUri(new Uri("https://example.com/"));
 
         // Then
         Assert.False(contains);
@@ -112,11 +112,11 @@ public class ResourceDictionaryTests_Contains
     public void ResourceExists_Valid()
     {
         // Given
-        ResourceDictionary resourceDictionary = [];
+        ResourceRepository resourceDictionary = [];
         resourceDictionary.Add(new Uri("https://example.com"), isPullable: true);
 
         // When
-        bool contains = resourceDictionary.ContainsKey(new Uri("https://example.com/"));
+        bool contains = resourceDictionary.ContainsResourceForUri(new Uri("https://example.com/"));
 
         // Then
         Assert.True(contains);
@@ -126,11 +126,11 @@ public class ResourceDictionaryTests_Contains
     public void ResourceExistsWithFragment_Valid()
     {
         // Given
-        ResourceDictionary resourceDictionary = [];
+        ResourceRepository resourceDictionary = [];
         resourceDictionary.Add(new Uri("https://example.com#fragment1"), isPullable: true);
 
         // When
-        bool contains = resourceDictionary.ContainsKey(new Uri("https://example.com/#fragment1"));
+        bool contains = resourceDictionary.ContainsResourceForUri(new Uri("https://example.com/#fragment1"));
 
         // Then
         Assert.True(contains);
@@ -140,11 +140,11 @@ public class ResourceDictionaryTests_Contains
     public void ResourceExistsWithOtherFragment_Valid()
     {
         // Given
-        ResourceDictionary resourceDictionary = [];
+        ResourceRepository resourceDictionary = [];
         resourceDictionary.Add(new Uri("https://example.com#fragment1"), isPullable: true);
 
         // When
-        bool contains = resourceDictionary.ContainsKey(new Uri("https://example.com/#fragment2"));
+        bool contains = resourceDictionary.ContainsResourceForUri(new Uri("https://example.com/#fragment2"));
 
         // Then
         Assert.True(contains);

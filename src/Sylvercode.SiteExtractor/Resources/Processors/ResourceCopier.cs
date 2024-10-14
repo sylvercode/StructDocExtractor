@@ -88,7 +88,7 @@ public partial class ResourceCopier : IResourceCopiler
     }
 
     #region IResourceProcessor
-    public IResourceProcessorResult Process(Resource resource, IReadOnlyDictionary<Uri, Resource> trackedResources)
+    public IResourceProcessorResult Process(Resource resource, IReadOnlyResourceRepository resourceRepository)
     {
         Download(resource.Uri);
         return new FinishedProcessResult(this, resource, _resourceUriTranslater);

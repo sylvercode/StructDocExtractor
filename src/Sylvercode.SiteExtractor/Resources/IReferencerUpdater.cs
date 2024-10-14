@@ -4,5 +4,5 @@ namespace Sylvercode.SiteExtractor.Resources;
 
 public interface IReferencerUpdater
 {
-    void UpdateReferencers(List<IStructDocReferencer> referencers, IReadOnlyDictionary<Uri, Resource> trackedResources);
+    void UpdateReferencers(List<IStructDocReferencer> referencers, IReadOnlyResourceRepository resourceRepository);
 }

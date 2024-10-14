@@ -4,11 +4,11 @@ using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Resources;
 
-public class ResourceDictionary() : IReadOnlyDictionary<Uri, Resource>
+public class ResourceRepository() : IReadOnlyResourceRepository
 {
     private readonly Dictionary<Uri, Resource> _resources = [];
 
-    public (Resource resource, bool isNew) Add(Uri uri, bool isPullable)
+    public (Resource resource, bool isNew) Add(Uri uri, bool isPullable = true)
     {
         (Uri uriWithoutFragment, _) = uri.GetUriAndFragment();
         if (_resources.TryGetValue(uriWithoutFragment, out Resource? resource))
@@ -24,7 +24,12 @@ public class ResourceDictionary() : IReadOnlyDictionary<Uri, Resource>
         return result;
     }
 
-    #region IReadOnlyDictionary<Uri, Resource> implementation
+    public ResourceRepository(IEnumerable<string> uris) : this()
+    {
+        foreach (var uriString in uris)
+            Add(new Uri(uriString));
+    }
+
     public Resource this[Uri key]
     {
         get
@@ -35,25 +40,26 @@ public class ResourceDictionary() : IReadOnlyDictionary<Uri, Resource>
         }
     }
 
-    public IEnumerable<Uri> Keys => ((IReadOnlyDictionary<Uri, Resource>)_resources).Keys;
+    public IReadOnlyDictionary<Uri, Resource> AsDictionary() => _resources.AsReadOnly();
 
-    public IEnumerable<Resource> Values => ((IReadOnlyDictionary<Uri, Resource>)_resources).Values;
+    public IEnumerable<Uri> UriResources => _resources.Keys;
 
-    public int Count => ((IReadOnlyCollection<KeyValuePair<Uri, Resource>>)_resources).Count;
+    public int Count => _resources.Count;
 
-    public bool ContainsKey(Uri key)
+    public bool ContainsResourceForUri(Uri key)
     {
         (Uri uriWithoutFragment, _) = key.GetUriAndFragment();
         return _resources.ContainsKey(uriWithoutFragment);
     }
 
-    public IEnumerator<KeyValuePair<Uri, Resource>> GetEnumerator()
-        => ((IEnumerable<KeyValuePair<Uri, Resource>>)_resources).GetEnumerator();
+    public bool TryGetResourceForUri(Uri key, [MaybeNullWhen(false)] out Resource value)
+        => _resources.TryGetValue(key, out value);
 
-    public bool TryGetValue(Uri key, [MaybeNullWhen(false)] out Resource value)
-        => ((IReadOnlyDictionary<Uri, Resource>)_resources).TryGetValue(key, out value);
+    #region IEnumerable<Resource> implementation
+    public IEnumerator<Resource> GetEnumerator()
+        => _resources.Values.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator()
-        => ((IEnumerable)_resources).GetEnumerator();
+        => _resources.Values.GetEnumerator();
     #endregion
 }
