@@ -1,5 +1,4 @@
-﻿using Sylvercode.StructDocExtractor.Model;
-using Sylvercode.StructDocExtractor.Model.Base;
+﻿using Sylvercode.StructDocExtractor.Model.Base;
 
 namespace Sylvercode.StructDocExtractor.Tests.Stubs;
 

@@ -81,7 +81,10 @@ public partial class ResourceDataExtractor<TExtractionData>(
 
     public IResourceProcessorResult ContinueExtraction(DataExtractedProcessorResult<TExtractionData> lastResult)
     {
-        referencerUpdater?.UpdateReferencers(lastResult.Referencers, lastResult.ResourceRepository);
+        referencerUpdater?.UpdateReferencers(
+            lastResult.Resource,
+            lastResult.Referencers,
+            lastResult.ResourceRepository);
 
         using var stream = dataStore.GetStreamWriter(lastResult.Resource.TranslateUri(dataStore.BaseUri));
 

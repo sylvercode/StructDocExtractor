@@ -8,7 +8,9 @@ public partial class ReferencerUpdater(ILogger<ReferencerUpdater>? logger = null
 {
     private readonly ILogger<ReferencerUpdater> _logger = logger ?? NullLogger<ReferencerUpdater>.Instance;
 
-    public void UpdateReferencers(List<IStructDocReferencer> referencers, IReadOnlyResourceRepository resourceRepository)
+    public void UpdateReferencers(Resource referencerResource,
+                                  List<IStructDocReferencer> referencers,
+                                  IReadOnlyResourceRepository resourceRepository)
     {
         foreach (var referencer in referencers)
         {

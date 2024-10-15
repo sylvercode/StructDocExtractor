@@ -10,6 +10,7 @@ public class ReferencerUpdaterTests_UpdateReferencers
     public void WithReferencersFoundInTrackedResources_ReferencersUpdated()
     {
         // Given
+        Resource referencerResource = new(new Uri("https://example.com/referencer"));
         List<IStructDocReferencer> referencers = [
             new UriReferenceNode("https://example.com/referencer1", "https://example.com/ref1"),
             new UriReferenceNode("https://example.com/referencer2", "https://example.com/ref2#frag")
@@ -22,7 +23,7 @@ public class ReferencerUpdaterTests_UpdateReferencers
         ReferencerUpdater referencerUpdater = new();
 
         // When
-        referencerUpdater.UpdateReferencers(referencers, resourceRepository);
+        referencerUpdater.UpdateReferencers(referencerResource, referencers, resourceRepository);
 
         // Then
         Assert.Equal("https://test.com/ref1", referencers[0].GetReference());
@@ -33,6 +34,7 @@ public class ReferencerUpdaterTests_UpdateReferencers
     public void WithReferencersNotFoundInTrackedResources_ReferencersUntouch()
     {
         // Given
+        Resource referencerResource = new(new Uri("https://example.com/referencer"));
         List<IStructDocReferencer> referencers = [
             new UriReferenceNode("https://example.com/referencer1", "https://example.com/ref1"),
             new UriReferenceNode("https://example.com/referencer2", "https://example.com/ref2#frag")
@@ -45,7 +47,7 @@ public class ReferencerUpdaterTests_UpdateReferencers
         ReferencerUpdater referencerUpdater = new();
 
         // When
-        referencerUpdater.UpdateReferencers(referencers, resourceRepository);
+        referencerUpdater.UpdateReferencers(referencerResource, referencers, resourceRepository);
 
         // Then
         Assert.Equal("https://example.com/ref1", referencers[0].GetReference());

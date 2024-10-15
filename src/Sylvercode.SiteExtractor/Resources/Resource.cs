@@ -11,6 +11,10 @@ public class Resource(Uri sourceUri, bool isPullable = false)
 
     public IResourceUriTranslater UriTranslater { get; set; } = ResourceUriTranslater.NoopInstance;
 
+    public Uri TranslatedResourceUri => TranslateUri(Uri);
+
+    public bool IsTranslationUriUnchaged => TranslatedResourceUri == Uri;
+
     public MetadataDictionary Metadata { get; } = [];
 
     public Uri TranslateUri(Uri sourceUri)

@@ -23,6 +23,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Sylvercode.SiteExtractor\Sylvercode.SiteExtractor.csproj" />
     <ProjectReference Include="..\..\src\Sylvercode.SiteExtractor.Markdown\Sylvercode.SiteExtractor.Markdown.csproj" />
+    <ProjectReference Include="..\Sylvercode.SiteExtractor.Tests\Sylvercode.SiteExtractor.Tests.csproj" />
+    <ProjectReference Include="..\Sylvercode.StructDocExtractor.Tests\Sylvercode.StructDocExtractor.Tests.csproj" />
   </ItemGroup>
 
 </Project>
