@@ -39,7 +39,7 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
 
         if (reference == referencerResource)
         {
-            LogKepFragmentOnly(refUri);
+            LogKeepFragmentOnly(refUri);
             referencer.UpdateReference(refUri.Fragment);
             return;
         }
@@ -49,6 +49,7 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
             string uniqueFimeNameWithFragment = uniqueFimeName + refUri.Fragment;
             LogUpdateToUniqueName(refUri, uniqueFimeNameWithFragment);
             referencer.UpdateReference(uniqueFimeNameWithFragment);
+            return;
         }
 
         string translateUri = reference.TranslateUri(refUri).ToString();
@@ -64,7 +65,10 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
             UriBuilder uriBuilder = new(resource.TranslatedResourceUri);
             string fileName = Path.GetFileName(uriBuilder.Path);
             if (fileNameMap.TryGetValue(fileName, out var value))
+            {
                 value.count++;
+                fileNameMap[fileName] = value;
+            }
             else
                 fileNameMap[fileName] = (1, resource);
         }
@@ -95,5 +99,5 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
     [LoggerMessage(
         Level = LogLevel.Debug,
         Message = "Updated to keep fragment only: {RefUri}")]
-    private partial void LogKepFragmentOnly(Uri refUri);
+    private partial void LogKeepFragmentOnly(Uri refUri);
 }
