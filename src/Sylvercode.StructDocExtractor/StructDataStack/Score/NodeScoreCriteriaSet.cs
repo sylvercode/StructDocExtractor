@@ -13,7 +13,7 @@ public readonly struct NodeScoreCriteriaSet<TDiscriminator>(params NodeScoreCrit
         public int Match(TDiscriminator node) => matcher.Match(evaluator.Invoke(node));
     }
 
-    public class NodeScoreCriteria(params NodeScoreCriterion[] subCriteria)
+    public class NodeScoreCriteria(IEnumerable<NodeScoreCriterion> subCriteria)
     {
         public NodeScore CalculateScore(TDiscriminator node)
         {
