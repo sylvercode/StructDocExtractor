@@ -44,7 +44,7 @@ public partial class ExtractorTaskSequencerHandler<TExtractionData, TDataDiscrim
         if (factory is null)
             return ProcessTaskResult.NewErrorOrSkipped<TExtractionData, TDataDiscriminator>(ExtractorOption.MissingNodeFactoryAsError);
 
-        return factory.NewNode(taskContext.ExtractionData);
+        return factory.NewNode(discriminator, taskContext.ExtractionData);
     }
 
     public virtual TDataDiscriminator GetDataDiscriminator(TaskContext<TExtractionData, TDataDiscriminator> taskContext)

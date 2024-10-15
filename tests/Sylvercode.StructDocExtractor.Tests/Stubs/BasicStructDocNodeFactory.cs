@@ -6,7 +6,7 @@ namespace Sylvercode.StructDocExtractor.Tests.Stubs;
 
 public class BasicStructDocNodeFactory : IStructDocNodeFactory<FakeStructDocData, BasicNodeDiscriminator>
 {
-    public IProcessTaskResult<FakeStructDocData, BasicNodeDiscriminator> NewNode(FakeStructDocData data)
+    public IProcessTaskResult<FakeStructDocData, BasicNodeDiscriminator> NewNode(BasicNodeDiscriminator discriminator, FakeStructDocData data)
     {
         BasicSrcNode resultNode = new(data.Id, data.Data);
         ProcessTaskResult<FakeStructDocData, BasicNodeDiscriminator> result = new(data.ResultType, resultNode)

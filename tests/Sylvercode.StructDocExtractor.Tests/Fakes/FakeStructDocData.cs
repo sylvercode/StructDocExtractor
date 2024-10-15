@@ -31,7 +31,7 @@ public class FakeStructDocData(string? id = null, string? data = null)
             BasicNodeDiscriminator discriminator = FakeStructDocDataDiscriminatorProvider.Default.CreateDataDiscriminator(this);
             IProcessTaskResult<FakeStructDocData, BasicNodeDiscriminator> TaskResult =
                 BasicStructDocNodeFactoryProvider.Default.GetFactoryForStack(
-                    new BasicNodeStructDataStack(discriminator))!.NewNode(this);
+                    new BasicNodeStructDataStack(discriminator))!.NewNode(discriminator, this);
             result.SetResult(TaskResult);
         }
 

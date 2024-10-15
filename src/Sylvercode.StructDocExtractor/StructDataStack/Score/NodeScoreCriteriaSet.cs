@@ -40,9 +40,6 @@ public readonly struct NodeScoreCriteriaSet<TDiscriminator>(params NodeScoreCrit
 
     public NodeScore CalculateScore(TDiscriminator node)
     {
-        if (criteria is null)
-            return new();
-
         NodeScore score = new();
 
         foreach (var criterion in criteria)
