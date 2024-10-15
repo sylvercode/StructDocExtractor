@@ -88,7 +88,7 @@ public partial class ResourceDataExtractor<TExtractionData>(
 
         using var stream = dataStore.GetStreamWriter(lastResult.Resource.TranslateUri(dataStore.BaseUri));
 
-        serisalizer.Serialize(stream, lastResult.Result.StructDocNodes[0]); // TODO: Handle multiple nodes
+        serisalizer.Serialize(stream, lastResult.Result.StructDocNodes[0]);
 
         return new FinishedProcessResult(this, lastResult.Resource);
     }
