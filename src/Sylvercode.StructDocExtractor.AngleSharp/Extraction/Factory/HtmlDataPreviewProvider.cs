@@ -5,9 +5,17 @@ namespace Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
 
 public class HtmlDataPreviewProvider : IDataPreviewProvider<IElement>
 {
+    public const string NullPreview = "<<null>>";
+
     public string GetPreview(IElement? data)
     {
-        // TODO: Implement this method
-        throw new NotImplementedException();
+        if (data is null)
+            return NullPreview;
+
+        string textContentPreview = data.TextContent.Length <= 50
+            ? data.TextContent
+            : data.TextContent[..50];
+
+        return $"<{data.TagName}> {textContentPreview}";
     }
 }
