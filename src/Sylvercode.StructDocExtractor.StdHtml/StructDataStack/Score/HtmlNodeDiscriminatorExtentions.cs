@@ -26,4 +26,7 @@ public static class HtmlNodeDiscriminatorExtentions
 
     public static StackScoreCalculator<HtmlNodeDiscriminator> AsScoreCalculator(this HtmlNodeDiscriminator discriminator)
         => new([discriminator.AsCriteriaSet()]);
+
+    public static StackScoreCalculator<HtmlNodeDiscriminator> AsScoreCalculator(this HtmlNodeDiscriminator[] discriminatorStack)
+        => new(discriminatorStack.Select(d => d.AsCriteriaSet()).ToArray());
 }

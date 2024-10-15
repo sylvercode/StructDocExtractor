@@ -5,5 +5,5 @@ namespace Sylvercode.StructDocExtractor.StdHtml.Extraction.Factory;
 
 public interface IHtmlNodeFactory<TDataDiscriminator> : IStructDocNodeFactory<TDataDiscriminator, HtmlNodeDiscriminator>
 {
-    HtmlNodeDiscriminator? DefaultSelector { get; }
+    HtmlNodeDiscriminator[]? DefaultSelector { get; }
 }

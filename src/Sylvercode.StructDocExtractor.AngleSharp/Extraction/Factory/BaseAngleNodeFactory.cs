@@ -7,7 +7,7 @@ namespace Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
 
 public abstract class BaseAngleNodeFactory : IHtmlNodeFactory<IElement>
 {
-    public virtual HtmlNodeDiscriminator? DefaultSelector { get; }
+    public virtual HtmlNodeDiscriminator[]? DefaultSelector { get; }
 
     public IProcessTaskResult<IElement, HtmlNodeDiscriminator> NewNode(HtmlNodeDiscriminator discriminator, IElement data)
     {
