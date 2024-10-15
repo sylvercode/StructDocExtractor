@@ -62,28 +62,28 @@ public class ProcessTaskResultBuilder<TExtractionData, TDataDiscriminator>
         return this;
     }
 
-    public ProcessTaskResultBuilder<TExtractionData, TDataDiscriminator> WithSubTasksExtractionData(
+    public ProcessTaskResultBuilder<TExtractionData, TDataDiscriminator> WithSubTask(
         TExtractionData subTaskExtractionData)
     {
         _subTasksExtractionData.Add(subTaskExtractionData);
         return this;
     }
 
-    public ProcessTaskResultBuilder<TExtractionData, TDataDiscriminator> WithSubTasksExtractionData(
+    public ProcessTaskResultBuilder<TExtractionData, TDataDiscriminator> WithSubTasks(
         IEnumerable<TExtractionData> subTasksExtractionData)
     {
         _subTasksExtractionData.AddRange(subTasksExtractionData);
         return this;
     }
 
-    public ProcessTaskResultBuilder<TExtractionData, TDataDiscriminator> WithExtraTasksExtractionData(
+    public ProcessTaskResultBuilder<TExtractionData, TDataDiscriminator> WithExtraTask(
         TExtractionData extraTaskExtractionData)
     {
         _extraTasksExtractionData.Add(extraTaskExtractionData);
         return this;
     }
 
-    public ProcessTaskResultBuilder<TExtractionData, TDataDiscriminator> WithExtraTasksExtractionData(
+    public ProcessTaskResultBuilder<TExtractionData, TDataDiscriminator> WithExtraTasks(
         IEnumerable<TExtractionData> extraTasksExtractionData)
     {
         _extraTasksExtractionData.AddRange(extraTasksExtractionData);
