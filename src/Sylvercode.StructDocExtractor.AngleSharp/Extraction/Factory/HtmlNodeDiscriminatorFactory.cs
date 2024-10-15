@@ -6,9 +6,6 @@ namespace Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
 
 public class HtmlNodeDiscriminatorFactory : IDataDiscriminatorFactory<IElement, HtmlNodeDiscriminator>
 {
-    public HtmlNodeDiscriminator CreateDataDiscriminator(IElement data)
-    {
-        // TODO: Implement this method
-        throw new NotImplementedException();
-    }
+    public HtmlNodeDiscriminator CreateDataDiscriminator(IElement data) =>
+        new(data.Id ?? "", [.. data.ClassList], data.TagName);
 }
