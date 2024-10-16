@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Serialization;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
@@ -17,7 +18,8 @@ public static class SerializerExtansions
     }
 
     public static IServiceCollection AddSerializer<TNode, TSerializer>(this IServiceCollection services)
-        where TSerializer : class, ISerializer
+        where TSerializer : class, ISerializer<TNode>
+        where TNode : IStructDocNode
     {
         services.TryAddSingleton<TSerializer>();
         services.AddOptions<SerializerProvider.SerializerCollection>().Configure<TSerializer>((col, serializer) =>

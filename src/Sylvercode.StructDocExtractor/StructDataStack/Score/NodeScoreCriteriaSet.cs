@@ -13,7 +13,7 @@ public readonly struct NodeScoreCriteriaSet<TDiscriminator>(params NodeScoreCrit
         public int Match(TDiscriminator node) => matcher.Match(evaluator.Invoke(node));
     }
 
-    public class NodeScoreCriteria(params NodeScoreCriterion[] subCriteria)
+    public class NodeScoreCriteria(IEnumerable<NodeScoreCriterion> subCriteria)
     {
         public NodeScore CalculateScore(TDiscriminator node)
         {
@@ -40,9 +40,6 @@ public readonly struct NodeScoreCriteriaSet<TDiscriminator>(params NodeScoreCrit
 
     public NodeScore CalculateScore(TDiscriminator node)
     {
-        if (criteria is null)
-            return new();
-
         NodeScore score = new();
 
         foreach (var criterion in criteria)

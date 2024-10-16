@@ -2,5 +2,5 @@
 
 public interface IStructDocNodeFactory<TExtractionData, TDataDiscriminator>
 {
-    IProcessTaskResult<TExtractionData, TDataDiscriminator> NewNode(TExtractionData data);
+    IProcessTaskResult<TExtractionData, TDataDiscriminator> NewNode(TDataDiscriminator discriminator, TExtractionData data);
 }

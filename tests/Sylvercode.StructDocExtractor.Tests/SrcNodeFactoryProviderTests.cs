@@ -18,7 +18,7 @@ public class SrcNodeFactoryProvider_GetFactoryForStack
         public static readonly FakeFactory FakeFactory1 = new(Factory1Name);
         public static readonly FakeFactory FakeFactory2 = new(Factory2Name);
 
-        public IProcessTaskResult<string, BasicNodeDiscriminator> NewNode(string data)
+        public IProcessTaskResult<string, BasicNodeDiscriminator> NewNode(BasicNodeDiscriminator discriminator, string data)
         {
             throw new NotImplementedException();
         }

@@ -4,7 +4,7 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 
-public class ProcessTaskResult<TExtractionData, TDataDiscriminator>(TaskResultType resultType, IStructDocNode? srcNode) 
+public class ProcessTaskResult<TExtractionData, TDataDiscriminator>(TaskResultType resultType, IStructDocNode? srcNode)
     : IProcessTaskResult<TExtractionData, TDataDiscriminator>
 {
     public TaskResultType ResultType => resultType;
@@ -15,12 +15,12 @@ public class ProcessTaskResult<TExtractionData, TDataDiscriminator>(TaskResultTy
 
     public IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator>? NodeFactoryProvider { get; set; }
 
-    public MetadataDictionary Metadatas { get; } = [];
+    public MetadataDictionary Metadatas { get; set; } = [];
 
-    public List<TExtractionData> SubTasksExtractionData { get; } = [];
+    public List<TExtractionData> SubTasksExtractionData { get; set; } = [];
     IEnumerable<TExtractionData> IProcessTaskResult<TExtractionData, TDataDiscriminator>.SubTasksExtractionData => SubTasksExtractionData;
 
-    public List<TExtractionData> ExtraTasksExtractionData { get; } = [];
+    public List<TExtractionData> ExtraTasksExtractionData { get; set; } = [];
     IEnumerable<TExtractionData> IProcessTaskResult<TExtractionData, TDataDiscriminator>.ExtraTasksExtractionData => ExtraTasksExtractionData;
 
     public ProcessTaskResult(IStructDocNode? srcNode = null) : this(TaskResultType.Success, srcNode) { }
