@@ -1,6 +1,6 @@
 using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.StdHtml.Model;
-using Sylvercode.StructDocExtractor.StdHtml.StructDataStack.Score;
+using Sylvercode.StructDocExtractor.StructDataStack.Score;
 
 namespace Sylvercode.StructDocExtractor.StdHtml.Extraction.Factory;
 
@@ -8,13 +8,8 @@ public class HtmlNodeFactoryProvider<TExtractionData> : StructDocNodeFactoryProv
 {
     public void AddFactory(IHtmlNodeFactory<TExtractionData> factory)
     {
-        HtmlNodeDiscriminator[] selector = factory.DefaultSelector ?? throw new InvalidOperationException("No selector set in factory");
-        AddFactory(factory, selector.AsScoreCalculator());
+        if (factory.DefaultSelector is null)
+            throw new InvalidOperationException("No selector set in factory");
+        AddFactory(factory, new StackScoreCalculator<HtmlNodeDiscriminator>(factory.DefaultSelector));
     }
-
-    public void AddFactory(IStructDocNodeFactory<TExtractionData, HtmlNodeDiscriminator> factory, HtmlNodeDiscriminator discriminator)
-        => AddFactory(factory, discriminator.AsScoreCalculator());
-
-    public void AddFactory(IStructDocNodeFactory<TExtractionData, HtmlNodeDiscriminator> factory, HtmlNodeDiscriminator[] discriminatorStack)
-        => AddFactory(factory, discriminatorStack.AsScoreCalculator());
 }

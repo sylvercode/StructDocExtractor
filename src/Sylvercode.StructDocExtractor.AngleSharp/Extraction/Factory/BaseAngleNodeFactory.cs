@@ -2,12 +2,13 @@ using AngleSharp.Dom;
 using Sylvercode.StructDocExtractor.Extraction;
 using Sylvercode.StructDocExtractor.StdHtml.Extraction.Factory;
 using Sylvercode.StructDocExtractor.StdHtml.Model;
+using Sylvercode.StructDocExtractor.StructDataStack.Score;
 
 namespace Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
 
 public abstract class BaseAngleNodeFactory : IHtmlNodeFactory<IElement>
 {
-    public virtual HtmlNodeDiscriminator[]? DefaultSelector { get; }
+    public virtual List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>>? DefaultSelector { get; }
 
     public IProcessTaskResult<IElement, HtmlNodeDiscriminator> NewNode(HtmlNodeDiscriminator discriminator, IElement data)
     {

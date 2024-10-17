@@ -2,6 +2,11 @@ using System.Collections.Immutable;
 
 namespace Sylvercode.StructDocExtractor.StructDataStack.Score;
 
+/// <summary>
+/// Calculates the score of a stack of nodes based on a set of criteria.
+/// </summary>
+/// <typeparam name="TDiscriminator"></typeparam>
+/// <param name="stackEntriesCriteria"></param>
 public class StackScoreCalculator<TDiscriminator>(IEnumerable<NodeScoreCriteriaSet<TDiscriminator>> stackEntriesCriteria)
         : IStackScoreCalculator<TDiscriminator>
 {
