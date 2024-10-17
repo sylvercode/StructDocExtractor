@@ -12,10 +12,10 @@ public static class AngleSharpExtractorExtentions
 {
     public static IServiceCollection AddAngleExtractorFor<TNodeFactoryProvider>(
         this IServiceCollection services,
-        IRouterExtractorSelector<IElement> selector)
-        where TNodeFactoryProvider : class, IStructDocNodeFactoryProvider<IElement, HtmlNodeDiscriminator>
+        IRouterExtractorSelector<INode> selector)
+        where TNodeFactoryProvider : class, IStructDocNodeFactoryProvider<INode, HtmlNodeDiscriminator>
     {
-        services.ConfigureRouterExtractors<IElement>()
+        services.ConfigureRouterExtractors<INode>()
             .AddDefaultExtractorFor<HtmlNodeDiscriminator, TNodeFactoryProvider>(selector);
 
         return services;

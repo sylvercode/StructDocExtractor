@@ -3,11 +3,11 @@ using Sylvercode.StructDocExtractor.Extraction.PreviewProvider;
 
 namespace Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
 
-public class HtmlDataPreviewProvider : IDataPreviewProvider<IElement>
+public class HtmlDataPreviewProvider : IDataPreviewProvider<INode>
 {
     public const string NullPreview = "<<null>>";
 
-    public string GetPreview(IElement? data)
+    public string GetPreview(INode? data)
     {
         if (data is null)
             return NullPreview;
@@ -16,6 +16,9 @@ public class HtmlDataPreviewProvider : IDataPreviewProvider<IElement>
             ? data.TextContent
             : data.TextContent[..50];
 
-        return $"<{data.TagName}> {textContentPreview}";
+        if (data is not IElement element)
+            return $"|PlainText| {textContentPreview}";
+
+        return $"<{element.TagName}> {textContentPreview}";
     }
 }
