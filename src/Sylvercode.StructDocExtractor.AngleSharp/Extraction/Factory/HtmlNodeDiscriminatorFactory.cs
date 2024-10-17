@@ -8,8 +8,12 @@ public class HtmlNodeDiscriminatorFactory : IDataDiscriminatorFactory<INode, Htm
 {
     public HtmlNodeDiscriminator CreateDataDiscriminator(INode data)
     {
-        if (data is not IElement element)
+        if (data.NodeType is NodeType.Text
+            && !string.IsNullOrWhiteSpace(data.TextContent))
             return new(tagName: HtmlNodeDiscriminator.PlainTextTagName);
+
+        if (data is not IElement element)
+            return new();
 
         return new(element.Id ?? "", [.. element.ClassList], element.TagName);
     }

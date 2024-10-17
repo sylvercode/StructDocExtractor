@@ -13,7 +13,7 @@ public class HtmlHeadingFactory : BaseAngleNodeFactory
             .WithRegExTagName(@"h\d+")
             .Build();
 
-    protected override bool BuildFromNode(AngleProcessTaskResultBuilder resultBuilder, INode node)
+    protected override bool BuildFromElement(AngleProcessTaskResultBuilder resultBuilder, IElement node)
     {
         if (node is not IHtmlHeadingElement headingElement)
             throw new ArgumentException("Node is not an anchor element", nameof(node));
