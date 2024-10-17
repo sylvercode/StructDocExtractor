@@ -1,13 +1,11 @@
-﻿
-using AngleSharp;
+﻿using AngleSharp;
 using AngleSharp.Dom;
 using Microsoft.Extensions.Options;
 using Sylvercode.SiteExtractor.Sources;
 
 namespace Sylvercode.SiteExtractor.AngleSharp;
 
-
-public abstract class BaseAngleSharpSiteSource : ISiteSource<IElement>
+public abstract class BaseAngleSharpSiteSource : ISiteSource<INode>
 {
     protected IConfiguration Config { get; }
 
@@ -31,7 +29,7 @@ public abstract class BaseAngleSharpSiteSource : ISiteSource<IElement>
 
     public abstract bool DataExists(Uri uri);
 
-    public virtual IElement GetData(Uri uri)
+    public virtual INode GetData(Uri uri)
     {
         IDocument document = GetDocument(uri); ;
         return document.Body ?? throw new InvalidOperationException("Document has no body");

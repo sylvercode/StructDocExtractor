@@ -13,15 +13,15 @@ public class HtmlHeadingFactory : BaseAngleNodeFactory
             .WithRegExTagName(@"h\d+")
             .Build();
 
-    protected override bool BuildNode(AngleProcessTaskResultBuilder resultBuilder, IElement element)
+    protected override bool BuildFromNode(AngleProcessTaskResultBuilder resultBuilder, INode node)
     {
-        if (element is not IHtmlHeadingElement headingElement)
-            throw new ArgumentException("Element is not an anchor element", nameof(element));
+        if (node is not IHtmlHeadingElement headingElement)
+            throw new ArgumentException("Node is not an anchor element", nameof(node));
 
         var level = int.Parse(headingElement.TagName[1..]);
         resultBuilder.WithNode(new HtmlHeading(level));
 
-        // resultBuilder.WithSubTask(element.ChildNodes);
+        resultBuilder.WithSubTasks(node.ChildNodes);
 
         return true;
     }

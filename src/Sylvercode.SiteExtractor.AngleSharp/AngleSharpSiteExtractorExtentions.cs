@@ -24,7 +24,7 @@ public static class AngleSharpSiteExtractorExtentions
         services.AddMemoryCookieProvider();
         services.TryAddSingleton((sp) => AngleSharp.Configuration.Default.With(sp.GetRequiredService<MemoryCookieProvider>()));
         services.TryAddSingleton<IBrowsingContext, BrowsingContext>();
-        services.TryAddSingleton<ISiteSource<IElement>, AngleSharpWebSource>();
+        services.TryAddSingleton<ISiteSource<INode>, AngleSharpWebSource>();
 
         return services;
     }
@@ -52,7 +52,7 @@ public static class AngleSharpSiteExtractorExtentions
     {
         services.AddSiteExtractor()
             .AddResourceProcessorProvider()
-            .AddResourceDataExtractorProcessor<IElement>();
+            .AddResourceDataExtractorProcessor<INode>();
 
         if (withDefaultSource)
             // Must be added before AddHttpDownloader so its cookie container can be share.
@@ -65,9 +65,9 @@ public static class AngleSharpSiteExtractorExtentions
                 services.AddHttpDownloader();
         }
 
-        services.AddRouterExtractor<IElement>();
-        services.TryAddSingleton<IDataDiscriminatorFactory<IElement, HtmlNodeDiscriminator>, HtmlNodeDiscriminatorFactory>();
-        services.TryAddSingleton<IDataPreviewProvider<IElement>, HtmlDataPreviewProvider>();
+        services.AddRouterExtractor<INode>();
+        services.TryAddSingleton<IDataDiscriminatorFactory<INode, HtmlNodeDiscriminator>, HtmlNodeDiscriminatorFactory>();
+        services.TryAddSingleton<IDataPreviewProvider<INode>, HtmlDataPreviewProvider>();
 
         return services;
     }
