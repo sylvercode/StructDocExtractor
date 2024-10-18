@@ -7,12 +7,16 @@ namespace Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
 
 public class HtmlListFactory : BaseAngleNodeFactory
 {
-    public override List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>>? DefaultSelector { get; } =
+    public static List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>> Selector { get; } =
         new HtmlScoreCriteriaSetsBuilder()
                 .WithTagName(TagNames.Ul)
-            .NextCriteriaSet()
+            .NextCriteria()
                 .WithTagName(TagNames.Ol)
-            .Build();
+            .BuildSets();
+
+    public override List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>>? DefaultSelector { get; } = Selector;
+
+
 
     protected override bool BuildFromElement(AngleProcessTaskResultBuilder resultBuilder, IElement node)
     {

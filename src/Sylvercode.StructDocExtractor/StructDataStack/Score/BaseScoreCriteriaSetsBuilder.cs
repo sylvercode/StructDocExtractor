@@ -38,7 +38,7 @@ public class BaseScoreCriteriaSetsBuilder<TDiscriminator, TBuilder>
         return (TBuilder)this;
     }
 
-    public List<NodeScoreCriteriaSet<TDiscriminator>> Build()
+    public List<NodeScoreCriteriaSet<TDiscriminator>> BuildSets()
     {
         NextCriteriaSet();
         return _criteriaSetList;

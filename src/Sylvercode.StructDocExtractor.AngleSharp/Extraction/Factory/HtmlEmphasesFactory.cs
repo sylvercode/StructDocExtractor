@@ -10,7 +10,7 @@ public class HtmlEmphasesFactory : BaseAngleNodeFactory
     public override List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>>? DefaultSelector { get; } =
         new HtmlScoreCriteriaSetsBuilder()
             .WithTagName(TagNames.Em)
-            .Build();
+            .BuildSets();
 
     protected override bool BuildFromElement(AngleProcessTaskResultBuilder resultBuilder, IElement node)
     {
