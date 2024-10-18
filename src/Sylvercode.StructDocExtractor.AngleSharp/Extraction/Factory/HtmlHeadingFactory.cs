@@ -11,9 +11,9 @@ public class HtmlHeadingFactory : BaseAngleNodeFactory
     public override List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>>? DefaultSelector { get; } =
         new HtmlScoreCriteriaSetsBuilder()
             .WithRegExTagName(@"h\d+")
-            .Build();
+            .BuildSets();
 
-    protected override bool BuildFromNode(AngleProcessTaskResultBuilder resultBuilder, INode node)
+    protected override bool BuildFromElement(AngleProcessTaskResultBuilder resultBuilder, IElement node)
     {
         if (node is not IHtmlHeadingElement headingElement)
             throw new ArgumentException("Node is not an anchor element", nameof(node));
@@ -21,7 +21,7 @@ public class HtmlHeadingFactory : BaseAngleNodeFactory
         var level = int.Parse(headingElement.TagName[1..]);
         resultBuilder.WithNode(new HtmlHeading(level));
 
-        resultBuilder.WithSubTasks(node.ChildNodes);
+        resultBuilder.WithChildNodesAsSubTasks();
 
         return true;
     }

@@ -42,6 +42,10 @@ public class ProcessTaskResultBuilder<TExtractionData, TDataDiscriminator>
         return this;
     }
 
+    public ProcessTaskResultBuilder<TExtractionData, TDataDiscriminator> WithNode<TNode>()
+        where TNode : IStructDocNode, new()
+        => WithNode(new TNode());
+
     public ProcessTaskResultBuilder<TExtractionData, TDataDiscriminator> WithDataDiscriminator(
         TDataDiscriminator dataDiscriminator)
     {
