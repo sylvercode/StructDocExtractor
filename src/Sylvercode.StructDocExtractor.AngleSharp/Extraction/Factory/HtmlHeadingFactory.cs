@@ -21,7 +21,7 @@ public class HtmlHeadingFactory : BaseAngleNodeFactory
         var level = int.Parse(headingElement.TagName[1..]);
         resultBuilder.WithNode(new HtmlHeading(level));
 
-        resultBuilder.WithSubTasks(node.ChildNodes);
+        resultBuilder.WithChildNodesAsSubTasks();
 
         return true;
     }

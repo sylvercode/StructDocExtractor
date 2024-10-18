@@ -4,7 +4,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.AngleSharp.Extraction;
 
-public class AngleProcessTaskResultBuilder(INode? sourceNode) : ProcessTaskResultBuilder<INode, HtmlNodeDiscriminator>
+public class AngleProcessTaskResultBuilder(INode sourceNode) : ProcessTaskResultBuilder<INode, HtmlNodeDiscriminator>
 {
     private IElement ElementNode
     {
@@ -13,7 +13,25 @@ public class AngleProcessTaskResultBuilder(INode? sourceNode) : ProcessTaskResul
             return sourceNode as IElement ?? throw new InvalidOperationException("Node is not an element");
         }
     }
-    
+
+    public AngleProcessTaskResultBuilder WithChildNodesAsSubTasks()
+        => WithChildNodesAsSubTasks(sourceNode);
+
+    public AngleProcessTaskResultBuilder WithChildNodesAsSubTasks(INode node)
+    {
+        WithSubTasks(node.ChildNodes);
+        return this;
+    }
+
+    public AngleProcessTaskResultBuilder WithChildNodesAsExtraTasks()
+        => WithChildNodesAsExtraTasks(sourceNode);
+
+    public AngleProcessTaskResultBuilder WithChildNodesAsExtraTasks(INode node)
+    {
+        WithSubTasks(node.ChildNodes);
+        return this;
+    }
+
     public AngleProcessTaskResultBuilder WithSubTaskByAll(string selector)
         => WithSubTaskByAll(ElementNode, selector);
 
