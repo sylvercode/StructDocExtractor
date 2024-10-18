@@ -10,7 +10,7 @@ public class HtmlListItemFactory : BaseAngleNodeFactory
     public override List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>>? DefaultSelector { get; } =
         new HtmlScoreCriteriaSetsBuilder()
             .WithTagName(TagNames.Li)
-            .WithNextCriteriaSets(HtmlListFactory.Selector)
+            .AndParentCriteriaSets(HtmlListFactory.Selector)
             .BuildSets();
 
     protected override bool BuildFromElement(AngleProcessTaskResultBuilder resultBuilder, IElement node)

@@ -9,9 +9,7 @@ public class HtmlListFactory : BaseAngleNodeFactory
 {
     public static List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>> Selector { get; } =
         new HtmlScoreCriteriaSetsBuilder()
-                .WithTagName(TagNames.Ul)
-            .NextCriteria()
-                .WithTagName(TagNames.Ol)
+            .WithTagName(TagNames.Ul).Or().WithTagName(TagNames.Ol)
             .BuildSets();
 
     public override List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>>? DefaultSelector { get; } = Selector;
