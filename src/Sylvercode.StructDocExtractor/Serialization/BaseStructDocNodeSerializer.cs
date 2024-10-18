@@ -9,17 +9,17 @@ public partial class BaseStructDocNodeSerializer<TData>(ILogger? logger = null) 
 {
     private readonly ILogger _logger = logger ?? NullLogger.Instance;
 
-    public virtual void Serialize(TData obj, StreamWriter stream)
+    public virtual void Serialize(TData obj, TextWriter stream)
     {
         LogSerialize(obj.GetType());
     }
 
-    public virtual void OnBeforeChildSerialize(TData node, TData? previousNode, StreamWriter stream)
+    public virtual void OnBeforeChildSerialize(TData node, TData? previousNode, TextWriter stream)
     {
         LogOnBeforeChildSerialize(node.GetType(), previousNode?.GetType());
     }
 
-    public virtual void OnAfterChildSerialize(TData node, TData? nextNode, StreamWriter stream)
+    public virtual void OnAfterChildSerialize(TData node, TData? nextNode, TextWriter stream)
     {
         LogOnAfterChildSerialize(node.GetType(), nextNode?.GetType());
     }

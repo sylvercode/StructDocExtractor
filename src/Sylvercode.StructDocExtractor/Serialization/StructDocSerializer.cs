@@ -6,7 +6,7 @@ namespace Sylvercode.StructDocExtractor.Serialization;
 public class StructDocSerializer(ISerializerProvider serializerProvider, ILoggerFactory loggerFactory)
     : IStructDocSerializer
 {
-    public void Serialize(StreamWriter stream, IStructDocNode rootData)
+    public void Serialize(TextWriter stream, IStructDocNode rootData)
     {
         var executor = new StructDocSerializerExecutor(stream, rootData, serializerProvider, loggerFactory);
         executor.ExecuteTasks();

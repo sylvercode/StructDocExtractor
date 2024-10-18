@@ -13,7 +13,7 @@ public partial class SerializerTask(IStructDocNode data, SerializerTaskParentInf
     public ISerializer? Serializer { get; set; }
     private readonly ILogger<SerializerTask> _logger = logger ?? NullLogger<SerializerTask>.Instance;
 
-    public void OnToProcess(StreamWriter stream)
+    public void OnToProcess(TextWriter stream)
     {
         LogTaskProcessStarted(Data.GetType(), Serializer?.GetType());
         IStructDocNode? node = Data as IStructDocNode;
@@ -42,7 +42,7 @@ public partial class SerializerTask(IStructDocNode data, SerializerTaskParentInf
         }
     }
 
-    public void OnProcessed(StreamWriter stream)
+    public void OnProcessed(TextWriter stream)
     {
         if (HasChildTasks is null)
             throw new InvalidOperationException("HasChildTasks is not set");
@@ -53,7 +53,7 @@ public partial class SerializerTask(IStructDocNode data, SerializerTaskParentInf
             LogWaitingForChildrenToEnd();
     }
 
-    private void OnProcessLastChild(StreamWriter stream, SerializerTask? lastChild)
+    private void OnProcessLastChild(TextWriter stream, SerializerTask? lastChild)
     {
         LogLastChildProcessed();
         IStructDocNodeHolder? nodeHolder = Data as IStructDocNodeHolder;

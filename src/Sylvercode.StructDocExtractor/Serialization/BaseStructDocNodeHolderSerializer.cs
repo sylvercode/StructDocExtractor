@@ -9,7 +9,7 @@ public partial class BaseStructDocNodeHolderSerializer<TData, TChild>(ILogger? l
     where TChild : class, IStructDocNode
 {
     private readonly ILogger _logger = logger ?? NullLogger.Instance;
-    public virtual void OnBetweenChildrenSerialize(TData parent, TChild? previousChild, TChild? nextChild, StreamWriter stream)
+    public virtual void OnBetweenChildrenSerialize(TData parent, TChild? previousChild, TChild? nextChild, TextWriter stream)
     {
         if (previousChild is null)
         {
@@ -27,22 +27,22 @@ public partial class BaseStructDocNodeHolderSerializer<TData, TChild>(ILogger? l
         }
     }
 
-    protected virtual void OnBeforeFirstChildSerialize(TData parent, TChild nextChild, StreamWriter stream)
+    protected virtual void OnBeforeFirstChildSerialize(TData parent, TChild nextChild, TextWriter stream)
     {
         LogOnBeforeFirstChildSerialize(parent.GetType(), nextChild.GetType());
     }
 
-    protected virtual void OnBetweenSiblingSerialize(TData parent, TChild previousChild, TChild nextChild, StreamWriter stream)
+    protected virtual void OnBetweenSiblingSerialize(TData parent, TChild previousChild, TChild nextChild, TextWriter stream)
     {
         LogOnBetweenSiblingSerialize(parent.GetType(), previousChild.GetType(), nextChild.GetType());
     }
 
-    protected virtual void OnAfterLastChildSerialize(TData parent, TChild previousChild, StreamWriter stream)
+    protected virtual void OnAfterLastChildSerialize(TData parent, TChild previousChild, TextWriter stream)
     {
         LogOnAfterLastChildSerialize(parent.GetType(), previousChild.GetType());
     }
 
-    protected virtual void OnNoChildSerialize(TData parent, StreamWriter stream)
+    protected virtual void OnNoChildSerialize(TData parent, TextWriter stream)
     {
         LogOnNoChildSerialize(parent.GetType());
     }

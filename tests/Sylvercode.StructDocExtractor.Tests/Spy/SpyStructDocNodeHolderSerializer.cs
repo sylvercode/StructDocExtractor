@@ -9,24 +9,24 @@ public class SpyStructDocNodeHolderSerializer<TData, TChild>(List<SpyStructDocNo
 {
     public List<SpyStructDocNodeSerializerEntry> EntriesLog => entriesLog;
 
-    public override void Serialize(TData obj, StreamWriter stream)
+    public override void Serialize(TData obj, TextWriter stream)
         => this.Log([obj]);
 
-    public override void OnBeforeChildSerialize(TData node, TData? previousNode, StreamWriter stream)
+    public override void OnBeforeChildSerialize(TData node, TData? previousNode, TextWriter stream)
         => this.Log([node, previousNode]);
 
-    public override void OnAfterChildSerialize(TData node, TData? nextNode, StreamWriter stream)
+    public override void OnAfterChildSerialize(TData node, TData? nextNode, TextWriter stream)
         => this.Log([node, nextNode]);
 
-    protected override void OnBeforeFirstChildSerialize(TData parent, TChild nextChild, StreamWriter stream)
+    protected override void OnBeforeFirstChildSerialize(TData parent, TChild nextChild, TextWriter stream)
         => this.Log([parent, nextChild]);
 
-    protected override void OnBetweenSiblingSerialize(TData parent, TChild previousChild, TChild nextChild, StreamWriter stream)
+    protected override void OnBetweenSiblingSerialize(TData parent, TChild previousChild, TChild nextChild, TextWriter stream)
         => this.Log([parent, previousChild, nextChild]);
 
-    protected override void OnAfterLastChildSerialize(TData parent, TChild previousChild, StreamWriter stream)
+    protected override void OnAfterLastChildSerialize(TData parent, TChild previousChild, TextWriter stream)
         => this.Log([parent, previousChild]);
 
-    protected override void OnNoChildSerialize(TData parent, StreamWriter stream)
+    protected override void OnNoChildSerialize(TData parent, TextWriter stream)
         => this.Log([parent]);
 }

@@ -8,12 +8,12 @@ public class SpyStructDocNodeSerializer<TData>(List<SpyStructDocNodeSerializerEn
 {
     public List<SpyStructDocNodeSerializerEntry> EntriesLog => entriesLog;
 
-    public override void Serialize(TData obj, StreamWriter stream)
+    public override void Serialize(TData obj, TextWriter stream)
         => this.Log([obj]);
 
-    public override void OnBeforeChildSerialize(TData node, TData? previousNode, StreamWriter stream)
+    public override void OnBeforeChildSerialize(TData node, TData? previousNode, TextWriter stream)
         => this.Log([node, previousNode]);
 
-    public override void OnAfterChildSerialize(TData node, TData? nextNode, StreamWriter stream)
+    public override void OnAfterChildSerialize(TData node, TData? nextNode, TextWriter stream)
         => this.Log([node, nextNode]);
 }

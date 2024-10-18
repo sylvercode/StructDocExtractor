@@ -7,7 +7,7 @@ namespace Sylvercode.StructDocExtractor.Serialization;
 public partial class StructDocSerializerExecutor
 {
     private readonly LinkedList<SerializerTask> _pendingTasks;
-    private readonly StreamWriter _stream;
+    private readonly TextWriter _stream;
     private readonly ISerializerProvider _serializerProvider;
 
     private bool HasPendingTasks => _pendingTasks.Count > 0;
@@ -17,7 +17,7 @@ public partial class StructDocSerializerExecutor
     private readonly ILogger<SerializerTask> _loggerForTask;
 
     public StructDocSerializerExecutor(
-        StreamWriter stream,
+        TextWriter stream,
         IStructDocNode rootData,
         ISerializerProvider serializerProvider,
         ILoggerFactory? loggerFactory = null)
