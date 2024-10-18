@@ -1,9 +1,11 @@
-using Sylvercode.StructDocExtractor.StdHtml.Model.Base;
+using Sylvercode.StructDocExtractor.Model.Base;
 
 namespace Sylvercode.StructDocExtractor.StdHtml.Model;
 
-public class HtmlStrongNode(string text, string id = "") :
-    BaseHtmlTextNode(text, id)
+public class HtmlStrong(string id) :
+    BaseStructDocBlockWithAnyParentAndContent(id)
 {
-
+    public HtmlStrong() : this(string.Empty)
+    {
+    }
 }

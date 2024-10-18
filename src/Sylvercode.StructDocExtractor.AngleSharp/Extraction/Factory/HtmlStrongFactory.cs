@@ -5,16 +5,16 @@ using Sylvercode.StructDocExtractor.StructDataStack.Score;
 
 namespace Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
 
-public class HtmlParagraphFactory : BaseAngleNodeFactory
+public class HtmlStrongFactory : BaseAngleNodeFactory
 {
     public override List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>>? DefaultSelector { get; } =
         new HtmlScoreCriteriaSetsBuilder()
-            .WithTagName(TagNames.P)
+            .WithTagName(TagNames.Strong)
             .Build();
 
     protected override bool BuildFromElement(AngleProcessTaskResultBuilder resultBuilder, IElement node)
     {
-        resultBuilder.WithNode<HtmlParagraph>();
+        resultBuilder.WithNode<HtmlStrong>();
         resultBuilder.WithChildNodesAsSubTasks();
         return true;
     }
