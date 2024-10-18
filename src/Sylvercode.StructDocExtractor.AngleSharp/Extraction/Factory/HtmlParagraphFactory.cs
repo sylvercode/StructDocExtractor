@@ -10,7 +10,7 @@ public class HtmlParagraphFactory : BaseAngleNodeFactory
     public override List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>>? DefaultSelector { get; } =
         new HtmlScoreCriteriaSetsBuilder()
             .WithTagName(TagNames.P)
-            .Build();
+            .BuildSets();
 
     protected override bool BuildFromElement(AngleProcessTaskResultBuilder resultBuilder, IElement node)
     {

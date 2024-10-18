@@ -11,7 +11,7 @@ public class BaseScoreCriteriaSetsBuilder<TDiscriminator, TBuilder>
 
     private readonly List<NodeScoreCriteriaSet<TDiscriminator>> _criteriaSetList = [];
 
-    public TBuilder NextCriteria()
+    public TBuilder Or()
     {
         if (_criterionList.Count == 0)
             return (TBuilder)this;
@@ -20,9 +20,9 @@ public class BaseScoreCriteriaSetsBuilder<TDiscriminator, TBuilder>
         return (TBuilder)this;
     }
 
-    public TBuilder NextCriteriaSet()
+    public TBuilder AndParent()
     {
-        NextCriteria();
+        Or();
         if (_criteriaList.Count == 0)
             return (TBuilder)this;
         _criteriaSetList.Add(new(_criteriaList.ToArray()));
@@ -30,17 +30,17 @@ public class BaseScoreCriteriaSetsBuilder<TDiscriminator, TBuilder>
         return (TBuilder)this;
     }
 
-    public TBuilder WithNextCriteriaSets(
+    public TBuilder AndParentCriteriaSets(
         IEnumerable<NodeScoreCriteriaSet<TDiscriminator>> criteriaSets)
     {
-        NextCriteriaSet();
+        AndParent();
         _criteriaSetList.AddRange(criteriaSets);
         return (TBuilder)this;
     }
 
-    public List<NodeScoreCriteriaSet<TDiscriminator>> Build()
+    public List<NodeScoreCriteriaSet<TDiscriminator>> BuildSets()
     {
-        NextCriteriaSet();
+        AndParent();
         return _criteriaSetList;
     }
 

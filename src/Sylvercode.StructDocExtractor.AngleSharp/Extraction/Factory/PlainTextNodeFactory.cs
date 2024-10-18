@@ -10,7 +10,7 @@ public class PlainTextNodeFactory : BaseAngleNodeFactory
     public override List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>>? DefaultSelector { get; } =
         new HtmlScoreCriteriaSetsBuilder()
             .WithTagName(HtmlNodeDiscriminator.PlainTextTagName)
-            .Build();
+            .BuildSets();
 
     protected override bool BuildFromNode(AngleProcessTaskResultBuilder resultBuilder, INode node)
     {
