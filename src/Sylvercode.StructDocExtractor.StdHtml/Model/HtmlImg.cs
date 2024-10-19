@@ -1,8 +1,15 @@
-using Sylvercode.StructDocExtractor.StdHtml.Model.Base;
+using Sylvercode.StructDocExtractor.Model;
+using Sylvercode.StructDocExtractor.Model.Base;
 
 namespace Sylvercode.StructDocExtractor.StdHtml.Model;
 
-public class HtmlImg(string src, string id = "") : BaseHtmlHref(src, id)
+public class HtmlImg(string src, string id = "") :
+    BaseStructDocNode(id),
+    IStructDocReferencer
 {
-    public string Src => Href;
+    public string Src { get; private set; } = src;
+
+    public string GetReference() => Src;
+
+    public void UpdateReference(string newReference) => Src = newReference;
 }
