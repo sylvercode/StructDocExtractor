@@ -7,7 +7,7 @@ namespace Sylvercode.StructDocExtractor.Tests;
 public class IndentedStreamWriterTests_Write
 {
 
-    private static IHost GetHost(IndentedStreamWriter.IndentSpec? indentSpec = null)
+    private static IHost GetHost(IndentSpec? indentSpec = null)
     {
         return Host.CreateDefaultBuilder()
                    .ConfigureServices((_, services) =>
@@ -78,7 +78,7 @@ public class IndentedStreamWriterTests_Write
     public void MultiLineWithTabsIndentation()
     {
         // Given
-        using IHost host = GetHost(new IndentedStreamWriter.IndentSpec(isSpace: false));
+        using IHost host = GetHost(new IndentSpec { Type = IndentType.Tab });
         var provider = host.Services.GetRequiredService<ITextWriterProvider>();
         using var stream = new MemoryStream();
         using var writer = (IndentedStreamWriter)provider.GetTextWriter(stream);
@@ -105,7 +105,7 @@ public class IndentedStreamWriterTests_Write
     public void MultiLineWithDouble5SpacesIndentation()
     {
         // Given
-        using IHost host = GetHost(new IndentedStreamWriter.IndentSpec(size: 5));
+        using IHost host = GetHost(new IndentSpec { Size = 5 });
         var provider = host.Services.GetRequiredService<ITextWriterProvider>();
         using var stream = new MemoryStream();
         using var writer = (IndentedStreamWriter)provider.GetTextWriter(stream);
