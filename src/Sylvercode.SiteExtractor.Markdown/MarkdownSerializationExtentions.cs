@@ -11,6 +11,7 @@ public static class MarkdownSerializationExtentions
     public static IServiceCollection AddMarkdownSerialization(this IServiceCollection services)
     {
         services.AddStructDocSerializer();
+        services.AddMarkdownStreamWriterProvider();
         services.TryAddSingleton<IResourceUriTranslater, MarkdownUriTranslater>();
         services.TryAddSingleton<IReferencerUpdater, MarkdownReferencerUpdater>();
 
