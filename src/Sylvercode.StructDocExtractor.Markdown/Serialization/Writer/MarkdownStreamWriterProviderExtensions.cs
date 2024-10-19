@@ -1,5 +1,5 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Sylvercode.StructDocExtractor.Markdown.Serialization;
+using Sylvercode.StructDocExtractor.Markdown.Serialization.Writer;
 using Sylvercode.StructDocExtractor.Serialization;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure

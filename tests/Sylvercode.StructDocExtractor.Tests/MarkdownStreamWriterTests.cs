@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Sylvercode.StructDocExtractor.Markdown.Serialization;
+using Sylvercode.StructDocExtractor.Markdown.Serialization.Writer;
 using Sylvercode.StructDocExtractor.Serialization;
 
 namespace Sylvercode.StructDocExtractor.Tests;

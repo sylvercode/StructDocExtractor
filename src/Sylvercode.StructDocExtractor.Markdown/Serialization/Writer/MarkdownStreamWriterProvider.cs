@@ -2,7 +2,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Sylvercode.StructDocExtractor.Serialization;
 
-namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
+namespace Sylvercode.StructDocExtractor.Markdown.Serialization.Writer;
 
 public class MarkdownStreamWriterProvider(IOptions<MarkdownStreamWriterProvider.Options> options) : ITextWriterProvider
 {

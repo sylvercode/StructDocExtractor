@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Sylvercode.StructDocExtractor\Sylvercode.StructDocExtractor.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Serialization/Writer/" />
+  </ItemGroup>
+
 </Project>

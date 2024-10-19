@@ -1,7 +1,7 @@
 using System.Text;
 using Sylvercode.StructDocExtractor.Serialization;
 
-namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
+namespace Sylvercode.StructDocExtractor.Markdown.Serialization.Writer;
 
 public class MarkdownStreamWriter(
     Stream stream,
