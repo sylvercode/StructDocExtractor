@@ -5,10 +5,10 @@ namespace Sylvercode.StructDocExtractor.Serialization;
 public class IndentedStreamWriter(Stream stream, IndentedStreamWriter.IndentSpec indentSpec, Encoding encoding, IFormatProvider? formatProvider)
     : TextWriter(formatProvider)
 {
-    public struct IndentSpec
+    public struct IndentSpec()
     {
-        public bool IsSpaceIndent { get; set; }
-        public int IndentSize { get; set; }
+        public bool IsSpaceIndent { get; set; } = true;
+        public int IndentSize { get; set; } = 4;
     }
 
     private static byte[] BuildIndentBuffer(IndentSpec indentSpec, Encoding encoding)
