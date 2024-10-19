@@ -6,8 +6,16 @@ namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 [method: SetsRequiredMembers]
 public class MarkdownStyle()
 {
-    public IndentSpec IndentSpec { get; init; } = new() { Type = IndentType.Space, Size = 2 };
-    public StyleCharacter EmphasisCharacter { get; init; } = StyleCharacter.Asterisk;
-    public StyleCharacter StrongCharacter { get; init; } = StyleCharacter.Asterisk;
-    public bool PreferAlternateStyle { get; init; } = false;
+    public static MarkdownStyle Default { get; } = new()
+    {
+        IndentSpec = new() { Type = IndentType.Space, Size = 2 },
+        EmphasisCharacter = StyleCharacter.Asterisk,
+        StrongCharacter = StyleCharacter.Asterisk,
+        PreferAlternateStyle = false
+    };
+    
+    public IndentSpec IndentSpec { get; init; } = Default.IndentSpec;
+    public StyleCharacter EmphasisCharacter { get; init; } = Default.EmphasisCharacter;
+    public StyleCharacter StrongCharacter { get; init; } = Default.StrongCharacter;
+    public bool PreferAlternateStyle { get; init; } = Default.PreferAlternateStyle;
 }
