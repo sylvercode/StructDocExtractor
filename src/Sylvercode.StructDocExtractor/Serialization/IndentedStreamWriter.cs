@@ -2,18 +2,13 @@ using System.Text;
 
 namespace Sylvercode.StructDocExtractor.Serialization;
 
-public class IndentedStreamWriter(Stream stream, IndentedStreamWriter.IndentSpec indentSpec, Encoding encoding, IFormatProvider? formatProvider)
+public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding encoding, IFormatProvider? formatProvider)
     : TextWriter(formatProvider)
 {
-    public sealed class IndentSpec(bool isSpace = true, int size = 4)
-    {
-        public bool IsSpace { get; } = isSpace;
-        public int Size { get; } = size;
-    }
 
     private static byte[] BuildIndentBuffer(IndentSpec indentSpec, Encoding encoding)
     {
-        if (indentSpec.IsSpace)
+        if (indentSpec.Type == IndentType.Space)
             return encoding.GetBytes(new string(' ', indentSpec.Size));
         else
             return encoding.GetBytes("\t");
