@@ -1,12 +1,12 @@
 using Microsoft.Extensions.Logging;
+using Sylvercode.StructDocExtractor.Markdown.Serialization.Base;
 using Sylvercode.StructDocExtractor.Markdown.Serialization.Writer;
-using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Serialization;
 using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
-public class LinkSerializer(ILogger<LinkSerializer>? logger = null) : BaseStructDocNodeHolderSerializer<HtmlAnchor, MarkdownStreamWriter, IStructDocNode>(logger)
+public class LinkSerializer(ILogger<LinkSerializer>? logger = null) : BaseMarkdownSerializer<HtmlAnchor>(logger)
 {
     protected override void Serialize(HtmlAnchor obj, MarkdownStreamWriter stream, NodeSerializationResult result)
     {
