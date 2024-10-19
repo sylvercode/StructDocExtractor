@@ -34,6 +34,12 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
     {
     }
 
+    public void EndLineIfStarted()
+    {
+        if (!_atLineStart)
+            WriteLine();
+    }
+
     public int IndentLevel
     {
         get => _indentLevel;
