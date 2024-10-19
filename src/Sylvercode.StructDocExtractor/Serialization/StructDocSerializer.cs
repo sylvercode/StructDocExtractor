@@ -3,10 +3,11 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Serialization;
 
-public class StructDocSerializer(ISerializerProvider serializerProvider, ILoggerFactory loggerFactory)
+public class StructDocSerializer(ISerializerProvider serializerProvider, ITextWriterProvider? textWriterAdapterProvider = null, ILoggerFactory? loggerFactory = null)
     : IStructDocSerializer
 {
-    public void Serialize(StreamWriter stream, IStructDocNode rootData)
+    public ITextWriterProvider? TextWriterProvider { get; } = textWriterAdapterProvider;
+    public void Serialize(TextWriter stream, IStructDocNode rootData)
     {
         var executor = new StructDocSerializerExecutor(stream, rootData, serializerProvider, loggerFactory);
         executor.ExecuteTasks();

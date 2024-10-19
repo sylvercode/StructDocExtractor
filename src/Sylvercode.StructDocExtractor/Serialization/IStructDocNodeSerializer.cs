@@ -4,18 +4,19 @@ namespace Sylvercode.StructDocExtractor.Serialization;
 
 public interface IStructDocNodeSerializer
 {
-    void OnBeforeChildSerialize(IStructDocNode node, IStructDocNode? previousNode, StreamWriter stream);
-    void OnAfterChildSerialize(IStructDocNode node, IStructDocNode? nextNode, StreamWriter stream);
+    void OnBeforeChildSerialize(IStructDocNode node, IStructDocNode? previousNode, TextWriter stream);
+    void OnAfterChildSerialize(IStructDocNode node, IStructDocNode? nextNode, TextWriter stream);
 }
 
-public interface IStructDocNodeSerializer<TData> : IStructDocNodeSerializer
+public interface IStructDocNodeSerializer<in TData, in TWriter> : IStructDocNodeSerializer
     where TData : IStructDocNode
+    where TWriter : TextWriter
 {
-    void OnBeforeChildSerialize(TData node, TData? previousNode, StreamWriter stream);
-    void IStructDocNodeSerializer.OnBeforeChildSerialize(IStructDocNode node, IStructDocNode? previousNode, StreamWriter stream)
-        => OnBeforeChildSerialize((TData)node, (TData?)previousNode, stream);
+    void OnBeforeChildSerialize(TData node, TData? previousNode, TWriter stream);
+    void IStructDocNodeSerializer.OnBeforeChildSerialize(IStructDocNode node, IStructDocNode? previousNode, TextWriter stream)
+        => OnBeforeChildSerialize((TData)node, (TData?)previousNode, (TWriter)stream);
 
-    void OnAfterChildSerialize(TData node, TData? nextNode, StreamWriter stream);
-    void IStructDocNodeSerializer.OnAfterChildSerialize(IStructDocNode node, IStructDocNode? nextNode, StreamWriter stream)
-        => OnAfterChildSerialize((TData)node, (TData?)nextNode, stream);
+    void OnAfterChildSerialize(TData node, TData? nextNode, TWriter stream);
+    void IStructDocNodeSerializer.OnAfterChildSerialize(IStructDocNode node, IStructDocNode? nextNode, TextWriter stream)
+        => OnAfterChildSerialize((TData)node, (TData?)nextNode, (TWriter)stream);
 }

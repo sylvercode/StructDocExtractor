@@ -4,5 +4,6 @@ namespace Sylvercode.StructDocExtractor.Serialization;
 
 public interface IStructDocSerializer
 {
-    void Serialize(StreamWriter stream, IStructDocNode rootData);
+    ITextWriterProvider? TextWriterProvider { get; }
+    void Serialize(TextWriter stream, IStructDocNode rootData);
 }
