@@ -24,13 +24,16 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
                                    IReadOnlyResourceRepository resourceRepository,
                                    Dictionary<Resource, string> uniqueFileNameRes)
     {
-        if (referencer.GetReference().StartsWith('#'))
+        string refStr = referencer.GetReference();
+        if (refStr.StartsWith('#'))
         {
-            LogFragmentReferencer(referencer.GetReference());
+            refStr = FragmentAsBlockReference(refStr);
+            LogFragmentReferencer(refStr);
+            referencer.UpdateReference(refStr);
             return;
         }
 
-        Uri refUri = new(referencer.GetReference());
+        Uri refUri = new(refStr);
         if (!resourceRepository.TryGetResourceForUri(refUri, out Resource? reference))
         {
             LogNotFoundReference(refUri);
@@ -39,14 +42,15 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
 
         if (reference == referencerResource)
         {
-            LogKeepFragmentOnly(refUri);
-            referencer.UpdateReference(refUri.Fragment);
+            refStr = FragmentAsBlockReference(refUri.Fragment);
+            LogKeepFragmentOnly(refStr);
+            referencer.UpdateReference(refStr);
             return;
         }
 
         if (uniqueFileNameRes.TryGetValue(reference, out string? uniqueFimeName))
         {
-            string uniqueFimeNameWithFragment = uniqueFimeName + refUri.Fragment;
+            string uniqueFimeNameWithFragment = uniqueFimeName + FragmentAsBlockReference(refUri.Fragment);
             LogUpdateToUniqueName(refUri, uniqueFimeNameWithFragment);
             referencer.UpdateReference(uniqueFimeNameWithFragment);
             return;
@@ -56,6 +60,8 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
         LogUpdateToNoneUniqueRes(refUri, translateUri);
         referencer.UpdateReference(translateUri);
     }
+
+    private static string FragmentAsBlockReference(string fragment) => fragment.Replace("#", "#^");
 
     private static Dictionary<Resource, string> GetUniqueFileNameResource(IReadOnlyResourceRepository resourceRepository)
     {
@@ -99,5 +105,5 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
     [LoggerMessage(
         Level = LogLevel.Debug,
         Message = "Updated to keep fragment only: {RefUri}")]
-    private partial void LogKeepFragmentOnly(Uri refUri);
+    private partial void LogKeepFragmentOnly(string refUri);
 }

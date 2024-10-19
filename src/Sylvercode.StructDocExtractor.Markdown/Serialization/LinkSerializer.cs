@@ -1,0 +1,45 @@
+using Microsoft.Extensions.Logging;
+using Sylvercode.StructDocExtractor.Markdown.Serialization.Writer;
+using Sylvercode.StructDocExtractor.Model;
+using Sylvercode.StructDocExtractor.Serialization;
+using Sylvercode.StructDocExtractor.StdHtml.Model;
+
+namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
+
+public class LinkSerializer(ILogger<LinkSerializer>? logger = null) : BaseStructDocNodeHolderSerializer<HtmlAnchor, MarkdownStreamWriter, IStructDocNode>(logger)
+{
+    protected override void Serialize(HtmlAnchor obj, MarkdownStreamWriter stream, NodeSerializationResult result)
+    {
+        if (!obj.ContentIsTextOnly)
+        {
+            WriteStandardLink(stream, obj.Href, obj.Href);
+            return;
+        }
+
+        result.ContentSerialized = true;
+        if (obj.Href.StartsWith("#^"))
+            WriteWikiLink(stream, obj.Href, obj.TextContent);
+        else if (obj.Href.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            WriteStandardLink(stream, obj.Href, obj.TextContent);
+        else if (Uri.TryCreate(obj.Href, UriKind.RelativeOrAbsolute, out Uri? hrefUri))
+        {
+            UriBuilder uriBuilder = new(hrefUri);
+            if (uriBuilder.Path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
+                WriteStandardLink(stream, obj.Href, obj.TextContent);
+            else
+                WriteWikiLink(stream, obj.Href, obj.TextContent);
+        }
+        else
+            WriteWikiLink(stream, obj.Href, obj.TextContent);
+    }
+
+    private static void WriteStandardLink(MarkdownStreamWriter stream, string href, string text) => stream.Write($"[{text}]({href})");
+
+    private static void WriteWikiLink(MarkdownStreamWriter stream, string href, string text)
+    {
+        if (href == text)
+            stream.Write($"[[{href}]]");
+        else
+            stream.Write($"[[{href}|{text}]]");
+    }
+}

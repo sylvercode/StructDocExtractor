@@ -13,9 +13,9 @@ public class HtmlAnchor(string href, string id) :
 
     public string Href { get; private set; } = href;
 
-    public bool IsContentTextOnly => Content.Count == 1 && Content.Single() is PlainTextNode;
+    public bool ContentIsTextOnly => Content.Count == 1 && Content.Single() is PlainTextNode;
 
-    public string TextContent => IsContentTextOnly ? ((PlainTextNode)Content.Single()).Text : string.Empty;
+    public string TextContent => ContentIsTextOnly ? ((PlainTextNode)Content.Single()).Text : string.Empty;
 
     public string GetReference() => Href;
 
