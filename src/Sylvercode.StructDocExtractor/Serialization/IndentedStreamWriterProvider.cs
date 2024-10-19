@@ -7,7 +7,7 @@ public class IndentedStreamWriterProvider(IOptions<IndentedStreamWriterProvider.
 {
     public class Options
     {
-        public IndentedStreamWriter.IndentSpec IndentSpec { get; set; }
+        public IndentedStreamWriter.IndentSpec IndentSpec { get; set; } = new();
         public Encoding Encoding { get; set; } = Encoding.UTF8;
         public IFormatProvider? FormatProvider { get; set; }
     }

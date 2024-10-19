@@ -5,10 +5,10 @@ namespace Sylvercode.StructDocExtractor.Serialization;
 public class IndentedStreamWriter(Stream stream, IndentedStreamWriter.IndentSpec indentSpec, Encoding encoding, IFormatProvider? formatProvider)
     : TextWriter(formatProvider)
 {
-    public struct IndentSpec()
+    public sealed class IndentSpec(bool isSpaceIndent = true, int indentSize = 4)
     {
-        public bool IsSpaceIndent { get; set; } = true;
-        public int IndentSize { get; set; } = 4;
+        public bool IsSpaceIndent { get; } = isSpaceIndent;
+        public int IndentSize { get; } = indentSize;
     }
 
     private static byte[] BuildIndentBuffer(IndentSpec indentSpec, Encoding encoding)
@@ -35,7 +35,7 @@ public class IndentedStreamWriter(Stream stream, IndentedStreamWriter.IndentSpec
     {
     }
 
-    public IndentedStreamWriter(Stream stream) : this(stream, new IndentSpec { IsSpaceIndent = true, IndentSize = 4 })
+    public IndentedStreamWriter(Stream stream) : this(stream, new IndentSpec())
     {
     }
 
@@ -49,6 +49,20 @@ public class IndentedStreamWriter(Stream stream, IndentedStreamWriter.IndentSpec
             _indentLevel = value;
             indentBuffer = BuildIndentBuffer(indentSpec, encoding);
         }
+    }
+
+    public void Indent(int value = 1)
+    {
+        if (value < 1)
+            throw new ArgumentOutOfRangeException(nameof(value), "Indent value must be positive and non-zero.");
+        IndentLevel += value;
+    }
+
+    public void Unindent(int value = 1)
+    {
+        if (value < 1)
+            throw new ArgumentOutOfRangeException(nameof(value), "Indent value must be positive and non-zero.");
+        IndentLevel -= value;
     }
 
     public override Encoding Encoding => encoding;
