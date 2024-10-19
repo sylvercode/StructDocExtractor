@@ -43,7 +43,7 @@ public class MarkdownStreamWriter(
 
     public void PushStrong() => PushStyle(StyleState.Strong);
 
-    public void PopEnmphasis() => PopStyle(StyleState.Emphasis);
+    public void PopEmphasis() => PopStyle(StyleState.Emphasis);
 
     public void PopStrong() => PopStyle(StyleState.Strong);
 

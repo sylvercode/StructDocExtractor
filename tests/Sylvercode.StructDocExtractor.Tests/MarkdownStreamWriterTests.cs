@@ -38,7 +38,7 @@ public class MarkdownStreamWriterTests_PushStyle
         // When
         writer.PushEmphasis();
         writer.Write("Hello, World!");
-        writer.PopEnmphasis();
+        writer.PopEmphasis();
 
         writer.Flush();
         stream.Position = 0;
@@ -87,7 +87,7 @@ public class MarkdownStreamWriterTests_PushStyle
         writer.PushStrong();
         writer.PushEmphasis();
         writer.WriteLine("Hello, ");
-        writer.PopEnmphasis();
+        writer.PopEmphasis();
         writer.Write("World!");
         writer.PopStrong();
 
@@ -115,7 +115,7 @@ public class MarkdownStreamWriterTests_PushStyle
         writer.PushEmphasis();
         writer.WriteLine("Hello, ");
         writer.Indent();
-        writer.PopEnmphasis();
+        writer.PopEmphasis();
         writer.Write("World!");
         writer.PopStrong();
 
@@ -145,7 +145,7 @@ public class MarkdownStreamWriterTests_PushStyle
         writer.PushStrong();
         writer.Write("World!");
         writer.PopStrong();
-        writer.PopEnmphasis();
+        writer.PopEmphasis();
 
         writer.Flush();
         stream.Position = 0;
