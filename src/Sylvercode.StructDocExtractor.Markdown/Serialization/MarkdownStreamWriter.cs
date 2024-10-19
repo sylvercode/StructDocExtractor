@@ -41,7 +41,7 @@ public class MarkdownStreamWriter(
 
     public void PushEmphasis() => PushStyle(StyleState.Emphasis);
 
-    public void PushStrong() => PushStyle(StyleState.Emphasis);
+    public void PushStrong() => PushStyle(StyleState.Strong);
 
     public void PopEnmphasis() => PopStyle(StyleState.Emphasis);
 
@@ -75,10 +75,6 @@ public class MarkdownStreamWriter(
         _styleStack.Push(new StyleStackEntry { State = state, Character = styleCharacter });
 
         char characterToWrite = GetCharacterToWrite(styleCharacter);
-
-        Write(characterToWrite);
-        if (state == StyleState.Strong)
-            Write(characterToWrite);
 
         WriteCharacterForStyle(state, characterToWrite);
     }
