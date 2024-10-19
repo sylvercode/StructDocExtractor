@@ -5,16 +5,16 @@ namespace Sylvercode.StructDocExtractor.Serialization;
 public class IndentedStreamWriter(Stream stream, IndentedStreamWriter.IndentSpec indentSpec, Encoding encoding, IFormatProvider? formatProvider)
     : TextWriter(formatProvider)
 {
-    public sealed class IndentSpec(bool isSpaceIndent = true, int indentSize = 4)
+    public sealed class IndentSpec(bool isSpace = true, int size = 4)
     {
-        public bool IsSpaceIndent { get; } = isSpaceIndent;
-        public int IndentSize { get; } = indentSize;
+        public bool IsSpace { get; } = isSpace;
+        public int Size { get; } = size;
     }
 
     private static byte[] BuildIndentBuffer(IndentSpec indentSpec, Encoding encoding)
     {
-        if (indentSpec.IsSpaceIndent)
-            return encoding.GetBytes(new string(' ', indentSpec.IndentSize));
+        if (indentSpec.IsSpace)
+            return encoding.GetBytes(new string(' ', indentSpec.Size));
         else
             return encoding.GetBytes("\t");
     }
