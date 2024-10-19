@@ -52,10 +52,10 @@ public class MarkdownStreamWriter(
         if (_styleStack.Any((i) => i.State == state))
             throw new InvalidOperationException("Cannot push already active style.");
 
-        StyleCharacter character;
+        StyleCharacter styleCharacter;
         if (Style.PreferAlternateStyle && _styleStack.Count != 0)
         {
-            character = _styleStack.Peek().Character switch
+            styleCharacter = _styleStack.Peek().Character switch
             {
                 StyleCharacter.Asterisk => StyleCharacter.Underscore,
                 StyleCharacter.Underscore => StyleCharacter.Asterisk,
@@ -64,7 +64,7 @@ public class MarkdownStreamWriter(
         }
         else
         {
-            character = state switch
+            styleCharacter = state switch
             {
                 StyleState.Emphasis => Style.EmphasisCharacter,
                 StyleState.Strong => Style.StrongCharacter,
@@ -72,16 +72,15 @@ public class MarkdownStreamWriter(
             };
         }
 
-        _styleStack.Push(new StyleStackEntry { State = state, Character = character });
+        _styleStack.Push(new StyleStackEntry { State = state, Character = styleCharacter });
 
-        char characterToWrite = character switch
-        {
-            StyleCharacter.Asterisk => '*',
-            StyleCharacter.Underscore => '_',
-            _ => throw new InvalidOperationException("Invalid style character.")
-        };
+        char characterToWrite = GetCharacterToWrite(styleCharacter);
 
         Write(characterToWrite);
+        if (state == StyleState.Strong)
+            Write(characterToWrite);
+
+        WriteCharacterForStyle(state, characterToWrite);
     }
 
     private void PopStyle(StyleState state)
@@ -89,6 +88,23 @@ public class MarkdownStreamWriter(
         if (_styleStack.Peek().State != state)
             throw new InvalidOperationException("Cannot pop inactive style.");
 
-        _styleStack.Pop();
+        StyleCharacter styleCharacter = _styleStack.Pop().Character;
+        char characterToWrite = GetCharacterToWrite(styleCharacter);
+
+        WriteCharacterForStyle(state, characterToWrite);
+    }
+
+    private char GetCharacterToWrite(StyleCharacter styleCharacter) => styleCharacter switch
+    {
+        StyleCharacter.Asterisk => '*',
+        StyleCharacter.Underscore => '_',
+        _ => throw new InvalidOperationException("Invalid style character.")
+    };
+
+    private void WriteCharacterForStyle(StyleState styleState, char characterToWrite)
+    {
+        Write(characterToWrite);
+        if (styleState == StyleState.Strong)
+            Write(characterToWrite);
     }
 }
