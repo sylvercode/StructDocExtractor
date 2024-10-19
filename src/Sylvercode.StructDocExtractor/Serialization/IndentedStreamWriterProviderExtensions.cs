@@ -8,10 +8,12 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 public static class IndentedStreamWriterProviderExtensions
 {
-    public static IServiceCollection AddIndentedStreamWriterProvider(this IServiceCollection services)
+    public static IServiceCollection AddIndentedStreamWriterProvider(this IServiceCollection services, Action<IndentedStreamWriterProvider.Options>? copnfig = null)
     {
         services.TryAddSingleton<ITextWriterProvider, IndentedStreamWriterProvider>();
-        services.AddOptions<IndentedStreamWriterProvider.Options>();
+        Options.OptionsBuilder<IndentedStreamWriterProvider.Options> optionsBuilder = services.AddOptions<IndentedStreamWriterProvider.Options>();
+        if (copnfig is not null)
+            optionsBuilder.Configure(copnfig);
 
         return services;
     }
