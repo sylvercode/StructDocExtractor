@@ -25,10 +25,10 @@ public class StructDocSerializerExecutorTests
         public ISpySerializer NodeSerializer { get; }
         public SerializerProvider SerializerProvider { get; }
 
-        public ExtractionContext()
+        public ExtractionContext(bool SkipBlockConetntSerialization = false)
         {
             RootSerializer = new SpyStructDocNodeHolderSerializer<BasicSrcRootBlock, IStructDocNode>(EntriesLog);
-            BlockSerializer = new SpyStructDocNodeHolderSerializer<BasicSrcBloc, IStructDocNode>(EntriesLog);
+            BlockSerializer = new SpyStructDocNodeHolderSerializer<BasicSrcBloc, IStructDocNode>(EntriesLog, SkipBlockConetntSerialization);
             NodeSerializer = new SpyStructDocNodeSerializer<BasicSrcNode>(EntriesLog);
             SerializerProvider = new SerializerProvider(){
                 {typeof(BasicSrcRootBlock), RootSerializer},
@@ -247,6 +247,58 @@ public class StructDocSerializerExecutorTests
             ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnAfterChildSerialize, blockB, null);
         }
         ExpectedEntriesLog.AddEntry(context.RootSerializer, OnAfterLastChildSerialize, root, blockB);
+        Assert.Collection(ExpectedEntriesLog, context.EntriesLog.AsAsserter());
+    }
+
+    [Fact]
+    public void TwoBlockHavingTwoNodeInRoot_WithSkipBlockContentSerialization()
+    {
+        // Given
+        ExtractionContext context = new(SkipBlockConetntSerialization: true);
+        BasicSrcRootBlock root = new(nameof(root));
+        var rootInit = root.NewParentChildLinkInitializer();
+        BasicSrcBloc blockA = new(nameof(blockA));
+        rootInit.AddChild(blockA);
+        var blockAInit = blockA.NewParentChildLinkInitializer();
+        BasicSrcNode nodeA1 = new(nameof(nodeA1));
+        blockAInit.AddChild(nodeA1);
+        BasicSrcNode nodeA2 = new(nameof(nodeA2));
+        blockAInit.AddChild(nodeA2);
+        blockAInit.InitializeParentChildLink();
+        BasicSrcBloc blockB = new(nameof(blockB));
+        rootInit.AddChild(blockB);
+        var blockBInit = blockB.NewParentChildLinkInitializer();
+        BasicSrcNode nodeB1 = new(nameof(nodeB1));
+        blockBInit.AddChild(nodeB1);
+        BasicSrcNode nodeB2 = new(nameof(nodeB2));
+        blockBInit.AddChild(nodeB2);
+        blockBInit.InitializeParentChildLink();
+        rootInit.InitializeParentChildLink();
+
+        StructDocSerializerExecutor executor = context.NewExecutor(root);
+
+        // When
+        executor.ExecuteTasks();
+
+        // Then
+        List<SpyStructDocNodeSerializerEntry> ExpectedEntriesLog = [];
+        ExpectedEntriesLog.AddEntry(context.RootSerializer, Serialize, root);
+        ExpectedEntriesLog.AddEntry(context.RootSerializer, OnBeforeFirstChildSerialize, root, blockA);
+        {
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnBeforeChildSerialize, blockA, null);
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, Serialize, blockA);
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnAfterChildSerialize, blockA, blockB);
+        }
+
+        ExpectedEntriesLog.AddEntry(context.RootSerializer, OnBetweenSiblingSerialize, root, blockA, blockB);
+
+        {
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnBeforeChildSerialize, blockB, blockA);
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, Serialize, blockB);
+            ExpectedEntriesLog.AddEntry(context.BlockSerializer, OnAfterChildSerialize, blockB, null);
+        }
+        ExpectedEntriesLog.AddEntry(context.RootSerializer, OnAfterLastChildSerialize, root, blockB);
+
         Assert.Collection(ExpectedEntriesLog, context.EntriesLog.AsAsserter());
     }
 }

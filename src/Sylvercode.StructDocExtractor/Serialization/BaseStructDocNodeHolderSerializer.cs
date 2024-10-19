@@ -4,7 +4,7 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Serialization;
 
-public partial class BaseStructDocNodeHolderSerializer<TData, TWriter, TChild>(ILogger? logger = null) : BaseStructDocNodeSerializer<TData, TWriter>, IStructDocNodeHolderSerializer<TData, TWriter, TChild>
+public abstract partial class BaseStructDocNodeHolderSerializer<TData, TWriter, TChild>(ILogger? logger = null) : BaseStructDocNodeSerializer<TData, TWriter>, IStructDocNodeHolderSerializer<TData, TWriter, TChild>
     where TData : IStructDocNodeHolder<TChild>
     where TWriter : TextWriter
     where TChild : class, IStructDocNode
@@ -69,7 +69,7 @@ public partial class BaseStructDocNodeHolderSerializer<TData, TWriter, TChild>(I
     private partial void LogOnNoChildSerialize(Type dataType);
 }
 
-public partial class BaseStructDocNodeHolderSerializer<TData, TChild>(ILogger? logger = null)
+public abstract partial class BaseStructDocNodeHolderSerializer<TData, TChild>(ILogger? logger = null)
     : BaseStructDocNodeHolderSerializer<TData, TextWriter, TChild>(logger)
     where TData : IStructDocNodeHolder<TChild>
     where TChild : class, IStructDocNode

@@ -9,6 +9,7 @@ public partial class SerializerTask(IStructDocNode data, SerializerTaskParentInf
 {
     public IStructDocNode Data { get; } = data;
     public SerializerTaskParentInfo? ParentInfo { get; } = parentInfo;
+    public bool IgnoreChildren { get; set; }
     public bool? HasChildTasks { get; set; }
     public ISerializer? Serializer { get; set; }
     private readonly ILogger<SerializerTask> _logger = logger ?? NullLogger<SerializerTask>.Instance;
@@ -58,7 +59,8 @@ public partial class SerializerTask(IStructDocNode data, SerializerTaskParentInf
         LogLastChildProcessed();
         IStructDocNodeHolder? nodeHolder = Data as IStructDocNodeHolder;
         IStructDocNodeHolderSerializer? nodeHolderSerializer = Serializer as IStructDocNodeHolderSerializer;
-        if (CanNotifyHolder(nodeHolder, nodeHolderSerializer))
+        if (!IgnoreChildren
+            && CanNotifyHolder(nodeHolder, nodeHolderSerializer))
         {
             LogNotifyHolder();
             nodeHolderSerializer.OnBetweenChildrenSerialize(nodeHolder, lastChild?.Data as IStructDocNode, null, stream);
