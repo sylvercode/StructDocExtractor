@@ -88,19 +88,19 @@ public partial class ResourceDataExtractor<TExtractionData>(
 
         using TextWriter writer = GetTextWriter(
             lastResult.Resource.TranslateUri(dataStore.BaseUri),
-            serisalizer.TextWriterAdapterProvider);
+            serisalizer.TextWriterProvider);
 
         serisalizer.Serialize(writer, lastResult.Result.StructDocNodes[0]);
 
         return new FinishedProcessResult(this, lastResult.Resource);
     }
 
-    private TextWriter GetTextWriter(Uri uri, ITextWriterAdapterProvider? textWriterAdapterProvider)
+    private TextWriter GetTextWriter(Uri uri, ITextWriterProvider? textWriterProvider)
     {
-        if (textWriterAdapterProvider is null)
+        if (textWriterProvider is null)
             return dataStore.GetStreamWriter(uri);
 
-        return textWriterAdapterProvider.GetTextWriterAdapter(dataStore.GetStream(uri));
+        return textWriterProvider.GetTextWriter(dataStore.GetStream(uri));
     }
 
     [LoggerMessage(

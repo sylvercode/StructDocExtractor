@@ -1,6 +1,6 @@
 namespace Sylvercode.StructDocExtractor.Serialization;
 
-public interface ITextWriterAdapterProvider
+public interface ITextWriterProvider
 {
-    TextWriter GetTextWriterAdapter(Stream stream);
+    TextWriter GetTextWriter(Stream stream);
 }
