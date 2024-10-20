@@ -6,7 +6,7 @@ using Sylvercode.StructDocExtractor.Serialization;
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization.Base;
 
 public class BaseMarkdownSerializer<THtmlNode, TChild>(ILogger? logger = null)
-: BaseStructDocNodeHolderSerializer<THtmlNode, MarkdownStreamWriter, TChild>(logger)
+    : BaseStructDocNodeHolderSerializer<THtmlNode, MarkdownStreamWriter, TChild>(logger)
     where THtmlNode : IStructDocNodeHolder<TChild>
     where TChild : class, IStructDocNode
 {

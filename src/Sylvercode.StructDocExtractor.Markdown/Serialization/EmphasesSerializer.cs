@@ -6,7 +6,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
-public class EmphasesSerializer(ILogger<EmphasesSerializer>? logger = null) 
+public class EmphasesSerializer(ILogger<EmphasesSerializer>? logger = null)
     : BaseMarkdownSerializer<HtmlEmphases>(logger)
 {
     protected override void OnBeforeFirstChildSerialize(HtmlEmphases parent, IStructDocNode nextChild, MarkdownStreamWriter stream)

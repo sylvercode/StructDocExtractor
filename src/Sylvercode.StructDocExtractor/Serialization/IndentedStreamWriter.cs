@@ -22,6 +22,10 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
 
     private bool _atLineStart = true;
 
+    private bool _PreviousLineIsEmpty = true;
+
+    private bool _IsAfterSpace = true;
+
     public IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding encoding) : this(stream, indentSpec, encoding, null)
     {
     }
@@ -34,10 +38,23 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
     {
     }
 
-    public void EndLineIfStarted()
+    public void StartLine()
     {
         if (!_atLineStart)
             WriteLine();
+    }
+
+    public void StartParagraph()
+    {
+        StartLine();
+        if (!_PreviousLineIsEmpty)
+            WriteLine();
+    }
+
+    public void StartWord()
+    {
+        if (!_IsAfterSpace)
+            Write(' ');
     }
 
     public int IndentLevel
@@ -73,13 +90,29 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
         lock (_stream)
         {
             if (value == '\n')
-                _atLineStart = true;
+            {
+                _IsAfterSpace = true;
+                if (_atLineStart)
+                    _PreviousLineIsEmpty = true;
+                else
+                {
+                    _PreviousLineIsEmpty = false;
+                    _atLineStart = true;
+                }
+            }
+            else if (value == ' ')
+            {
+                _IsAfterSpace = true;
+                if (_atLineStart)
+                    return;
+            }
             else if (_atLineStart)
             {
                 for (int i = 0; i < IndentLevel; i++)
                     _stream.Write(indentBuffer, 0, indentBuffer.Length);
 
                 _atLineStart = false;
+                _IsAfterSpace = true;
             }
 
             byte[] buffer = Encoding.GetBytes([value]);

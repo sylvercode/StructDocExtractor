@@ -4,7 +4,6 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
-
 public class DivSerializer(ILogger<DivSerializer>? logger = null)
     : BaseBlockSerializer<HtmlDiv>(logger)
 {

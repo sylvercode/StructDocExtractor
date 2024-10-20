@@ -10,16 +10,7 @@ public class BaseBlockSerializer<THtmlNode, TChild>(ILogger? logger = null)
     where TChild : class, IStructDocNode
 {
     protected override void OnBeforeChildSerialize(THtmlNode node, THtmlNode? previousNode, MarkdownStreamWriter stream)
-    {
-        stream.EndLineIfStarted();
-        stream.WriteLine();
-    }
-
-    protected override void OnAfterChildSerialize(THtmlNode node, THtmlNode? nextNode, MarkdownStreamWriter stream)
-    {
-        stream.EndLineIfStarted();
-        stream.WriteLine();
-    }
+        => stream.StartParagraph();
 }
 
 public class BaseBlockSerializer<THtmlNode>(ILogger? logger = null)

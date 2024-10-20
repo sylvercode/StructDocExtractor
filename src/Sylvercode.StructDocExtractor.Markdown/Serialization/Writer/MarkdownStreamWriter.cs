@@ -25,6 +25,8 @@ public class MarkdownStreamWriter(
 
     private readonly Stack<StyleStackEntry> _styleStack = new();
 
+    private int _listCounter = 0;
+
     public MarkdownStreamWriter(Stream stream) : this(stream, new MarkdownStyle())
     {
     }
@@ -46,6 +48,16 @@ public class MarkdownStreamWriter(
     public void PopEmphasis() => PopStyle(StyleState.Emphasis);
 
     public void PopStrong() => PopStyle(StyleState.Strong);
+
+    public void AddListCount() => _listCounter++;
+
+    public void RemoveListCount()
+    {
+        if (_listCounter == 0)
+            throw new InvalidOperationException("Cannot remove list count when it is already 0.");
+
+        _listCounter--;
+    }
 
     private void PushStyle(StyleState state)
     {
