@@ -6,7 +6,8 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
-public class LinkSerializer(ILogger<LinkSerializer>? logger = null) : BaseMarkdownSerializer<HtmlAnchor>(logger)
+public class LinkSerializer(ILogger<LinkSerializer>? logger = null) 
+    : BaseMarkdownSerializer<HtmlAnchor>(logger)
 {
     protected override void Serialize(HtmlAnchor obj, MarkdownStreamWriter stream, NodeSerializationResult result)
     {

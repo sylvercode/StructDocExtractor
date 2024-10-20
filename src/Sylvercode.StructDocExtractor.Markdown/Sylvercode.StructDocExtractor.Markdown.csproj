@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Sylvercode.StructDocExtractor\Sylvercode.StructDocExtractor.csproj" />
-    <ProjectReference Include="..\Sylvercode.SiteExtractor.StdHtml\Sylvercode.SiteExtractor.StdHtml.csproj" />
+    <ProjectReference Include="..\Sylvercode.StructDocExtractor.StdHtml\Sylvercode.StructDocExtractor.StdHtml.csproj" />
   </ItemGroup>
 
   <ItemGroup>
