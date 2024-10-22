@@ -114,6 +114,11 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
                 _atLineStart = false;
                 _IsAfterSpace = true;
             }
+            else
+            {
+                _atLineStart = false;
+                _IsAfterSpace = false;
+            }
 
             byte[] buffer = Encoding.GetBytes([value]);
             _stream.Write(buffer, 0, buffer.Length);
