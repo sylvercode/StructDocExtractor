@@ -22,6 +22,7 @@ public class MarkdownStreamWriterTests_PushStyle
                                     option.PreferAlternateStyle = style.PreferAlternateStyle;
                                 }
                        );
+                       services.AddSingleton<StringTextWriter<MarkdownStreamWriter>>();
                    })
                    .Build();
     }
@@ -31,22 +32,16 @@ public class MarkdownStreamWriterTests_PushStyle
     {
         // Given
         using IHost host = GetHost();
-        ITextWriterProvider writerProvider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using MemoryStream stream = new();
-        using MarkdownStreamWriter writer = (MarkdownStreamWriter)writerProvider.GetTextWriter(stream);
+        StringTextWriter<MarkdownStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
+        MarkdownStreamWriter writer = stringTextWriter.Writer;
 
         // When
         writer.PushEmphasis();
         writer.Write("Hello, World!");
         writer.PopEmphasis();
 
-        writer.Flush();
-        stream.Position = 0;
-
-        using StreamReader reader = new(stream);
-        string result = reader.ReadToEnd();
-
         // Then
+        string result = stringTextWriter.GetResult();
         Assert.Equal("*Hello, World!*", result);
     }
 
@@ -55,22 +50,16 @@ public class MarkdownStreamWriterTests_PushStyle
     {
         // Given
         using IHost host = GetHost();
-        ITextWriterProvider writerProvider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using MemoryStream stream = new();
-        using MarkdownStreamWriter writer = (MarkdownStreamWriter)writerProvider.GetTextWriter(stream);
+        StringTextWriter<MarkdownStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
+        MarkdownStreamWriter writer = stringTextWriter.Writer;
 
         // When
         writer.PushStrong();
         writer.Write("Hello, World!");
         writer.PopStrong();
 
-        writer.Flush();
-        stream.Position = 0;
-
-        using StreamReader reader = new(stream);
-        string result = reader.ReadToEnd();
-
         // Then
+        string result = stringTextWriter.GetResult();
         Assert.Equal("**Hello, World!**", result);
     }
 
@@ -79,9 +68,8 @@ public class MarkdownStreamWriterTests_PushStyle
     {
         // Given
         using IHost host = GetHost();
-        ITextWriterProvider writerProvider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using MemoryStream stream = new();
-        using MarkdownStreamWriter writer = (MarkdownStreamWriter)writerProvider.GetTextWriter(stream);
+        StringTextWriter<MarkdownStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
+        MarkdownStreamWriter writer = stringTextWriter.Writer;
 
         // When
         writer.PushStrong();
@@ -91,13 +79,8 @@ public class MarkdownStreamWriterTests_PushStyle
         writer.Write("World!");
         writer.PopStrong();
 
-        writer.Flush();
-        stream.Position = 0;
-
-        using StreamReader reader = new(stream);
-        string result = reader.ReadToEnd();
-
         // Then
+        string result = stringTextWriter.GetResult();
         Assert.Equal("***Hello, \n*World!**", result);
     }
 
@@ -106,9 +89,8 @@ public class MarkdownStreamWriterTests_PushStyle
     {
         // Given
         using IHost host = GetHost(new MarkdownStyle() { PreferAlternateStyle = true });
-        ITextWriterProvider writerProvider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using MemoryStream stream = new();
-        using MarkdownStreamWriter writer = (MarkdownStreamWriter)writerProvider.GetTextWriter(stream);
+        StringTextWriter<MarkdownStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
+        MarkdownStreamWriter writer = stringTextWriter.Writer;
 
         // When
         writer.PushStrong();
@@ -119,13 +101,8 @@ public class MarkdownStreamWriterTests_PushStyle
         writer.Write("World!");
         writer.PopStrong();
 
-        writer.Flush();
-        stream.Position = 0;
-
-        using StreamReader reader = new(stream);
-        string result = reader.ReadToEnd();
-
         // Then
+        string result = stringTextWriter.GetResult();
         Assert.Equal("**_Hello, \n  _World!**", result);
     }
 
@@ -134,9 +111,8 @@ public class MarkdownStreamWriterTests_PushStyle
     {
         // Given
         using IHost host = GetHost(new MarkdownStyle() { PreferAlternateStyle = true, EmphasisCharacter = StyleCharacter.Underscore, StrongCharacter = StyleCharacter.Underscore });
-        ITextWriterProvider writerProvider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using MemoryStream stream = new();
-        using MarkdownStreamWriter writer = (MarkdownStreamWriter)writerProvider.GetTextWriter(stream);
+        StringTextWriter<MarkdownStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
+        MarkdownStreamWriter writer = stringTextWriter.Writer;
 
         // When
         writer.PushEmphasis();
@@ -147,13 +123,8 @@ public class MarkdownStreamWriterTests_PushStyle
         writer.PopStrong();
         writer.PopEmphasis();
 
-        writer.Flush();
-        stream.Position = 0;
-
-        using StreamReader reader = new(stream);
-        string result = reader.ReadToEnd();
-
         // Then
+        string result = stringTextWriter.GetResult();
         Assert.Equal("_Hello, \n  **World!**_", result);
     }
 }

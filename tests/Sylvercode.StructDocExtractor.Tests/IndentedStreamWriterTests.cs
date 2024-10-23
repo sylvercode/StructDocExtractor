@@ -17,6 +17,7 @@ public static class IndentedStreamWriterTestsSetup
                             {
                                 options.IndentSpec = indentSpec;
                             });
+                       services.AddSingleton<StringTextWriter<IndentedStreamWriter>>();
                    })
                    .Build();
     }
@@ -30,9 +31,8 @@ public class IndentedStreamWriterTests_Write
     {
         // Given
         using IHost host = IndentedStreamWriterTestsSetup.GetHost();
-        var provider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using var stream = new MemoryStream();
-        using var writer = provider.GetTextWriter(stream);
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
 
         // When
         writer.Write("Hello, \nWorld!");
@@ -44,10 +44,9 @@ public class IndentedStreamWriterTests_Write
         writer.Flush();
 
         // Then
-        stream.Position = 0;
-        using var reader = new StreamReader(stream);
+        string result = stringTextWriter.GetResult();
         Assert.Equal("Hello, \nWorld!!\n\nGoodbye, \nMy friend!\n",
-                     reader.ReadToEnd());
+                     result);
     }
 
     [Fact]
@@ -55,9 +54,8 @@ public class IndentedStreamWriterTests_Write
     {
         // Given
         using IHost host = IndentedStreamWriterTestsSetup.GetHost();
-        var provider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using var stream = new MemoryStream();
-        using var writer = (IndentedStreamWriter)provider.GetTextWriter(stream);
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
 
         // When
         writer.Indent();
@@ -71,10 +69,9 @@ public class IndentedStreamWriterTests_Write
         writer.Flush();
 
         // Then
-        stream.Position = 0;
-        using var reader = new StreamReader(stream);
+        string result = stringTextWriter.GetResult();
         Assert.Equal("    Hello, \n    World!!\n\nGoodbye, \nMy friend!\n",
-                     reader.ReadToEnd());
+                     result);
     }
 
     [Fact]
@@ -82,9 +79,8 @@ public class IndentedStreamWriterTests_Write
     {
         // Given
         using IHost host = IndentedStreamWriterTestsSetup.GetHost(new IndentSpec { Type = IndentType.Tab });
-        var provider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using var stream = new MemoryStream();
-        using var writer = (IndentedStreamWriter)provider.GetTextWriter(stream);
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
 
         // When
         writer.Indent();
@@ -98,10 +94,9 @@ public class IndentedStreamWriterTests_Write
         writer.Flush();
 
         // Then
-        stream.Position = 0;
-        using var reader = new StreamReader(stream);
+        string result = stringTextWriter.GetResult();
         Assert.Equal("\tHello, \n\tWorld!!\n\nGoodbye, \nMy friend!\n",
-                     reader.ReadToEnd());
+                     result);
     }
 
     [Fact]
@@ -109,9 +104,8 @@ public class IndentedStreamWriterTests_Write
     {
         // Given
         using IHost host = IndentedStreamWriterTestsSetup.GetHost(new IndentSpec { Size = 5 });
-        var provider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using var stream = new MemoryStream();
-        using var writer = (IndentedStreamWriter)provider.GetTextWriter(stream);
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
 
         // When
         writer.Indent(2);
@@ -125,10 +119,9 @@ public class IndentedStreamWriterTests_Write
         writer.Flush();
 
         // Then
-        stream.Position = 0;
-        using var reader = new StreamReader(stream);
+        string result = stringTextWriter.GetResult();
         Assert.Equal("          Hello, \n          World!!\n\n     Goodbye, \n     My friend!\n",
-                     reader.ReadToEnd());
+                     result);
     }
 
     [Theory]
@@ -140,9 +133,8 @@ public class IndentedStreamWriterTests_Write
     {
         // Given
         using IHost host = IndentedStreamWriterTestsSetup.GetHost();
-        var provider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using var stream = new MemoryStream();
-        using var writer = (IndentedStreamWriter)provider.GetTextWriter(stream);
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
         if (withIndent)
             writer.Indent();
 
@@ -153,9 +145,8 @@ public class IndentedStreamWriterTests_Write
 
         // Then
         string indent = withIndent && message.Length != 0 ? "    " : "";
-        stream.Position = 0;
-        using var reader = new StreamReader(stream);
-        Assert.Equal(indent + message, reader.ReadToEnd());
+        string result = stringTextWriter.GetResult();
+        Assert.Equal(indent + message, result);
     }
 
 }
@@ -171,9 +162,8 @@ public class IndentedStreamWriterTests_StartLine
     {
         // Given
         using IHost host = IndentedStreamWriterTestsSetup.GetHost();
-        var provider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using var stream = new MemoryStream();
-        using var writer = (IndentedStreamWriter)provider.GetTextWriter(stream);
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
         if (withIndent)
             writer.Indent();
 
@@ -185,9 +175,8 @@ public class IndentedStreamWriterTests_StartLine
 
         // Then
         string indent = withIndent ? "    " : "";
-        stream.Position = 0;
-        using var reader = new StreamReader(stream);
-        Assert.Equal($"{indent}Hello,\n{indent}World!", reader.ReadToEnd());
+        string result = stringTextWriter.GetResult();
+        Assert.Equal($"{indent}Hello,\n{indent}World!", result);
     }
 
     [Theory]
@@ -199,9 +188,8 @@ public class IndentedStreamWriterTests_StartLine
     {
         // Given
         using IHost host = IndentedStreamWriterTestsSetup.GetHost();
-        var provider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using var stream = new MemoryStream();
-        using var writer = (IndentedStreamWriter)provider.GetTextWriter(stream);
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
         if (withIndent)
             writer.Indent();
 
@@ -213,9 +201,8 @@ public class IndentedStreamWriterTests_StartLine
 
         // Then
         string indent = withIndent ? "    " : "";
-        stream.Position = 0;
-        using var reader = new StreamReader(stream);
-        Assert.Equal($"{indent}{message}{indent}World!", reader.ReadToEnd());
+        string result = stringTextWriter.GetResult();
+        Assert.Equal($"{indent}{message}{indent}World!", result);
     }
 }
 
@@ -232,9 +219,8 @@ public class IndentedStreamWriterTests_StartParagraph
     {
         // Given
         using IHost host = IndentedStreamWriterTestsSetup.GetHost();
-        var provider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using var stream = new MemoryStream();
-        using var writer = (IndentedStreamWriter)provider.GetTextWriter(stream);
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
         if (withIndent)
             writer.Indent();
 
@@ -246,9 +232,8 @@ public class IndentedStreamWriterTests_StartParagraph
 
         // Then
         string indent = withIndent ? "    " : "";
-        stream.Position = 0;
-        using var reader = new StreamReader(stream);
-        Assert.Equal($"{indent}Hello,\n\n{indent}World!", reader.ReadToEnd());
+        string result = stringTextWriter.GetResult();
+        Assert.Equal($"{indent}Hello,\n\n{indent}World!", result);
     }
 
     [Theory]
@@ -260,9 +245,8 @@ public class IndentedStreamWriterTests_StartParagraph
     {
         // Given
         using IHost host = IndentedStreamWriterTestsSetup.GetHost();
-        var provider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using var stream = new MemoryStream();
-        using var writer = (IndentedStreamWriter)provider.GetTextWriter(stream);
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
         if (withIndent)
             writer.Indent();
 
@@ -274,9 +258,8 @@ public class IndentedStreamWriterTests_StartParagraph
 
         // Then
         string indent = withIndent ? "    " : "";
-        stream.Position = 0;
-        using var reader = new StreamReader(stream);
-        Assert.Equal($"{indent}{message}{indent}World!", reader.ReadToEnd());
+        string result = stringTextWriter.GetResult();
+        Assert.Equal($"{indent}{message}{indent}World!", result);
     }
 }
 
@@ -287,9 +270,8 @@ public class IndentedStreamWriterTests_StartWord
     {
         // Given
         using IHost host = IndentedStreamWriterTestsSetup.GetHost();
-        var provider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using var stream = new MemoryStream();
-        using var writer = (IndentedStreamWriter)provider.GetTextWriter(stream);
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
 
         // When
         writer.StartWord();
@@ -299,9 +281,8 @@ public class IndentedStreamWriterTests_StartWord
         writer.Flush();
 
         // Then
-        stream.Position = 0;
-        using var reader = new StreamReader(stream);
-        Assert.Equal($"Hello, World!", reader.ReadToEnd());
+        string result = stringTextWriter.GetResult();
+        Assert.Equal($"Hello, World!", result);
     }
 
     [Theory]
@@ -312,9 +293,8 @@ public class IndentedStreamWriterTests_StartWord
     {
         // Given
         using IHost host = IndentedStreamWriterTestsSetup.GetHost();
-        var provider = host.Services.GetRequiredService<ITextWriterProvider>();
-        using var stream = new MemoryStream();
-        using var writer = (IndentedStreamWriter)provider.GetTextWriter(stream);
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
 
         // When
         writer.Write(message);
@@ -323,8 +303,7 @@ public class IndentedStreamWriterTests_StartWord
         writer.Flush();
 
         // Then
-        stream.Position = 0;
-        using var reader = new StreamReader(stream);
-        Assert.Equal($"{message}World!", reader.ReadToEnd());
+        string result = stringTextWriter.GetResult();
+        Assert.Equal($"{message}World!", result);
     }
 }

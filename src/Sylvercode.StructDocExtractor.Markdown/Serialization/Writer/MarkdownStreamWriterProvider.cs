@@ -4,7 +4,7 @@ using Sylvercode.StructDocExtractor.Serialization;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization.Writer;
 
-public class MarkdownStreamWriterProvider(IOptions<MarkdownStreamWriterProvider.Options> options) : ITextWriterProvider
+public class MarkdownStreamWriterProvider(IOptions<MarkdownStreamWriterProvider.Options> options) : ITextWriterProvider<MarkdownStreamWriter>
 {
     public class Options
     {
@@ -16,7 +16,7 @@ public class MarkdownStreamWriterProvider(IOptions<MarkdownStreamWriterProvider.
         public bool PreferAlternateStyle { get; set; } = MarkdownStyle.Default.PreferAlternateStyle;
     }
 
-    public TextWriter GetTextWriter(Stream stream)
+    public MarkdownStreamWriter GetTextWriter(Stream stream)
     {
         Options writerOptions = options.Value;
         MarkdownStyle style = new()

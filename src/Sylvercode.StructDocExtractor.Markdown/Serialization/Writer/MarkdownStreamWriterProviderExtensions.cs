@@ -11,7 +11,8 @@ public static class MarkdownStreamWriterProviderExtensions
 {
     public static IServiceCollection AddMarkdownStreamWriterProvider(this IServiceCollection services, Action<MarkdownStreamWriterProvider.Options>? copnfig = null)
     {
-        services.TryAddSingleton<ITextWriterProvider, MarkdownStreamWriterProvider>();
+        services.TryAddSingleton<ITextWriterProvider>(sp => sp.GetRequiredService<ITextWriterProvider<MarkdownStreamWriter>>());
+        services.TryAddSingleton<ITextWriterProvider<MarkdownStreamWriter>, MarkdownStreamWriterProvider>();
         Options.OptionsBuilder<MarkdownStreamWriterProvider.Options> optionsBuilder = services.AddOptions<MarkdownStreamWriterProvider.Options>();
         if (copnfig is not null)
             optionsBuilder.Configure(copnfig);
