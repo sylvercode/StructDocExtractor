@@ -43,5 +43,6 @@ public class DivSerializerTests
 
         // Then
         Assert.Equal("Hello\n\nWorld", stringTextWriter.GetResult());
+        Assert.Equal(IndentedStreamWriter.PedingOperationType.Paragraph, stringTextWriter.Writer.PendingOperation);
     }
 }

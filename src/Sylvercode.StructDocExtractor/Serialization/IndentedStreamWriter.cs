@@ -5,7 +5,7 @@ namespace Sylvercode.StructDocExtractor.Serialization;
 public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding encoding, IFormatProvider? formatProvider)
     : TextWriter(formatProvider)
 {
-    private enum PedingOperationType
+    public enum PedingOperationType
     {
         None,
         Word,
@@ -77,6 +77,8 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
         if (_pendingOperation < type)
             _pendingOperation = type;
     }
+
+    public PedingOperationType PendingOperation => _pendingOperation;
 
     private void CheckPendingOperation()
     {
