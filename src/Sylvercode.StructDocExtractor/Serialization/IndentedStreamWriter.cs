@@ -5,6 +5,13 @@ namespace Sylvercode.StructDocExtractor.Serialization;
 public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding encoding, IFormatProvider? formatProvider)
     : TextWriter(formatProvider)
 {
+    private enum PedingOperationType
+    {
+        None,
+        Word,
+        Line,
+        Paragraph,
+    }
 
     private static byte[] BuildIndentBuffer(IndentSpec indentSpec, Encoding encoding)
     {
@@ -25,6 +32,8 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
     private bool _PreviousLineIsEmpty = true;
 
     private bool _IsAfterSpace = true;
+
+    private PedingOperationType _pendingOperation = PedingOperationType.None;
 
     public IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding encoding) : this(stream, indentSpec, encoding, null)
     {
@@ -55,6 +64,42 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
     {
         if (!_IsAfterSpace)
             Write(' ');
+    }
+
+    public void EnsureEndWordNext() => SetPendingOperation(PedingOperationType.Word);
+
+    public void EnsureEndLineNext() => SetPendingOperation(PedingOperationType.Line);
+
+    public void EnsureEndParagraphNext() => SetPendingOperation(PedingOperationType.Paragraph);
+
+    private void SetPendingOperation(PedingOperationType type)
+    {
+        if (_pendingOperation < type)
+            _pendingOperation = type;
+    }
+
+    private void CheckPendingOperation()
+    {
+        PedingOperationType type = PedingOperationType.None;
+        (type, _pendingOperation) = (_pendingOperation, type);
+
+        switch (type)
+        {
+            case PedingOperationType.None:
+                break;
+            case PedingOperationType.Word:
+                Write(' ');
+                break;
+            case PedingOperationType.Line:
+                WriteLine();
+                break;
+            case PedingOperationType.Paragraph:
+                WriteLine();
+                WriteLine();
+                break;
+            default:
+                throw new InvalidOperationException($"Unknown pending operation type: {type}");
+        }
     }
 
     public int IndentLevel
@@ -89,6 +134,8 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
     {
         lock (_stream)
         {
+            CheckPendingOperation();
+
             if (value == '\n')
             {
                 _IsAfterSpace = true;

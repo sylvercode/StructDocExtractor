@@ -307,3 +307,66 @@ public class IndentedStreamWriterTests_StartWord
         Assert.Equal($"{message}World!", result);
     }
 }
+
+public class IndentedStreamWriterTests_EnsureEndXNext
+{
+    public enum OperationType
+    {
+        Word,
+        Line,
+        Paragraph,
+    }
+    private static void EnsureEndXNextAndLess(IndentedStreamWriter writer, OperationType operation)
+    {
+        if (operation >= OperationType.Word)
+            writer.EnsureEndWordNext();
+        if (operation >= OperationType.Line)
+            writer.EnsureEndLineNext();
+        if (operation >= OperationType.Paragraph)
+            writer.EnsureEndParagraphNext();
+    }
+
+    [Theory]
+    [InlineData(OperationType.Word, "Hello, World!")]
+    [InlineData(OperationType.Line, "Hello,\nWorld!")]
+    [InlineData(OperationType.Paragraph, "Hello,\n\nWorld!")]
+    public void WordFollowedByText(OperationType operation, string expected)
+    {
+        // Given
+        using IHost host = IndentedStreamWriterTestsSetup.GetHost();
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
+        writer.Write("Hello,");
+
+        // When
+        EnsureEndXNextAndLess(writer, operation);
+        EnsureEndXNextAndLess(writer, operation);
+        writer.Write("World!");
+
+        // Then
+        string result = stringTextWriter.GetResult();
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData(OperationType.Word)]
+    [InlineData(OperationType.Line)]
+    [InlineData(OperationType.Paragraph)]
+    public void WordFollowedByNothing(OperationType operation)
+    {
+        // Given
+        using IHost host = IndentedStreamWriterTestsSetup.GetHost();
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
+        writer.Write("Hello,");
+
+        // When
+        EnsureEndXNextAndLess(writer, operation);
+        EnsureEndXNextAndLess(writer, operation);
+
+        // Then
+        string result = stringTextWriter.GetResult();
+        Assert.Equal("Hello,", result);
+    }
+
+}
