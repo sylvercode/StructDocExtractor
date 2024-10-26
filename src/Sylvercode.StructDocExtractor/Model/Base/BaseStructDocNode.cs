@@ -12,7 +12,7 @@ public abstract class BaseStructDocNode<TParent>(string id) :
         get => _parent ?? throw new InvalidOperationException($"{nameof(Parent)} has not yet been initialized.");
     }
 
-    public virtual bool IsRoot => false;
+    public virtual bool IsRoot => ReferenceEquals(this, _parent);
     public virtual bool IsLeaf => true;
 
     public string Id { get; } = id;
