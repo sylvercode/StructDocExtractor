@@ -1,14 +1,17 @@
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Sylvercode.StructDocExtractor.Serialization;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization.Writer;
 
-public class MarkdownStreamWriter(
+public partial class MarkdownStreamWriter(
     Stream stream,
     MarkdownStyle style,
     Encoding encoding,
-    IFormatProvider? formatProvider)
-    : IndentedStreamWriter(stream, style.IndentSpec, encoding, formatProvider)
+    IFormatProvider? formatProvider,
+    ILogger<MarkdownStreamWriter>? logger = null)
+    : IndentedStreamWriter(stream, style.IndentSpec, encoding, formatProvider, logger)
 {
     private enum StyleState
     {
@@ -26,6 +29,8 @@ public class MarkdownStreamWriter(
     private readonly Stack<StyleStackEntry> _styleStack = new();
 
     private int _listCounter = 0;
+
+    private readonly ILogger<MarkdownStreamWriter> _logger = logger ?? NullLogger<MarkdownStreamWriter>.Instance;
 
     public MarkdownStreamWriter(Stream stream) : this(stream, new MarkdownStyle())
     {
@@ -62,7 +67,7 @@ public class MarkdownStreamWriter(
     private void PushStyle(StyleState state)
     {
         if (_styleStack.Any((i) => i.State == state))
-            throw new InvalidOperationException("Cannot push already active style.");
+            LogAleradyActiveStyle(state);
 
         StyleCharacter styleCharacter;
         if (Style.PreferAlternateStyle && _styleStack.Count != 0)
@@ -102,7 +107,7 @@ public class MarkdownStreamWriter(
         WriteCharacterForStyle(state, characterToWrite);
     }
 
-    private char GetCharacterToWrite(StyleCharacter styleCharacter) => styleCharacter switch
+    private static char GetCharacterToWrite(StyleCharacter styleCharacter) => styleCharacter switch
     {
         StyleCharacter.Asterisk => '*',
         StyleCharacter.Underscore => '_',
@@ -115,4 +120,10 @@ public class MarkdownStreamWriter(
         if (styleState == StyleState.Strong)
             Write(characterToWrite);
     }
+
+    [LoggerMessage(
+        Level = LogLevel.Warning,
+        Message = "The style {StyleState} is already active.")]
+    private partial void LogAleradyActiveStyle(StyleState styleState);
+
 }

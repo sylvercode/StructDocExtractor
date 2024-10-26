@@ -1,8 +1,10 @@
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Sylvercode.StructDocExtractor.Serialization;
 
-public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding encoding, IFormatProvider? formatProvider)
+public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding encoding, IFormatProvider? formatProvider, ILogger<IndentedStreamWriter>? logger = null)
     : TextWriter(formatProvider)
 {
     public enum PedingOperationType
@@ -34,6 +36,8 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
     private bool _IsAfterSpace = true;
 
     private PedingOperationType _pendingOperation = PedingOperationType.None;
+
+    private readonly ILogger<IndentedStreamWriter>? _logger = logger ?? NullLogger<IndentedStreamWriter>.Instance;
 
     public IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding encoding) : this(stream, indentSpec, encoding, null)
     {
