@@ -9,11 +9,17 @@ public class BaseBlockSerializer<THtmlNode, TChild>(ILogger? logger = null)
     where THtmlNode : IStructDocNodeHolder<TChild>
     where TChild : class, IStructDocNode
 {
-    protected override void OnBeforeFirstChildSerialize(THtmlNode node, TChild nextChild, MarkdownStreamWriter stream)
-        => stream.StartParagraph();
+    protected override void OnBeforeFirstChildSerialize(THtmlNode node, TChild fisrtChild, MarkdownStreamWriter stream)
+    {
+        if (!node.IsRoot)
+            stream.StartParagraph();
+    }
 
-    protected override void OnAfterLastChildSerialize(THtmlNode parent, TChild previousChild, MarkdownStreamWriter stream)
-        => stream.EnsureEndParagraphNext();
+    protected override void OnAfterLastChildSerialize(THtmlNode node, TChild lastChild, MarkdownStreamWriter stream)
+    {
+        if (!node.IsRoot)
+            stream.EnsureEndParagraphNext();
+    }
 }
 
 public class BaseBlockSerializer<THtmlNode>(ILogger? logger = null)

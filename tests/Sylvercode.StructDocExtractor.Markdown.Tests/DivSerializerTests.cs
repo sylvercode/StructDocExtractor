@@ -24,7 +24,31 @@ public class DivSerializerTests
     }
 
     [Fact]
-    public void Test1()
+    public void RootDiv_DoNotStartParagraph()
+    {
+        // Given
+        IHost host = GetHost();
+        IStructDocSerializer serializer = host.Services.GetRequiredService<IStructDocSerializer>();
+        StringTextWriter<MarkdownStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
+        stringTextWriter.Writer.Write("Hello ");
+
+        HtmlDiv div = new();
+        div.InitWithContent(c =>
+        {
+            c.Add(new PlainTextNode("World"));
+        });
+        div.MakeARoot();
+
+        // When
+        serializer.Serialize(stringTextWriter.Writer, div);
+
+        // Then
+        Assert.Equal("Hello World", stringTextWriter.GetResult());
+        Assert.Equal(IndentedStreamWriter.PedingOperationType.None, stringTextWriter.Writer.PendingOperation);
+    }
+
+    [Fact]
+    public void NotRootDiv_StartParagraph()
     {
         // Given
         IHost host = GetHost();
@@ -35,8 +59,13 @@ public class DivSerializerTests
         HtmlDiv div = new();
         div.InitWithContent(c =>
         {
-            c.Add(new PlainTextNode("World"));
+            c.Add<HtmlDiv>()
+                .InitWithContent(c =>
+                {
+                    c.Add(new PlainTextNode("World"));
+                });
         });
+        div.MakeARoot();
 
         // When
         serializer.Serialize(stringTextWriter.Writer, div);
