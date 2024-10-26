@@ -12,11 +12,11 @@ public interface IStructDocNodeSerializer<in TData, in TWriter> : IStructDocNode
     where TData : IStructDocNode
     where TWriter : TextWriter
 {
-    void OnBeforeChildSerialize(TData node, TData? previousNode, TWriter stream);
+    void OnBeforeChildSerialize(TData node, IStructDocNode? previousNode, TWriter stream);
     void IStructDocNodeSerializer.OnBeforeChildSerialize(IStructDocNode node, IStructDocNode? previousNode, TextWriter stream)
-        => OnBeforeChildSerialize((TData)node, (TData?)previousNode, (TWriter)stream);
+        => OnBeforeChildSerialize((TData)node, previousNode, (TWriter)stream);
 
-    void OnAfterChildSerialize(TData node, TData? nextNode, TWriter stream);
+    void OnAfterChildSerialize(TData node, IStructDocNode? nextNode, TWriter stream);
     void IStructDocNodeSerializer.OnAfterChildSerialize(IStructDocNode node, IStructDocNode? nextNode, TextWriter stream)
-        => OnAfterChildSerialize((TData)node, (TData?)nextNode, (TWriter)stream);
+        => OnAfterChildSerialize((TData)node, nextNode, (TWriter)stream);
 }

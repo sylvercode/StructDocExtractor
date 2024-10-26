@@ -15,10 +15,10 @@ public class SpyStructDocNodeHolderSerializer<TData, TChild>(List<SpyStructDocNo
         result.ContentSerialized = SkipContent;
     }
 
-    protected override void OnBeforeChildSerialize(TData node, TData? previousNode, TextWriter stream)
+    protected override void OnBeforeChildSerialize(TData node, IStructDocNode? previousNode, TextWriter stream)
         => this.Log([node, previousNode]);
 
-    protected override void OnAfterChildSerialize(TData node, TData? nextNode, TextWriter stream)
+    protected override void OnAfterChildSerialize(TData node, IStructDocNode? nextNode, TextWriter stream)
         => this.Log([node, nextNode]);
 
     protected override void OnBeforeFirstChildSerialize(TData parent, TChild nextChild, TextWriter stream)

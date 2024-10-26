@@ -18,13 +18,13 @@ public abstract partial class BaseStructDocNodeSerializer<TData, TWriter>(ILogge
         return result;
     }
 
-    void IStructDocNodeSerializer<TData, TWriter>.OnBeforeChildSerialize(TData node, TData? previousNode, TWriter stream)
+    void IStructDocNodeSerializer<TData, TWriter>.OnBeforeChildSerialize(TData node, IStructDocNode? previousNode, TWriter stream)
     {
         LogOnBeforeChildSerialize(node.GetType(), previousNode?.GetType());
         OnBeforeChildSerialize(node, previousNode, stream);
     }
 
-    void IStructDocNodeSerializer<TData, TWriter>.OnAfterChildSerialize(TData node, TData? nextNode, TWriter stream)
+    void IStructDocNodeSerializer<TData, TWriter>.OnAfterChildSerialize(TData node, IStructDocNode? nextNode, TWriter stream)
     {
         LogOnAfterChildSerialize(node.GetType(), nextNode?.GetType());
         OnAfterChildSerialize(node, nextNode, stream);
@@ -35,12 +35,12 @@ public abstract partial class BaseStructDocNodeSerializer<TData, TWriter>(ILogge
 
     }
 
-    protected virtual void OnBeforeChildSerialize(TData node, TData? previousNode, TWriter stream)
+    protected virtual void OnBeforeChildSerialize(TData node, IStructDocNode? previousNode, TWriter stream)
     {
 
     }
 
-    protected virtual void OnAfterChildSerialize(TData node, TData? nextNode, TWriter stream)
+    protected virtual void OnAfterChildSerialize(TData node, IStructDocNode? nextNode, TWriter stream)
     {
 
     }

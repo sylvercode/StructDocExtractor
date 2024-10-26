@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Serialization/Base/" />
     <Folder Include="Serialization/Writer/" />
   </ItemGroup>
 

@@ -7,7 +7,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
 public class StrongSerializer(ILogger<StrongSerializer>? logger = null)
-    : BaseMarkdownSerializer<HtmlStrong>(logger)
+    : BaseStyleSerializer<HtmlStrong>(logger)
 {
     protected override void OnBeforeFirstChildSerialize(HtmlStrong parent, IStructDocNode nextChild, MarkdownStreamWriter stream)
     {
