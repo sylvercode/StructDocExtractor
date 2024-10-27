@@ -4,45 +4,50 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Serialization;
 
-public abstract partial class BaseStructDocNodeSerializer<TData, TWriter>(ILogger? logger = null) : IStructDocNodeSerializer<TData, TWriter>, ISerializer<TData, TWriter>
+public partial class BaseStructDocNodeSerializer<TData, TWriter>(
+    BaseStructDocNodeSerializer<TData, TWriter>.Handler? handler = null,
+    ILogger? logger = null)
+    : IStructDocNodeSerializer<TData, TWriter>, ISerializer<TData, TWriter>
     where TData : IStructDocNode
     where TWriter : TextWriter
 {
+
+    public class Handler : IStructDocNodeSerializer<TData, TWriter>
+    {
+        public virtual void OnAfterChildSerialize(TData node, IStructDocNode? nextNode, TWriter stream)
+        {
+        }
+
+        public virtual void Serialize(TData obj, TWriter stream, NodeSerializationResult result)
+        {
+
+        }
+
+        public virtual void OnBeforeChildSerialize(TData node, IStructDocNode? previousNode, TWriter stream)
+        {
+        }
+    }
+
     private readonly ILogger _logger = logger ?? NullLogger.Instance;
 
     public NodeSerializationResult Serialize(TData obj, TWriter stream)
     {
         LogSerialize(obj.GetType());
         NodeSerializationResult result = new();
-        Serialize(obj, stream, result);
+        handler?.Serialize(obj, stream, result);
         return result;
     }
 
-    void IStructDocNodeSerializer<TData, TWriter>.OnBeforeChildSerialize(TData node, IStructDocNode? previousNode, TWriter stream)
+    public void OnBeforeChildSerialize(TData node, IStructDocNode? previousNode, TWriter stream)
     {
         LogOnBeforeChildSerialize(node.GetType(), previousNode?.GetType());
-        OnBeforeChildSerialize(node, previousNode, stream);
+        handler?.OnBeforeChildSerialize(node, previousNode, stream);
     }
 
-    void IStructDocNodeSerializer<TData, TWriter>.OnAfterChildSerialize(TData node, IStructDocNode? nextNode, TWriter stream)
+    public void OnAfterChildSerialize(TData node, IStructDocNode? nextNode, TWriter stream)
     {
         LogOnAfterChildSerialize(node.GetType(), nextNode?.GetType());
-        OnAfterChildSerialize(node, nextNode, stream);
-    }
-
-    protected virtual void Serialize(TData obj, TWriter stream, NodeSerializationResult result)
-    {
-
-    }
-
-    protected virtual void OnBeforeChildSerialize(TData node, IStructDocNode? previousNode, TWriter stream)
-    {
-
-    }
-
-    protected virtual void OnAfterChildSerialize(TData node, IStructDocNode? nextNode, TWriter stream)
-    {
-
+        handler?.OnAfterChildSerialize(node, nextNode, stream);
     }
 
     [LoggerMessage(
@@ -61,7 +66,10 @@ public abstract partial class BaseStructDocNodeSerializer<TData, TWriter>(ILogge
     private partial void LogOnAfterChildSerialize(Type dataType, Type? nextDataType);
 }
 
-public abstract partial class BaseStructDocNodeSerializer<TData>(ILogger? logger = null) : BaseStructDocNodeSerializer<TData, TextWriter>(logger)
+public abstract partial class BaseStructDocNodeSerializer<TData>(
+    BaseStructDocNodeSerializer<TData, TextWriter>.Handler? handler = null,
+     ILogger? logger = null)
+    : BaseStructDocNodeSerializer<TData, TextWriter>(handler, logger)
     where TData : IStructDocNode
 {
 
