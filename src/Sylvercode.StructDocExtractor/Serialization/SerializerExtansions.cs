@@ -4,7 +4,6 @@ using Sylvercode.StructDocExtractor.Serialization;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Microsoft.Extensions.DependencyInjection;
-#pragma warning restore IDE0130 // Namespace does not match folder structure
 
 public static class SerializerExtansions
 {
@@ -26,6 +25,26 @@ public static class SerializerExtansions
             col.AddSerializer<TNode>(serializer)
         );
 
+        return services;
+    }
+
+    public static IServiceCollection AddSerializer<TSerializer>(this IServiceCollection services)
+        where TSerializer : class, IStructDocNodeSerializerServiceInit, new()
+    {
+        TSerializer serializer = new();
+        return services.ConfigureSerializer(serializer, serializer.GetDefaultSeriazableType());
+    }
+
+    public static IServiceCollection ConfigureSerializer(this IServiceCollection services, IStructDocNodeSerializerServiceInit serializer)
+        => services.ConfigureSerializer(serializer, serializer.GetDefaultSeriazableType());
+
+    public static IServiceCollection ConfigureSerializer(this IServiceCollection services, IStructDocNodeSerializerServiceInit serializer, IEnumerable<Type> seriazableType)
+    {
+        services.AddOptions<SerializerProvider.SerializerCollection>().Configure(col =>
+        {
+            foreach (var type in seriazableType)
+                col.AddSerializer(type, serializer);
+        });
         return services;
     }
 }
