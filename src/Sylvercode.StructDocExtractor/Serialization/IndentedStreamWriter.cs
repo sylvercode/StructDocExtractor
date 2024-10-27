@@ -7,7 +7,7 @@ namespace Sylvercode.StructDocExtractor.Serialization;
 public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding encoding, IFormatProvider? formatProvider, ILogger<IndentedStreamWriter>? logger = null)
     : TextWriter(formatProvider)
 {
-    public enum PedingOperationType
+    public enum SpaceOperationType
     {
         None,
         Word,
@@ -35,7 +35,7 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
 
     private bool _IsAfterSpace = true;
 
-    private PedingOperationType _pendingOperation = PedingOperationType.None;
+    private SpaceOperationType _pendingOperation = SpaceOperationType.None;
 
     private readonly ILogger<IndentedStreamWriter>? _logger = logger ?? NullLogger<IndentedStreamWriter>.Instance;
 
@@ -49,6 +49,26 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
 
     public IndentedStreamWriter(Stream stream) : this(stream, new IndentSpec())
     {
+    }
+
+    public void DoSpaceOperation(SpaceOperationType type)
+    {
+        switch (type)
+        {
+            case SpaceOperationType.None:
+                break;
+            case SpaceOperationType.Word:
+                StartWord();
+                break;
+            case SpaceOperationType.Line:
+                StartLine();
+                break;
+            case SpaceOperationType.Paragraph:
+                StartParagraph();
+                break;
+            default:
+                throw new InvalidOperationException($"Unknown pending operation type: {type}");
+        }
     }
 
     public void StartLine()
@@ -70,36 +90,36 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
             Write(' ');
     }
 
-    public void EnsureEndWordNext() => SetPendingOperation(PedingOperationType.Word);
+    public void EnsureEndWordNext() => EnsureSpaceOperation(SpaceOperationType.Word);
 
-    public void EnsureEndLineNext() => SetPendingOperation(PedingOperationType.Line);
+    public void EnsureEndLineNext() => EnsureSpaceOperation(SpaceOperationType.Line);
 
-    public void EnsureEndParagraphNext() => SetPendingOperation(PedingOperationType.Paragraph);
+    public void EnsureEndParagraphNext() => EnsureSpaceOperation(SpaceOperationType.Paragraph);
 
-    private void SetPendingOperation(PedingOperationType type)
+    public void EnsureSpaceOperation(SpaceOperationType type)
     {
         if (_pendingOperation < type)
             _pendingOperation = type;
     }
 
-    public PedingOperationType PendingOperation => _pendingOperation;
+    public SpaceOperationType PendingOperation => _pendingOperation;
 
     private void CheckPendingOperation()
     {
-        PedingOperationType type = PedingOperationType.None;
+        SpaceOperationType type = SpaceOperationType.None;
         (type, _pendingOperation) = (_pendingOperation, type);
 
         switch (type)
         {
-            case PedingOperationType.None:
+            case SpaceOperationType.None:
                 break;
-            case PedingOperationType.Word:
+            case SpaceOperationType.Word:
                 Write(' ');
                 break;
-            case PedingOperationType.Line:
+            case SpaceOperationType.Line:
                 WriteLine();
                 break;
-            case PedingOperationType.Paragraph:
+            case SpaceOperationType.Paragraph:
                 WriteLine();
                 WriteLine();
                 break;
