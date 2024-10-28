@@ -39,7 +39,7 @@ public partial class SerializerTask(IStructDocNode data, SerializerTaskParentInf
         if (CanNotifyNode(node, nodeSerializer, ParentInfo))
         {
             LogNotifyNode();
-            nodeSerializer.OnBeforeChildSerialize(node, ParentInfo.PreviousSibling?.Data as IStructDocNode, stream);
+            nodeSerializer.OnBeforeAsChildSerialize(node, ParentInfo.PreviousSibling?.Data as IStructDocNode, stream);
         }
     }
 
@@ -71,7 +71,7 @@ public partial class SerializerTask(IStructDocNode data, SerializerTaskParentInf
         if (CanNotifyNode(node, nodeSerializer, ParentInfo))
         {
             LogNotifyNode();
-            nodeSerializer.OnAfterChildSerialize(node, ParentInfo.NextSibling?.Data as IStructDocNode, stream);
+            nodeSerializer.OnAfterAsChildSerialize(node, ParentInfo.NextSibling?.Data as IStructDocNode, stream);
         }
 
         if (ParentInfo is not null

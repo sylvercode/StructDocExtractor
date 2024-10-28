@@ -20,13 +20,13 @@ public class IndentedSerializerHandler<TData, TWriter>(
 
     private readonly Options _options = options;
 
-    public override void OnBeforeChildSerialize(TData node, IStructDocNode? previousNode, TWriter stream)
+    public override void OnBeforeAsChildSerialize(TData node, IStructDocNode? previousNode, TWriter stream)
     {
         if (_options.MustDoSpaceOperation(node))
             stream.DoSpaceOperation(_options.SpaceBeforeChild);
     }
 
-    public override void OnAfterChildSerialize(TData node, IStructDocNode? nextNode, TWriter stream)
+    public override void OnAfterAsChildSerialize(TData node, IStructDocNode? nextNode, TWriter stream)
     {
         if (_options.MustDoSpaceOperation(node))
             stream.EnsureSpaceOperation(_options.SpaceAfterChild);
