@@ -46,6 +46,10 @@ public partial class MarkdownStreamWriter(
 
     public MarkdownStyle Style { get; } = style;
 
+    public bool IsInList => _listCounter > 0;
+
+    public bool IsInSubList => _listCounter > 1;
+
     public void PushEmphasis() => PushStyle(StyleState.Emphasis);
 
     public void PushStrong() => PushStyle(StyleState.Strong);
@@ -63,6 +67,7 @@ public partial class MarkdownStreamWriter(
 
         _listCounter--;
     }
+
 
     public void PushStyle(StyleState state)
     {
