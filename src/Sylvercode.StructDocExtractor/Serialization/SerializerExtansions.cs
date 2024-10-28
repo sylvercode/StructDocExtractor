@@ -29,10 +29,10 @@ public static class SerializerExtansions
     }
 
     public static IServiceCollection AddSerializer<TSerializer>(this IServiceCollection services)
-        where TSerializer : class, IStructDocNodeSerializerServiceInit, new()
+        where TSerializer : class, IStructDocNodeSerializerServiceInit
     {
-        TSerializer serializer = new();
-        return services.ConfigureSerializer(serializer, serializer.GetDefaultSeriazableType());
+        services.TryAddSingleton<TSerializer>();
+        return services.ConfigureSerializer<TSerializer>();
     }
 
     public static IServiceCollection ConfigureSerializer(this IServiceCollection services, IStructDocNodeSerializerServiceInit serializer)
@@ -41,10 +41,15 @@ public static class SerializerExtansions
     public static IServiceCollection ConfigureSerializer(this IServiceCollection services, IStructDocNodeSerializerServiceInit serializer, IEnumerable<Type> seriazableType)
     {
         services.AddOptions<SerializerProvider.SerializerCollection>().Configure(col =>
-        {
-            foreach (var type in seriazableType)
-                col.AddSerializer(type, serializer);
-        });
+            col.AddSerializer(seriazableType, serializer));
+        return services;
+    }
+
+    public static IServiceCollection ConfigureSerializer<TSerializer>(this IServiceCollection services)
+        where TSerializer : class, IStructDocNodeSerializerServiceInit
+    {
+        services.AddOptions<SerializerProvider.SerializerCollection>().Configure<TSerializer>((col, serializer) =>
+            col.AddSerializer(serializer.GetDefaultSeriazableType(), serializer));
         return services;
     }
 }

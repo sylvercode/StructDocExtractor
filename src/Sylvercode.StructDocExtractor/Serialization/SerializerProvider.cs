@@ -17,6 +17,12 @@ public class SerializerProvider : ISerializerProvider, IEnumerable<KeyValuePair<
         public void AddSerializer(Type type, ISerializer serializer)
             => _serializers.TryAdd(type, serializer);
 
+        public void AddSerializer(IEnumerable<Type> types, ISerializer serializer)
+        {
+            foreach (var type in types)
+                _serializers.TryAdd(type, serializer);
+        }
+
         public IEnumerator<KeyValuePair<Type, ISerializer>> GetEnumerator()
             => ((IEnumerable<KeyValuePair<Type, ISerializer>>)_serializers).GetEnumerator();
 
