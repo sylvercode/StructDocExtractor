@@ -9,17 +9,32 @@ namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
 public class ListSerializer(ILogger<ListSerializer>? logger = null)
     : BaseMarkdownSerializer<HtmlList>(
-        holderHandler: new ListHolderHandler(),
-        handler: NewIndentedHandler(IndentedStreamWriter.SpaceOperationType.Paragraph),
+        handler: new ListHandler(),
         logger: logger)
 {
-    private sealed class ListHolderHandler : BaseMarkdownSerializer<HtmlList>.HolderHandler
+    private sealed class ListHandler : Handler
     {
-        public override void OnBeforeFirstChildSerialize(HtmlList parent, IStructDocNode nextChild, MarkdownStreamWriter stream)
-            => stream.AddListCount();
+        public override void OnBeforeAsChildSerialize(HtmlList node, IStructDocNode? previousNode, MarkdownStreamWriter stream)
+        {
+            if (node.Content.Count == 0)
+                return;
 
-        public override void OnAfterLastChildSerialize(HtmlList parent, IStructDocNode previousChild, MarkdownStreamWriter stream)
-            => stream.RemoveListCount();
+            stream.AddListCount();
+            stream.DoSpaceOperation(NextSpaceOperation(stream.IsInSubList));
+        }
+
+        public override void OnAfterAsChildSerialize(HtmlList node, IStructDocNode? nextNode, MarkdownStreamWriter stream)
+        {
+            if (node.Content.Count == 0)
+                return;
+
+            stream.EnsureSpaceOperation(NextSpaceOperation(stream.IsInSubList));
+            stream.RemoveListCount();
+        }
+
+        private static IndentedStreamWriter.SpaceOperationType NextSpaceOperation(bool isInSubList)
+            => isInSubList
+                ? IndentedStreamWriter.SpaceOperationType.Line
+                : IndentedStreamWriter.SpaceOperationType.Paragraph;
     }
-
 }
