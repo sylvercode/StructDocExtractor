@@ -310,27 +310,14 @@ public class IndentedStreamWriterTests_StartWord
 
 public class IndentedStreamWriterTests_EnsureEndXNext
 {
-    public enum OperationType
-    {
-        Word,
-        Line,
-        Paragraph,
-    }
-    private static void EnsureEndXNextAndLess(IndentedStreamWriter writer, OperationType operation)
-    {
-        if (operation >= OperationType.Word)
-            writer.EnsureEndWordNext();
-        if (operation >= OperationType.Line)
-            writer.EnsureEndLineNext();
-        if (operation >= OperationType.Paragraph)
-            writer.EnsureEndParagraphNext();
-    }
-
     [Theory]
-    [InlineData(OperationType.Word, "Hello, World!")]
-    [InlineData(OperationType.Line, "Hello,\nWorld!")]
-    [InlineData(OperationType.Paragraph, "Hello,\n\nWorld!")]
-    public void WordFollowedByText(OperationType operation, string expected)
+    [InlineData(IndentedStreamWriter.SpaceOperationType.Word, false, "Hello, World!")]
+    [InlineData(IndentedStreamWriter.SpaceOperationType.Line, false, "Hello,\nWorld!")]
+    [InlineData(IndentedStreamWriter.SpaceOperationType.Paragraph, false, "Hello,\n\nWorld!")]
+    [InlineData(IndentedStreamWriter.SpaceOperationType.Word, true, "Hello, World!")]
+    [InlineData(IndentedStreamWriter.SpaceOperationType.Line, true, "Hello,\nWorld!")]
+    [InlineData(IndentedStreamWriter.SpaceOperationType.Paragraph, true, "Hello,\n\nWorld!")]
+    public void WordFollowedByText(IndentedStreamWriter.SpaceOperationType operation, bool doOpBeforeWight, string expected)
     {
         // Given
         using IHost host = IndentedStreamWriterTestsSetup.GetHost();
@@ -339,8 +326,10 @@ public class IndentedStreamWriterTests_EnsureEndXNext
         writer.Write("Hello,");
 
         // When
-        EnsureEndXNextAndLess(writer, operation);
-        EnsureEndXNextAndLess(writer, operation);
+        writer.EnsureSpaceOperation(operation);
+        writer.EnsureSpaceOperation(operation);
+        if (doOpBeforeWight)
+            writer.DoSpaceOperation(operation);
         writer.Write("World!");
 
         // Then
@@ -349,10 +338,10 @@ public class IndentedStreamWriterTests_EnsureEndXNext
     }
 
     [Theory]
-    [InlineData(OperationType.Word)]
-    [InlineData(OperationType.Line)]
-    [InlineData(OperationType.Paragraph)]
-    public void WordFollowedByNothing(OperationType operation)
+    [InlineData(IndentedStreamWriter.SpaceOperationType.Word)]
+    [InlineData(IndentedStreamWriter.SpaceOperationType.Line)]
+    [InlineData(IndentedStreamWriter.SpaceOperationType.Paragraph)]
+    public void WordFollowedByNothing(IndentedStreamWriter.SpaceOperationType operation)
     {
         // Given
         using IHost host = IndentedStreamWriterTestsSetup.GetHost();
@@ -361,8 +350,8 @@ public class IndentedStreamWriterTests_EnsureEndXNext
         writer.Write("Hello,");
 
         // When
-        EnsureEndXNextAndLess(writer, operation);
-        EnsureEndXNextAndLess(writer, operation);
+        writer.EnsureSpaceOperation(operation);
+        writer.EnsureSpaceOperation(operation);
 
         // Then
         string result = stringTextWriter.GetResult();

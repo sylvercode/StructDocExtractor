@@ -53,6 +53,7 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
 
     public void DoSpaceOperation(SpaceOperationType type)
     {
+        CheckPendingOperation();
         switch (type)
         {
             case SpaceOperationType.None:
@@ -73,12 +74,14 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
 
     public void StartLine()
     {
+        CheckPendingOperation();
         if (!_atLineStart)
             WriteLine();
     }
 
     public void StartParagraph()
     {
+        CheckPendingOperation();
         StartLine();
         if (!_PreviousLineIsEmpty)
             WriteLine();
@@ -86,6 +89,7 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
 
     public void StartWord()
     {
+        CheckPendingOperation();
         if (!_IsAfterSpace)
             Write(' ');
     }
@@ -106,26 +110,11 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
 
     private void CheckPendingOperation()
     {
-        SpaceOperationType type = SpaceOperationType.None;
-        (type, _pendingOperation) = (_pendingOperation, type);
+        if (_pendingOperation == SpaceOperationType.None)
+            return;
 
-        switch (type)
-        {
-            case SpaceOperationType.None:
-                break;
-            case SpaceOperationType.Word:
-                Write(' ');
-                break;
-            case SpaceOperationType.Line:
-                WriteLine();
-                break;
-            case SpaceOperationType.Paragraph:
-                WriteLine();
-                WriteLine();
-                break;
-            default:
-                throw new InvalidOperationException($"Unknown pending operation type: {type}");
-        }
+        (SpaceOperationType type, _pendingOperation) = (_pendingOperation, SpaceOperationType.None);
+        DoSpaceOperation(type);
     }
 
     public int IndentLevel
