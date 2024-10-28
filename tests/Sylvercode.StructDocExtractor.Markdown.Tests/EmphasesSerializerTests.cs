@@ -17,10 +17,10 @@ public class EmphasesSerializerTests
             {
                 services.AddMarkdownStreamWriterProvider();
                 services.AddStructDocSerializer();
-                services.AddSerializer<HtmlEmphases, EmphasesSerializer>();
-                services.AddSerializer<HtmlStrong, StrongSerializer>();
-                services.AddSerializer<HtmlDiv, DivSerializer>();
-                services.AddSerializer<PlainTextNode, PlainTextSerializer>();
+                services.AddSerializer<EmphasesSerializer>();
+                services.AddSerializer<StrongSerializer>();
+                services.AddSerializer<ParagraphSerializer>();
+                services.AddSerializer<PlainTextSerializer>();
                 services.AddSingleton<StringTextWriter<MarkdownStreamWriter>>();
             }).Build();
     }
@@ -36,9 +36,9 @@ public class EmphasesSerializerTests
         StringTextWriter<MarkdownStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
         stringTextWriter.Writer.Write(source);
 
-        HtmlDiv div = new();
-        div.MakeARoot();
-        div.InitWithContent(c =>
+        HtmlParagraph para = new();
+        para.MakeARoot();
+        para.InitWithContent(c =>
         {
             c.Add<HtmlEmphases>()
                 .InitWithContent(c =>
@@ -49,11 +49,11 @@ public class EmphasesSerializerTests
 
 
         // When
-        serializer.Serialize(stringTextWriter.Writer, div);
+        serializer.Serialize(stringTextWriter.Writer, para);
 
         // Then
         Assert.Equal($"Hello, *World*", stringTextWriter.GetResult());
-        Assert.Equal(IndentedStreamWriter.PedingOperationType.Word, stringTextWriter.Writer.PendingOperation);
+        Assert.Equal(IndentedStreamWriter.SpaceOperationType.Word, stringTextWriter.Writer.PendingOperation);
     }
 
     [Theory]
@@ -67,9 +67,9 @@ public class EmphasesSerializerTests
         StringTextWriter<MarkdownStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
         stringTextWriter.Writer.Write(source);
 
-        HtmlDiv div = new();
-        div.MakeARoot();
-        div.InitWithContent(c =>
+        HtmlParagraph para = new();
+        para.MakeARoot();
+        para.InitWithContent(c =>
         {
             c.Add<HtmlStrong>()
                 .InitWithContent(c =>
@@ -84,11 +84,11 @@ public class EmphasesSerializerTests
 
 
         // When
-        serializer.Serialize(stringTextWriter.Writer, div);
+        serializer.Serialize(stringTextWriter.Writer, para);
 
         // Then
         Assert.Equal($"Hello, ***World***", stringTextWriter.GetResult());
-        Assert.Equal(IndentedStreamWriter.PedingOperationType.Word, stringTextWriter.Writer.PendingOperation);
+        Assert.Equal(IndentedStreamWriter.SpaceOperationType.Word, stringTextWriter.Writer.PendingOperation);
     }
 
 }

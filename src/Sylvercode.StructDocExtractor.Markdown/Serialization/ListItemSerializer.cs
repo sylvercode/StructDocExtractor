@@ -1,19 +1,22 @@
 using Microsoft.Extensions.Logging;
 using Sylvercode.StructDocExtractor.Markdown.Serialization.Base;
 using Sylvercode.StructDocExtractor.Markdown.Serialization.Writer;
-using Sylvercode.StructDocExtractor.Model;
+using Sylvercode.StructDocExtractor.Serialization;
 using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
 public class ListItemSerializer(ILogger<ListItemSerializer>? logger = null)
-    : BaseMarkdownSerializer<HtmlListItem>(logger)
+    : BaseMarkdownSerializer<HtmlListItem>(
+        handler: new ListItemHandler(),
+        logger: logger)
 {
-    protected override void OnBeforeFirstChildSerialize(HtmlListItem parent, IStructDocNode nextChild, MarkdownStreamWriter stream)
+    private sealed class ListItemHandler()
+        : IndentedSerializerHandler<HtmlListItem, MarkdownStreamWriter>(
+            new Options(IndentedStreamWriter.SpaceOperationType.Line))
     {
-        base.OnBeforeFirstChildSerialize(parent, nextChild, stream);
-        stream.StartLine();
-        stream.Write("- ");
+        public override void Serialize(HtmlListItem obj, MarkdownStreamWriter stream, NodeSerializationResult result)
+            => stream.Write("- ");
     }
 
 }

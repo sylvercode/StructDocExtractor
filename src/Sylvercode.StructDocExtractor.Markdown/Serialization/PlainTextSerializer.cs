@@ -6,10 +6,15 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
 public class PlainTextSerializer(ILogger<PlainTextSerializer>? logger = null)
-    : BaseStructDocNodeSerializer<PlainTextNode, MarkdownStreamWriter>(logger)
+    : BaseStructDocNodeSerializer<PlainTextNode, MarkdownStreamWriter>(
+        handler: new PlainTextHandler(),
+        logger: logger)
 {
-    protected override void Serialize(PlainTextNode obj, MarkdownStreamWriter stream, NodeSerializationResult result)
+    private sealed class PlainTextHandler : BaseStructDocNodeSerializer<PlainTextNode, MarkdownStreamWriter>.Handler
     {
-        stream.Write(obj.Text);
+        public override void Serialize(PlainTextNode obj, MarkdownStreamWriter stream, NodeSerializationResult result)
+        {
+            stream.Write(obj.Text);
+        }
     }
 }

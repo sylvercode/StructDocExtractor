@@ -9,8 +9,8 @@ namespace Sylvercode.StructDocExtractor.Tests;
 public class StructDocSerializerExecutorTests
 {
     private const SpyStructDocNodeSerializerEntry.Methods Serialize = SpyStructDocNodeSerializerEntry.Methods.Serialize;
-    private const SpyStructDocNodeSerializerEntry.Methods OnBeforeChildSerialize = SpyStructDocNodeSerializerEntry.Methods.OnBeforeChildSerialize;
-    private const SpyStructDocNodeSerializerEntry.Methods OnAfterChildSerialize = SpyStructDocNodeSerializerEntry.Methods.OnAfterChildSerialize;
+    private const SpyStructDocNodeSerializerEntry.Methods OnBeforeChildSerialize = SpyStructDocNodeSerializerEntry.Methods.OnBeforeAsChildSerialize;
+    private const SpyStructDocNodeSerializerEntry.Methods OnAfterChildSerialize = SpyStructDocNodeSerializerEntry.Methods.OnAfterAsChildSerialize;
     private const SpyStructDocNodeSerializerEntry.Methods OnBeforeFirstChildSerialize = SpyStructDocNodeSerializerEntry.Methods.OnBeforeFirstChildSerialize;
     private const SpyStructDocNodeSerializerEntry.Methods OnBetweenSiblingSerialize = SpyStructDocNodeSerializerEntry.Methods.OnBetweenSiblingSerialize;
     private const SpyStructDocNodeSerializerEntry.Methods OnAfterLastChildSerialize = SpyStructDocNodeSerializerEntry.Methods.OnAfterLastChildSerialize;

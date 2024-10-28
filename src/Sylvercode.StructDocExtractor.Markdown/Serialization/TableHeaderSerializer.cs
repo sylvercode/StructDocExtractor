@@ -6,14 +6,15 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
 public class TableHeaderSerializer(ILogger<TableHeaderSerializer>? logger = null)
-    : BaseMarkdownSerializer<HtmlTableHeader, HtmlTableRow>(logger)
+    : BaseMarkdownSerializer<HtmlTableHeader, HtmlTableRow>(
+        holderHandler: new TableHeaderHolderHandler(),
+        logger: logger)
 {
-    protected override void OnAfterLastChildSerialize(HtmlTableHeader parent, HtmlTableRow previousChild, MarkdownStreamWriter stream)
+    private sealed class TableHeaderHolderHandler : HolderHandler
     {
-        base.OnBeforeFirstChildSerialize(parent, previousChild, stream);
-
-        stream.StartLine();
-        string headerSeparater = string.Concat(Enumerable.Repeat("|-", previousChild.Content.Count).Append("|"));
-        stream.WriteLine(headerSeparater);
+        public override void OnAfterLastChildSerialize(HtmlTableHeader parent, HtmlTableRow previousChild, MarkdownStreamWriter stream)
+        {
+            TableSerializer.WriteHeaderSeparater(stream, previousChild.Content.Count);
+        }
     }
 }

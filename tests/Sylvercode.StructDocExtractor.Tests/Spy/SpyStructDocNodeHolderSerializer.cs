@@ -3,33 +3,51 @@ using Sylvercode.StructDocExtractor.Serialization;
 
 namespace Sylvercode.StructDocExtractor.Tests.Spy;
 
-public class SpyStructDocNodeHolderSerializer<TData, TChild>(List<SpyStructDocNodeSerializerEntry> entriesLog, bool SkipContent = false) : BaseStructDocNodeHolderSerializer<TData, TChild>, ISpySerializer
+public class SpyStructDocNodeHolderSerializer<TData, TChild> : BaseStructDocNodeHolderSerializer<TData, TChild>,
+    ISpySerializer
     where TData : IStructDocNodeHolder<TChild>
     where TChild : class, IStructDocNode
 {
-    public List<SpyStructDocNodeSerializerEntry> EntriesLog => entriesLog;
+    private readonly List<SpyStructDocNodeSerializerEntry> entriesLog;
 
-    protected override void Serialize(TData obj, TextWriter stream, NodeSerializationResult result)
+    public SpyStructDocNodeHolderSerializer(
+        List<SpyStructDocNodeSerializerEntry> entriesLog,
+        bool SkipContent = false) : base()
     {
-        this.Log([obj]);
-        result.ContentSerialized = SkipContent;
+        HolderHdl = new SpyHolderHandler(this);
+        Hdl = new SpyHandler(this, SkipContent);
+        this.entriesLog = entriesLog;
     }
 
-    protected override void OnBeforeChildSerialize(TData node, IStructDocNode? previousNode, TextWriter stream)
-        => this.Log([node, previousNode]);
+    public List<SpyStructDocNodeSerializerEntry> EntriesLog => entriesLog;
 
-    protected override void OnAfterChildSerialize(TData node, IStructDocNode? nextNode, TextWriter stream)
-        => this.Log([node, nextNode]);
+    private class SpyHandler(SpyStructDocNodeHolderSerializer<TData, TChild> spy, bool SkipContent) : Handler
+    {
+        public override void Serialize(TData obj, TextWriter stream, NodeSerializationResult result)
+        {
+            spy.Log([obj]);
+            result.ContentSerialized = SkipContent;
+        }
 
-    protected override void OnBeforeFirstChildSerialize(TData parent, TChild nextChild, TextWriter stream)
-        => this.Log([parent, nextChild]);
+        public override void OnBeforeAsChildSerialize(TData node, IStructDocNode? previousNode, TextWriter stream)
+            => spy.Log([node, previousNode]);
 
-    protected override void OnBetweenSiblingSerialize(TData parent, TChild previousChild, TChild nextChild, TextWriter stream)
-        => this.Log([parent, previousChild, nextChild]);
+        public override void OnAfterAsChildSerialize(TData node, IStructDocNode? nextNode, TextWriter stream)
+            => spy.Log([node, nextNode]);
+    }
 
-    protected override void OnAfterLastChildSerialize(TData parent, TChild previousChild, TextWriter stream)
-        => this.Log([parent, previousChild]);
+    private class SpyHolderHandler(SpyStructDocNodeHolderSerializer<TData, TChild> spy) : HolderHandler
+    {
+        public override void OnBeforeFirstChildSerialize(TData parent, TChild nextChild, TextWriter stream)
+        => spy.Log([parent, nextChild]);
 
-    protected override void OnNoChildSerialize(TData parent, TextWriter stream)
-        => this.Log([parent]);
+        public override void OnBetweenSiblingSerialize(TData parent, TChild previousChild, TChild nextChild, TextWriter stream)
+            => spy.Log([parent, previousChild, nextChild]);
+
+        public override void OnAfterLastChildSerialize(TData parent, TChild previousChild, TextWriter stream)
+            => spy.Log([parent, previousChild]);
+
+        public override void OnNoChildSerialize(TData parent, TextWriter stream)
+            => spy.Log([parent]);
+    }
 }

@@ -10,8 +10,8 @@ public class SpyStructDocNodeSerializerEntry(
     public enum Methods
     {
         Serialize,
-        OnBeforeChildSerialize,
-        OnAfterChildSerialize,
+        OnBeforeAsChildSerialize,
+        OnAfterAsChildSerialize,
         OnBeforeFirstChildSerialize,
         OnBetweenSiblingSerialize,
         OnAfterLastChildSerialize,
@@ -22,8 +22,8 @@ public class SpyStructDocNodeSerializerEntry(
         => methodName switch
         {
             nameof(Methods.Serialize) => Methods.Serialize,
-            nameof(Methods.OnBeforeChildSerialize) => Methods.OnBeforeChildSerialize,
-            nameof(Methods.OnAfterChildSerialize) => Methods.OnAfterChildSerialize,
+            nameof(Methods.OnBeforeAsChildSerialize) => Methods.OnBeforeAsChildSerialize,
+            nameof(Methods.OnAfterAsChildSerialize) => Methods.OnAfterAsChildSerialize,
             nameof(Methods.OnBeforeFirstChildSerialize) => Methods.OnBeforeFirstChildSerialize,
             nameof(Methods.OnBetweenSiblingSerialize) => Methods.OnBetweenSiblingSerialize,
             nameof(Methods.OnAfterLastChildSerialize) => Methods.OnAfterLastChildSerialize,

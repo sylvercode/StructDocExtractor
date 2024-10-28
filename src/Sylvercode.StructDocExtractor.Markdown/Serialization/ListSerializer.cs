@@ -2,23 +2,24 @@ using Microsoft.Extensions.Logging;
 using Sylvercode.StructDocExtractor.Markdown.Serialization.Base;
 using Sylvercode.StructDocExtractor.Markdown.Serialization.Writer;
 using Sylvercode.StructDocExtractor.Model;
+using Sylvercode.StructDocExtractor.Serialization;
 using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
 public class ListSerializer(ILogger<ListSerializer>? logger = null)
-    : BaseBlockSerializer<HtmlList>(logger)
+    : BaseMarkdownSerializer<HtmlList>(
+        holderHandler: new ListHolderHandler(),
+        handler: NewIndentedHandler(IndentedStreamWriter.SpaceOperationType.Paragraph),
+        logger: logger)
 {
-    protected override void OnBeforeFirstChildSerialize(HtmlList parent, IStructDocNode nextChild, MarkdownStreamWriter stream)
+    private sealed class ListHolderHandler : BaseMarkdownSerializer<HtmlList>.HolderHandler
     {
-        base.OnBeforeFirstChildSerialize(parent, nextChild, stream);
-        stream.AddListCount();
-    }
+        public override void OnBeforeFirstChildSerialize(HtmlList parent, IStructDocNode nextChild, MarkdownStreamWriter stream)
+            => stream.AddListCount();
 
-    protected override void OnAfterLastChildSerialize(HtmlList parent, IStructDocNode previousChild, MarkdownStreamWriter stream)
-    {
-        base.OnAfterLastChildSerialize(parent, previousChild, stream);
-        stream.RemoveListCount();
+        public override void OnAfterLastChildSerialize(HtmlList parent, IStructDocNode previousChild, MarkdownStreamWriter stream)
+            => stream.RemoveListCount();
     }
 
 }

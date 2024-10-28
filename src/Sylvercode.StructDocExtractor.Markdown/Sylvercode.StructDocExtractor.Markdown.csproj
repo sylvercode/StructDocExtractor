@@ -19,4 +19,7 @@
     <Folder Include="Serialization/Writer/" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <AnalysisMode>Recommended</AnalysisMode>
+  </PropertyGroup>
 </Project>

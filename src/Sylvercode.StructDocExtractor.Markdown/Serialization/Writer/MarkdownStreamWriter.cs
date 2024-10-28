@@ -13,14 +13,14 @@ public partial class MarkdownStreamWriter(
     ILogger<MarkdownStreamWriter>? logger = null)
     : IndentedStreamWriter(stream, style.IndentSpec, encoding, formatProvider, logger)
 {
-    private enum StyleState
+    public enum StyleState
     {
         None,
         Emphasis,
         Strong
     }
 
-    private class StyleStackEntry
+    private sealed class StyleStackEntry
     {
         public StyleState State { get; set; }
         public StyleCharacter Character { get; set; }
@@ -28,7 +28,7 @@ public partial class MarkdownStreamWriter(
 
     private readonly Stack<StyleStackEntry> _styleStack = new();
 
-    private int _listCounter = 0;
+    private int _listCounter;
 
     private readonly ILogger<MarkdownStreamWriter> _logger = logger ?? NullLogger<MarkdownStreamWriter>.Instance;
 
@@ -64,7 +64,7 @@ public partial class MarkdownStreamWriter(
         _listCounter--;
     }
 
-    private void PushStyle(StyleState state)
+    public void PushStyle(StyleState state)
     {
         if (_styleStack.Any((i) => i.State == state))
             LogAleradyActiveStyle(state);
@@ -96,7 +96,7 @@ public partial class MarkdownStreamWriter(
         WriteCharacterForStyle(state, characterToWrite);
     }
 
-    private void PopStyle(StyleState state)
+    public void PopStyle(StyleState state)
     {
         if (_styleStack.Peek().State != state)
             throw new InvalidOperationException("Cannot pop inactive style.");

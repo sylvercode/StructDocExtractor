@@ -8,7 +8,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Tests;
 
-public class DivSerializerTests
+public class ParagraphSerializerTests
 {
     private static IHost GetHost()
     {
@@ -17,14 +17,14 @@ public class DivSerializerTests
             {
                 services.AddMarkdownStreamWriterProvider();
                 services.AddStructDocSerializer();
-                services.AddSerializer<HtmlDiv, DivSerializer>();
-                services.AddSerializer<PlainTextNode, PlainTextSerializer>();
+                services.AddSerializer<ParagraphSerializer>();
+                services.AddSerializer<PlainTextSerializer>();
                 services.AddSingleton<StringTextWriter<MarkdownStreamWriter>>();
             }).Build();
     }
 
     [Fact]
-    public void RootDiv_DoNotStartParagraph()
+    public void RootParagraph_DoNotStartParagraph()
     {
         // Given
         IHost host = GetHost();
@@ -32,23 +32,23 @@ public class DivSerializerTests
         StringTextWriter<MarkdownStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
         stringTextWriter.Writer.Write("Hello ");
 
-        HtmlDiv div = new();
-        div.InitWithContent(c =>
+        HtmlParagraph para = new();
+        para.InitWithContent(c =>
         {
             c.Add(new PlainTextNode("World"));
         });
-        div.MakeARoot();
+        para.MakeARoot();
 
         // When
-        serializer.Serialize(stringTextWriter.Writer, div);
+        serializer.Serialize(stringTextWriter.Writer, para);
 
         // Then
         Assert.Equal("Hello World", stringTextWriter.GetResult());
-        Assert.Equal(IndentedStreamWriter.PedingOperationType.None, stringTextWriter.Writer.PendingOperation);
+        Assert.Equal(IndentedStreamWriter.SpaceOperationType.None, stringTextWriter.Writer.PendingOperation);
     }
 
     [Fact]
-    public void NotRootDiv_StartParagraph()
+    public void NotRootParagraph_StartParagraph()
     {
         // Given
         IHost host = GetHost();
@@ -56,22 +56,22 @@ public class DivSerializerTests
         StringTextWriter<MarkdownStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
         stringTextWriter.Writer.Write("Hello");
 
-        HtmlDiv div = new();
-        div.InitWithContent(c =>
+        HtmlParagraph para = new();
+        para.InitWithContent(c =>
         {
-            c.Add<HtmlDiv>()
+            c.Add<HtmlParagraph>()
                 .InitWithContent(c =>
                 {
                     c.Add(new PlainTextNode("World"));
                 });
         });
-        div.MakeARoot();
+        para.MakeARoot();
 
         // When
-        serializer.Serialize(stringTextWriter.Writer, div);
+        serializer.Serialize(stringTextWriter.Writer, para);
 
         // Then
         Assert.Equal("Hello\n\nWorld", stringTextWriter.GetResult());
-        Assert.Equal(IndentedStreamWriter.PedingOperationType.Paragraph, stringTextWriter.Writer.PendingOperation);
+        Assert.Equal(IndentedStreamWriter.SpaceOperationType.Paragraph, stringTextWriter.Writer.PendingOperation);
     }
 }

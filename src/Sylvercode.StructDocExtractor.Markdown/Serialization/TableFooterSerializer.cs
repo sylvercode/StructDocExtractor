@@ -5,7 +5,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
 public class TableFooterSerializer(ILogger<TableFooterSerializer>? logger = null)
-    : BaseMarkdownSerializer<HtmlTableFooter, HtmlTableRow>(logger)
+    : BaseMarkdownSerializer<HtmlTableFooter, HtmlTableRow>(logger: logger)
 {
 
 }
