@@ -68,7 +68,7 @@ public class ListSerializerTests
     }
 
     [Fact]
-    public void SerializeImbededList()
+    public void SerializeEmbededList()
     {
         // Given
         IHost host = GetHost();
@@ -129,7 +129,7 @@ public class ListSerializerTests
 
         // Then
         Assert.Equal(
-            "Main list\n\n- item1\n- subitem1\n- subitem2\n- item2\n- item3\n- subitem3",
+            "Main list\n\n- item1\n  - subitem1\n  - subitem2\n- item2\n- item3\n  - subitem3",
             stringTextWriter.GetResult());
         Assert.Equal(IndentedStreamWriter.SpaceOperationType.Paragraph, stringTextWriter.Writer.PendingOperation);
     }

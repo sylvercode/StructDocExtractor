@@ -20,6 +20,8 @@ public class ListSerializer(ILogger<ListSerializer>? logger = null)
                 return;
 
             stream.AddListCount();
+            if (stream.IsInSubList)
+                stream.Indent();
             stream.DoSpaceOperation(NextSpaceOperation(stream.IsInSubList));
         }
 
@@ -29,6 +31,8 @@ public class ListSerializer(ILogger<ListSerializer>? logger = null)
                 return;
 
             stream.EnsureSpaceOperation(NextSpaceOperation(stream.IsInSubList));
+            if (stream.IsInSubList)
+                stream.Unindent();
             stream.RemoveListCount();
         }
 
