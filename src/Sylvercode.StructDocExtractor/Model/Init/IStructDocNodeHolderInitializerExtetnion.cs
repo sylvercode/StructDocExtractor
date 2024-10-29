@@ -22,6 +22,13 @@ public static class IStructDocNodeHolderInitializerExtension
             return item;
         }
 
+        [return: NotNull]
+        public T Add<T>()
+            where T : class, TChild, IStructDocNode, new()
+        {
+            return Add(new T());
+        }
+
         public IEnumerator<TChild> GetEnumerator()
         {
             return ((IEnumerable<TChild>)_content).GetEnumerator();

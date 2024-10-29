@@ -19,7 +19,7 @@ public class HtmlHeadingFactory : BaseAngleNodeFactory
             throw new ArgumentException("Node is not an anchor element", nameof(node));
 
         var level = int.Parse(headingElement.TagName[1..]);
-        resultBuilder.WithNode(new HtmlHeading(level));
+        resultBuilder.WithNode(new HtmlHeading(level, node.Id ?? ""));
 
         resultBuilder.WithChildNodesAsSubTasks();
 

@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
+using Sylvercode.StructDocExtractor.Model.Init;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 
@@ -28,7 +29,12 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
             if (task.ParentTaskInfo?.ParentTask is null)
             {
                 if (taskResult.SrcNode is not null)
+                {
+                    if (!taskResult.SrcNode.IsRoot
+                        && taskResult.SrcNode is IStructDocNodeInitializer nodeInitializer)
+                        nodeInitializer.MakeARoot();
                     result.StructDocNodes.Add(taskResult.SrcNode);
+                }
                 else if (taskResult.ResultType is TaskResultType.Success or TaskResultType.Warning)
                     LogRootTaskWithNoNodeResultOnSuccessOrWarning(handler.GetDataPreview((TExtractionData)task.ExtractionData));
             }

@@ -12,7 +12,16 @@ public class SerializerProvider : ISerializerProvider, IEnumerable<KeyValuePair<
         internal readonly Dictionary<Type, ISerializer> _serializers = [];
 
         public void AddSerializer<TNode>(ISerializer serializer)
-            => _serializers.TryAdd(typeof(TNode), serializer);
+            => AddSerializer(typeof(TNode), serializer);
+
+        public void AddSerializer(Type type, ISerializer serializer)
+            => _serializers.TryAdd(type, serializer);
+
+        public void AddSerializer(IEnumerable<Type> types, ISerializer serializer)
+        {
+            foreach (var type in types)
+                _serializers.TryAdd(type, serializer);
+        }
 
         public IEnumerator<KeyValuePair<Type, ISerializer>> GetEnumerator()
             => ((IEnumerable<KeyValuePair<Type, ISerializer>>)_serializers).GetEnumerator();

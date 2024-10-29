@@ -3,17 +3,28 @@ using Sylvercode.StructDocExtractor.Serialization;
 
 namespace Sylvercode.StructDocExtractor.Tests.Spy;
 
-public class SpyStructDocNodeSerializer<TData>(List<SpyStructDocNodeSerializerEntry> entriesLog) : BaseStructDocNodeSerializer<TData>, ISpySerializer
+public class SpyStructDocNodeSerializer<TData> : BaseStructDocNodeSerializer<TData>, ISpySerializer
     where TData : IStructDocNode
 {
+    private readonly List<SpyStructDocNodeSerializerEntry> entriesLog;
+
+    public SpyStructDocNodeSerializer(List<SpyStructDocNodeSerializerEntry> entriesLog)
+    {
+        Hdl = new SpyHandler(this);
+        this.entriesLog = entriesLog;
+    }
+
     public List<SpyStructDocNodeSerializerEntry> EntriesLog => entriesLog;
 
-    public override void Serialize(TData obj, TextWriter stream)
-        => this.Log([obj]);
+    private class SpyHandler(SpyStructDocNodeSerializer<TData> spy) : Handler
+    {
+        public override void Serialize(TData obj, TextWriter stream, NodeSerializationResult result)
+            => spy.Log([obj]);
 
-    public override void OnBeforeChildSerialize(TData node, TData? previousNode, TextWriter stream)
-        => this.Log([node, previousNode]);
+        public override void OnBeforeAsChildSerialize(TData node, IStructDocNode? previousNode, TextWriter stream)
+            => spy.Log([node, previousNode]);
 
-    public override void OnAfterChildSerialize(TData node, TData? nextNode, TextWriter stream)
-        => this.Log([node, nextNode]);
+        public override void OnAfterAsChildSerialize(TData node, IStructDocNode? nextNode, TextWriter stream)
+            => spy.Log([node, nextNode]);
+    }
 }

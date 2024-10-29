@@ -1,29 +1,36 @@
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Sylvercode.StructDocExtractor.Serialization;
 
-namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
+namespace Sylvercode.StructDocExtractor.Markdown.Serialization.Writer;
 
-public class MarkdownStreamWriter(
+public partial class MarkdownStreamWriter(
     Stream stream,
     MarkdownStyle style,
     Encoding encoding,
-    IFormatProvider? formatProvider)
-    : IndentedStreamWriter(stream, style.IndentSpec, encoding, formatProvider)
+    IFormatProvider? formatProvider,
+    ILogger<MarkdownStreamWriter>? logger = null)
+    : IndentedStreamWriter(stream, style.IndentSpec, encoding, formatProvider, logger)
 {
-    private enum StyleState
+    public enum StyleState
     {
         None,
         Emphasis,
         Strong
     }
 
-    private class StyleStackEntry
+    private sealed class StyleStackEntry
     {
         public StyleState State { get; set; }
         public StyleCharacter Character { get; set; }
     }
 
     private readonly Stack<StyleStackEntry> _styleStack = new();
+
+    private int _listCounter;
+
+    private readonly ILogger<MarkdownStreamWriter> _logger = logger ?? NullLogger<MarkdownStreamWriter>.Instance;
 
     public MarkdownStreamWriter(Stream stream) : this(stream, new MarkdownStyle())
     {
@@ -39,18 +46,33 @@ public class MarkdownStreamWriter(
 
     public MarkdownStyle Style { get; } = style;
 
+    public bool IsInList => _listCounter > 0;
+
+    public bool IsInSubList => _listCounter > 1;
+
     public void PushEmphasis() => PushStyle(StyleState.Emphasis);
 
     public void PushStrong() => PushStyle(StyleState.Strong);
 
-    public void PopEnmphasis() => PopStyle(StyleState.Emphasis);
+    public void PopEmphasis() => PopStyle(StyleState.Emphasis);
 
     public void PopStrong() => PopStyle(StyleState.Strong);
 
-    private void PushStyle(StyleState state)
+    public void AddListCount() => _listCounter++;
+
+    public void RemoveListCount()
+    {
+        if (_listCounter == 0)
+            throw new InvalidOperationException("Cannot remove list count when it is already 0.");
+
+        _listCounter--;
+    }
+
+
+    public void PushStyle(StyleState state)
     {
         if (_styleStack.Any((i) => i.State == state))
-            throw new InvalidOperationException("Cannot push already active style.");
+            LogAleradyActiveStyle(state);
 
         StyleCharacter styleCharacter;
         if (Style.PreferAlternateStyle && _styleStack.Count != 0)
@@ -79,7 +101,7 @@ public class MarkdownStreamWriter(
         WriteCharacterForStyle(state, characterToWrite);
     }
 
-    private void PopStyle(StyleState state)
+    public void PopStyle(StyleState state)
     {
         if (_styleStack.Peek().State != state)
             throw new InvalidOperationException("Cannot pop inactive style.");
@@ -90,7 +112,7 @@ public class MarkdownStreamWriter(
         WriteCharacterForStyle(state, characterToWrite);
     }
 
-    private char GetCharacterToWrite(StyleCharacter styleCharacter) => styleCharacter switch
+    private static char GetCharacterToWrite(StyleCharacter styleCharacter) => styleCharacter switch
     {
         StyleCharacter.Asterisk => '*',
         StyleCharacter.Underscore => '_',
@@ -103,4 +125,10 @@ public class MarkdownStreamWriter(
         if (styleState == StyleState.Strong)
             Write(characterToWrite);
     }
+
+    [LoggerMessage(
+        Level = LogLevel.Warning,
+        Message = "The style {StyleState} is already active.")]
+    private partial void LogAleradyActiveStyle(StyleState styleState);
+
 }

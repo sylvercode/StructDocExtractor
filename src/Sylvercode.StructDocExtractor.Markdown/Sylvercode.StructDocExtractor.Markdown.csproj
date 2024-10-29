@@ -12,6 +12,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Sylvercode.StructDocExtractor\Sylvercode.StructDocExtractor.csproj" />
+    <ProjectReference Include="..\Sylvercode.StructDocExtractor.StdHtml\Sylvercode.StructDocExtractor.StdHtml.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Serialization/Writer/" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <AnalysisMode>Recommended</AnalysisMode>
+  </PropertyGroup>
 </Project>

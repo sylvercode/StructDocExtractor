@@ -4,12 +4,39 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Serialization;
 
-public partial class BaseStructDocNodeHolderSerializer<TData, TWriter, TChild>(ILogger? logger = null) : BaseStructDocNodeSerializer<TData, TWriter>, IStructDocNodeHolderSerializer<TData, TWriter, TChild>
+public partial class BaseStructDocNodeHolderSerializer<TData, TWriter, TChild>(
+    BaseStructDocNodeHolderSerializer<TData, TWriter, TChild>.HolderHandler? holderHandler = null,
+    BaseStructDocNodeHolderSerializer<TData, TWriter, TChild>.Handler? handler = null,
+    ILogger? logger = null)
+    : BaseStructDocNodeSerializer<TData, TWriter>(handler, logger),
+    IStructDocNodeHolderSerializer<TData, TWriter, TChild>
     where TData : IStructDocNodeHolder<TChild>
     where TWriter : TextWriter
     where TChild : class, IStructDocNode
 {
+    public class HolderHandler
+    {
+        public virtual void OnBeforeFirstChildSerialize(TData parent, TChild nextChild, TWriter stream)
+        {
+        }
+
+        public virtual void OnBetweenSiblingSerialize(TData parent, TChild previousChild, TChild nextChild, TWriter stream)
+        {
+        }
+
+        public virtual void OnAfterLastChildSerialize(TData parent, TChild previousChild, TWriter stream)
+        {
+        }
+
+        public virtual void OnNoChildSerialize(TData parent, TWriter stream)
+        {
+        }
+    }
+
+    protected HolderHandler? HolderHdl { get; set; } = holderHandler;
+
     private readonly ILogger _logger = logger ?? NullLogger.Instance;
+
     public virtual void OnBetweenChildrenSerialize(TData parent, TChild? previousChild, TChild? nextChild, TWriter stream)
     {
         if (previousChild is null)
@@ -31,21 +58,25 @@ public partial class BaseStructDocNodeHolderSerializer<TData, TWriter, TChild>(I
     protected virtual void OnBeforeFirstChildSerialize(TData parent, TChild nextChild, TWriter stream)
     {
         LogOnBeforeFirstChildSerialize(parent.GetType(), nextChild.GetType());
+        HolderHdl?.OnBeforeFirstChildSerialize(parent, nextChild, stream);
     }
 
     protected virtual void OnBetweenSiblingSerialize(TData parent, TChild previousChild, TChild nextChild, TWriter stream)
     {
         LogOnBetweenSiblingSerialize(parent.GetType(), previousChild.GetType(), nextChild.GetType());
+        HolderHdl?.OnBetweenSiblingSerialize(parent, previousChild, nextChild, stream);
     }
 
     protected virtual void OnAfterLastChildSerialize(TData parent, TChild previousChild, TWriter stream)
     {
         LogOnAfterLastChildSerialize(parent.GetType(), previousChild.GetType());
+        HolderHdl?.OnAfterLastChildSerialize(parent, previousChild, stream);
     }
 
     protected virtual void OnNoChildSerialize(TData parent, TWriter stream)
     {
         LogOnNoChildSerialize(parent.GetType());
+        HolderHdl?.OnNoChildSerialize(parent, stream);
     }
 
     [LoggerMessage(
@@ -69,8 +100,11 @@ public partial class BaseStructDocNodeHolderSerializer<TData, TWriter, TChild>(I
     private partial void LogOnNoChildSerialize(Type dataType);
 }
 
-public partial class BaseStructDocNodeHolderSerializer<TData, TChild>(ILogger? logger = null)
-    : BaseStructDocNodeHolderSerializer<TData, TextWriter, TChild>(logger)
+public abstract partial class BaseStructDocNodeHolderSerializer<TData, TChild>(
+    BaseStructDocNodeHolderSerializer<TData, TextWriter, TChild>.HolderHandler? holderHandler = null,
+    BaseStructDocNodeHolderSerializer<TData, TextWriter, TChild>.Handler? handler = null,
+    ILogger? logger = null)
+    : BaseStructDocNodeHolderSerializer<TData, TextWriter, TChild>(holderHandler, handler, logger)
     where TData : IStructDocNodeHolder<TChild>
     where TChild : class, IStructDocNode
 {

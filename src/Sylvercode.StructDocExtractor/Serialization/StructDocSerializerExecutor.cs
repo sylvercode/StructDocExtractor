@@ -62,10 +62,11 @@ public partial class StructDocSerializerExecutor
 
         task.OnToProcess(_stream);
 
-        task.Serializer.Serialize(task.Data, _stream);
+        NodeSerializationResult serializationResult = task.Serializer.Serialize(task.Data, _stream);
 
         bool hasChildTasks = false;
-        if (task.Data is IStructDocNodeHolder childHolderData)
+        if (!serializationResult.ContentSerialized
+            && task.Data is IStructDocNodeHolder childHolderData)
         {
             SerializerTask? nextTask = null;
             foreach (var child in childHolderData.Content.Reverse())
@@ -85,6 +86,7 @@ public partial class StructDocSerializerExecutor
                 nextTask = childTask;
             }
         }
+        task.IgnoreChildren = serializationResult.ContentSerialized;
         task.HasChildTasks = hasChildTasks;
 
         task.OnProcessed(_stream);

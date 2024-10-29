@@ -14,6 +14,8 @@ public abstract class BaseStructDocBlock<TParent, TChild>(string id) :
         get => _content ?? [];
     }
 
+    public bool HasContent => _content is not null && _content.Count > 0;
+
     IParentChildLinkInitializer<TChild> IStructDocNodeHolderInitializer<TChild>.NewParentChildLinkInitializer()
     {
         return new ParentChildLinkInitializer<IStructDocNodeHolderInitializer<TChild>, TChild>(this);
