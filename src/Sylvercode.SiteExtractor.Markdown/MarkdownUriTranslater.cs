@@ -2,22 +2,24 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Sylvercode.SiteExtractor.Resources;
 using Sylvercode.SiteExtractor.UriUtils;
+using Sylvercode.StructDocExtractor.Metadatas;
 
 namespace Sylvercode.SiteExtractor.Markdown;
 
 public partial class MarkdownUriTranslater(
     IOptions<SiteExtractorOptions> options,
     ILogger<MarkdownUriTranslater> logger)
-    : ResourceUriTranslater(new UriBaseTranslater(options.Value.GetSourceBaseUri(), options.Value.GetOutputUri()))
+    : ResourceUriTranslater(new UriRelativeFromBaseTranslater(options.Value.GetSourceBaseUri()))
 {
-    public const string PageTopHeadingKey = "page-top-heading";
+    private static readonly Uri _tempBaseUri = new("temp://fake.host");
     public const string MarkdownExtension = ".md";
     private readonly ILogger _logger = logger;
 
     public override Uri Translate(Resource resource, Uri uri)
     {
-        UriBuilder uriBuilder = new(base.Translate(resource, uri));
-        if (!resource.Metadata.TryGetStrValue(PageTopHeadingKey, out string? pageTopHeading)
+        Uri tempRebase = new(_tempBaseUri, base.Translate(resource, uri));
+        UriBuilder uriBuilder = new(tempRebase);
+        if (!resource.Metadata.TryGetStrValue(StdMetadata.PageTopHeadingKey, out string? pageTopHeading)
             || string.IsNullOrEmpty(pageTopHeading))
         {
             LogNoPageTopHeading(uri);
@@ -25,12 +27,36 @@ public partial class MarkdownUriTranslater(
         }
         else
         {
+            pageTopHeading = ReplaceInvalidChars(pageTopHeading);
             string dirPath = Path.GetDirectoryName(uriBuilder.Path)?.AsDirPath() ?? string.Empty;
             uriBuilder.Path = Path.Combine(dirPath, pageTopHeading + MarkdownExtension);
         }
+        Uri result = _tempBaseUri.MakeRelativeUri(uriBuilder.Uri);
+        LogUriTransalted(uri, result);
+        return result;
+    }
 
-        LogUriTransalted(uri, uriBuilder.Uri);
-        return uriBuilder.Uri;
+    static string ReplaceInvalidChars(string str)
+    {
+        Dictionary<char, char> replacements = new()
+        {
+            { '*', '+' },
+            { '"', '\'' },
+            { '\\', '-' },
+            { '/', '-' },
+            { '<', '{' },
+            { '>', '}' },
+            { ':', ';' },
+            { '|', '!' },
+            { '?', '!' },
+            { '#', '=' },
+            { '^', '\'' },
+            { '[', '(' },
+            { ']', ')' },
+        };
+
+        char[] temp = str.Select(c => replacements.TryGetValue(c, out char replacement) ? replacement : c).ToArray();
+        return new(temp);
     }
 
     [LoggerMessage(
