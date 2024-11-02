@@ -18,7 +18,7 @@ public partial class HttpDownloader(HttpClient httpClient, ILogger<HttpDownloade
 
     public bool Download(Uri uri, out byte[] fileBytes)
     {
-        _logger.BeginScope(new { Uri = uri });
+        using var scope = _logger.BeginScope(new { Uri = uri });
         try
         {
             fileBytes = httpClient.GetByteArrayAsync(uri).Result;

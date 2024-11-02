@@ -15,7 +15,8 @@ public abstract partial class BaseDataStore(
 
     protected Uri GetCompleteUri(Uri uri)
     {
-        if (BaseUri.IsBaseOf(uri))
+        if (uri.IsAbsoluteUri
+            && BaseUri.IsBaseOf(uri))
         {
             LogUriAlreadyComplete(uri);
             return uri;

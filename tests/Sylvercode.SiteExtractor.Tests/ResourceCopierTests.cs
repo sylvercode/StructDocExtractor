@@ -82,7 +82,7 @@ public class ResourceCopierTests_Download
 
         // Then
         var dataStore = host.Services.GetRequiredService<MemoryDataStore>();
-        MemoryStream result = Assert.Contains(new Uri("memory://output/dir/data1.bin"), dataStore);
+        MemoryStream result = Assert.Contains(new Uri("memory://output/dir/store/data1.bin"), dataStore);
         Assert.Equal([1, 2, 3], result.ToArray());
     }
 

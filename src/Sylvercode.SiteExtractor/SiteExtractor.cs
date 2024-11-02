@@ -79,10 +79,10 @@ public partial class SiteExtractor(
             foreach (IResourceProcessorResult result in UnfinishProcess)
             {
                 using var logScope = _logger.BeginScope(new List<KeyValuePair<string, object>>
-                {
-                    new ("Uri", result.Resource.Uri),
-                    new ("Processor", result.Processor.GetType().Name),
-                });
+                    {
+                        new ("Uri", result.Resource.Uri),
+                        new ("Processor", result.Processor.GetType().Name),
+                    });
 
                 LogContinueProcess();
 
