@@ -15,9 +15,12 @@ public partial class ResourceDataExtractor<TExtractionData>(
     IStructDocSerializer serisalizer,
     IResourceUriTranslater? uriTranslater = null,
     IReferencerUpdater? referencerUpdater = null,
+    IResourceDependancyFilter? resourceDependancyFilter = null,
     ILogger<ResourceDataExtractor<TExtractionData>>? logger = null) : IResourceDataExtractor<TExtractionData>
 {
-    private sealed class ExtractionTaskObserver : IObserver<ExtractionTask>
+    private sealed class ExtractionTaskObserver(
+        IResourceDependancyFilter? resourceDependancyFilter
+    ) : IObserver<ExtractionTask>
     {
         public List<IStructDocReferencer> Referencers { get; } = [];
 
@@ -25,12 +28,16 @@ public partial class ResourceDataExtractor<TExtractionData>(
         public void OnError(Exception error) { }
         public void OnNext(ExtractionTask value)
         {
-            if (value.TaskResult?.SrcNode is IStructDocReferencer referencer)
+            if (value.TaskResult?.SrcNode is not IStructDocReferencer referencer)
+                return;
+
+            if (resourceDependancyFilter?.IsAccepted(referencer) ?? true)
                 Referencers.Add(referencer);
         }
     }
 
-    private readonly ILogger<ResourceDataExtractor<TExtractionData>> _logger = logger ?? new NullLogger<ResourceDataExtractor<TExtractionData>>();
+    private readonly ILogger<ResourceDataExtractor<TExtractionData>> _logger =
+        logger ?? new NullLogger<ResourceDataExtractor<TExtractionData>>();
 
     private IResourceUriTranslater UriTransler { get; } =
         uriTranslater ?? ResourceUriTranslater.NewBaseTranslater(siteSource.BaseUri, dataStore.BaseUri);
@@ -45,7 +52,7 @@ public partial class ResourceDataExtractor<TExtractionData>(
             return new FinishedProcessResult(this, resource);
         }
 
-        ExtractionTaskObserver observer = new();
+        ExtractionTaskObserver observer = new(resourceDependancyFilter);
         ExtractionResult result = extractor.Extract(extractionData, observer);
 
         if (result.Metadatas.Count != 0)

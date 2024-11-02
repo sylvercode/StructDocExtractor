@@ -11,11 +11,19 @@ public class DataExtractedProcessorResult<TExtractionData>(
     ExtractionResult result,
     IResourceUriTranslater? resourceUriTranslaterToSet,
     List<IStructDocReferencer> referencers,
-    MetadataDictionary newMetadatas) : BaseResourceProcessorResult(processor, resource, resourceUriTranslaterToSet, isUnfinished: true, newMetadatas)
+    MetadataDictionary newMetadatas)
+    : BaseResourceProcessorResult(
+        processor,
+        resource,
+        resourceUriTranslaterToSet,
+        isUnfinished: true,
+        newMetadatas)
 {
     public IReadOnlyResourceRepository ResourceRepository { get; } = resourceRepository;
     public ExtractionResult Result => result;
     public List<IStructDocReferencer> Referencers { get; } = referencers;
-    public override IResourceProcessorResult ContinueProcess() => processor.ContinueExtraction(this);
-    public override IEnumerable<Uri> GetResourceDependencies() => Referencers.Select(r => new Uri(r.GetReference()));
+    public override IResourceProcessorResult ContinueProcess() 
+        => processor.ContinueExtraction(this);
+    public override IEnumerable<Uri> GetResourceDependencies() 
+        => Referencers.Select(r => new Uri(r.GetReference()));
 }
