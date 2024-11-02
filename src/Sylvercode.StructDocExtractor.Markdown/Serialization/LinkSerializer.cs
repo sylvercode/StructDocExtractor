@@ -6,11 +6,13 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
-public class LinkSerializer(ILogger<LinkSerializer>? logger = null) 
+public class LinkSerializer(ILogger<LinkSerializer>? logger = null)
     : BaseMarkdownSerializer<HtmlAnchor>(
         handler: new LinkHandler(),
         logger: logger)
 {
+    public const string WikiScheme = "wiki";
+
     public sealed class LinkHandler() : IndentedSerializerHandler<HtmlAnchor, MarkdownStreamWriter>(
             new Options(IndentedStreamWriter.SpaceOperationType.Word))
     {
@@ -23,30 +25,42 @@ public class LinkSerializer(ILogger<LinkSerializer>? logger = null)
             }
 
             result.ContentSerialized = true;
-            if (obj.Href.StartsWith("#^", StringComparison.InvariantCultureIgnoreCase))
-                WriteWikiLink(stream, obj.Href, obj.TextContent);
-            else if (obj.Href.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-                WriteStandardLink(stream, obj.Href, obj.TextContent);
-            else if (Uri.TryCreate(obj.Href, UriKind.RelativeOrAbsolute, out Uri? hrefUri))
+
+            Uri hrefUri = new(obj.Href, UriKind.RelativeOrAbsolute);
+            if (!hrefUri.IsAbsoluteUri)
             {
-                UriBuilder uriBuilder = new(hrefUri);
-                if (uriBuilder.Path.EndsWith(".md", StringComparison.OrdinalIgnoreCase))
-                    WriteStandardLink(stream, obj.Href, obj.TextContent);
-                else
-                    WriteWikiLink(stream, obj.Href, obj.TextContent);
+                WriteStandardLink(stream, obj.Href, obj.TextContent);
+                return;
             }
-            else
-                WriteWikiLink(stream, obj.Href, obj.TextContent);
+
+            if (hrefUri.Scheme != WikiScheme)
+            {
+                WriteStandardLink(stream, obj.Href, obj.TextContent);
+                return;
+            }
+
+            string wikiRef = WikiPath(hrefUri) + hrefUri.Fragment;
+            WriteWikiLink(stream, wikiRef, obj.TextContent);
         }
 
-        private static void WriteStandardLink(MarkdownStreamWriter stream, string href, string text) => stream.Write($"[{text}]({href})");
+        private static string WikiPath(Uri uri)
+        {
+            string localPath = uri.LocalPath;
+            if (localPath == "/")
+                return string.Empty;
+            return localPath;
+        }
+
+        private static void WriteStandardLink(MarkdownStreamWriter stream, string href, string text)
+            => stream.Write($"[{text}]({href})");
 
         private static void WriteWikiLink(MarkdownStreamWriter stream, string href, string text)
         {
-            if (href == text)
-                stream.Write($"[[{href}]]");
+            string unescapeHref = Uri.UnescapeDataString(href);
+            if (unescapeHref == text)
+                stream.Write($"[[{unescapeHref}]]");
             else
-                stream.Write($"[[{href}|{text}]]");
+                stream.Write($"[[{unescapeHref}|{text}]]");
         }
     }
 }

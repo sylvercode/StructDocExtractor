@@ -48,9 +48,9 @@ public class MarkdownUriTranslaterTests_Translate
     [InlineData("https://example.com/source/page.html", "Page Title", "Page Title.md")]
     [InlineData("https://example.com/source/page.html#frag", "Page Title", "Page Title.md#frag")]
     [InlineData(
-        "https://example.com/source/page.html#frag?key1=value&keu2=value",
+        "https://example.com/source/page%20with%20space.html?key1=value&keu2=value#frag",
         "Page Title",
-        "Page Title.md#frag?key1=value&keu2=value")]
+        "Page Title.md?key1=value&keu2=value#frag")]
     public void WithPageHeading_NameWithPageHeading(string input, string heading, string expected)
     {
         // Given
