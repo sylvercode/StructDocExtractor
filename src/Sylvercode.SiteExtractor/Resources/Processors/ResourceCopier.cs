@@ -19,7 +19,7 @@ public partial class ResourceCopier : IResourceCopiler
 
         public Uri Translate(Uri uri)
         {
-            _logger.BeginScope((OriginalUri: uri, SourceBaseUri: siteSource.BaseUri, DestinationBaseUri: dataStore.BaseUri));
+            using var scope = _logger.BeginScope((OriginalUri: uri, SourceBaseUri: siteSource.BaseUri, DestinationBaseUri: dataStore.BaseUri));
             if (!options.Value.IsOutputPathAbsolute)
             {
                 Uri absoluteResult = UriBaseTranslater.Translate(uri, siteSource.BaseUri, dataStore.BaseUri);

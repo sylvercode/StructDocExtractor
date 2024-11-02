@@ -59,37 +59,37 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
         IProcessTaskResult<TExtractionData, TDataDiscriminator>? result = null;
         TaskContext<TExtractionData, TDataDiscriminator> taskContext = new(task, handler.DefaultNodeFactoryProvider);
 
-        using (_logger.BeginScope(new List<KeyValuePair<string, object?>>(){
-            new("TaskIndex", taskContext.TaskIndex),
-            new("DataDiscriminatorStack", taskContext.GetStructDataStack().ToString())
-        }))
+        using var scope = _logger.BeginScope(new List<KeyValuePair<string, object?>>()
+            {
+                new("TaskIndex", taskContext.TaskIndex),
+                new("DataDiscriminatorStack", taskContext.GetStructDataStack().ToString())
+            });
+
+        try
         {
-            try
-            {
-                result = handler.OnProcessTask(taskContext);
+            result = handler.OnProcessTask(taskContext);
 
-                LogProcessTaskResult(
-                    result.ResultType,
-                    result.DataDiscriminator?.ToString(),
-                    result.SrcNode?.DebugName,
-                    result.NodeFactoryProvider?.DebugName);
+            LogProcessTaskResult(
+                result.ResultType,
+                result.DataDiscriminator?.ToString(),
+                result.SrcNode?.DebugName,
+                result.NodeFactoryProvider?.DebugName);
 
-                task.SetResult(result);
+            task.SetResult(result);
 
-                IReadOnlyList<ExtractionTask> subTask = task.ChildrenTaskInfo!.ChildrenTasks;
-                LogChildrenTaskCount(subTask.Count);
-                AddTasks(subTask, asNext: true);
+            IReadOnlyList<ExtractionTask> subTask = task.ChildrenTaskInfo!.ChildrenTasks;
+            LogChildrenTaskCount(subTask.Count);
+            AddTasks(subTask, asNext: true);
 
-                LogExtraTaskCount(subTask.Count);
-                AddTasks(result.ExtraTasksExtractionData, asNext: false);
-            }
-            catch (Exception ex)
-            {
-                LogExceptionCatch(handler.ExtractorOption.ExceptionCatchLogLevel, ex);
-                if (!handler.ExtractorOption.ContinueOnException)
-                    throw;
-                result = ProcessTaskResult.NewError<TExtractionData, TDataDiscriminator>();
-            }
+            LogExtraTaskCount(subTask.Count);
+            AddTasks(result.ExtraTasksExtractionData, asNext: false);
+        }
+        catch (Exception ex)
+        {
+            LogExceptionCatch(handler.ExtractorOption.ExceptionCatchLogLevel, ex);
+            if (!handler.ExtractorOption.ContinueOnException)
+                throw;
+            result = ProcessTaskResult.NewError<TExtractionData, TDataDiscriminator>();
         }
 
         return result;
