@@ -1,12 +1,14 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Sylvercode.SiteExtractor.Resources;
+using Sylvercode.StructDocExtractor.Markdown.Serialization;
 using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.SiteExtractor.Markdown;
 
 public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater>? logger = null) : IReferencerUpdater
 {
+    private static readonly Uri _tempRootUri = new("http://root/");
     private readonly ILogger<MarkdownReferencerUpdater> _logger = logger ?? NullLogger<MarkdownReferencerUpdater>.Instance;
 
     public void UpdateReferencers(Resource referencerResource,
@@ -27,9 +29,15 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
         string refStr = referencer.GetReference();
         if (refStr.StartsWith('#'))
         {
-            refStr = FragmentAsBlockReference(refStr);
-            LogFragmentReferencer(refStr);
-            referencer.UpdateReference(refStr);
+            UriBuilder uriBuilder = new()
+            {
+                Scheme = LinkSerializer.WikiScheme,
+                Host = string.Empty,
+                Fragment = FragmentAsBlockReference(refStr),
+                Path = string.Empty,
+            };
+            LogFragmentReferencer(uriBuilder.Uri);
+            referencer.UpdateReference(uriBuilder.Uri.ToString());
             return;
         }
 
@@ -40,25 +48,43 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
             return;
         }
 
+        if (!reference.State.IsPullable)
+        {
+            LogNotPullableReference(refUri);
+            return;
+        }
+
         if (reference == referencerResource)
         {
-            refStr = FragmentAsBlockReference(refUri.Fragment);
-            LogKeepFragmentOnly(refStr);
-            referencer.UpdateReference(refStr);
+            UriBuilder uriBuilder = new()
+            {
+                Scheme = LinkSerializer.WikiScheme,
+                Host = string.Empty,
+                Path = string.Empty,
+                Fragment = FragmentAsBlockReference(refUri.Fragment)
+            };
+            LogKeepFragmentOnly(uriBuilder.Uri);
+            referencer.UpdateReference(uriBuilder.Uri.ToString());
             return;
         }
 
         if (uniqueFileNameRes.TryGetValue(reference, out string? uniqueFimeName))
         {
-            string uniqueFimeNameWithFragment = uniqueFimeName + FragmentAsBlockReference(refUri.Fragment);
-            LogUpdateToUniqueName(refUri, uniqueFimeNameWithFragment);
-            referencer.UpdateReference(uniqueFimeNameWithFragment);
+            UriBuilder uriBuilder = new()
+            {
+                Scheme = LinkSerializer.WikiScheme,
+                Host = string.Empty,
+                Path = uniqueFimeName,
+                Fragment = FragmentAsBlockReference(refUri.Fragment)
+            };
+            LogUpdateToUniqueName(refUri, uriBuilder.Uri);
+            referencer.UpdateReference(uriBuilder.Uri.ToString());
             return;
         }
 
-        string translateUri = reference.TranslateUri(refUri).ToString();
+        Uri translateUri = reference.TranslateUri(refUri);
         LogUpdateToNoneUniqueRes(refUri, translateUri);
-        referencer.UpdateReference(translateUri);
+        referencer.UpdateReference(translateUri.ToString());
     }
 
     private static string FragmentAsBlockReference(string fragment) => fragment.Replace("#", "#^");
@@ -89,21 +115,26 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
 
     [LoggerMessage(
         Level = LogLevel.Debug,
+        Message = "Referenced Uri not pullable: {RefUri}")]
+    private partial void LogNotPullableReference(Uri refUri);
+
+    [LoggerMessage(
+        Level = LogLevel.Debug,
         Message = "Update reference {RefUri} to unique file name: {UniqueFileName}")]
-    private partial void LogUpdateToUniqueName(Uri refUri, string uniqueFileName);
+    private partial void LogUpdateToUniqueName(Uri refUri, Uri uniqueFileName);
 
     [LoggerMessage(
         Level = LogLevel.Debug,
         Message = "Update reference {RefUri} to no unique resource: {TranslateUri}")]
-    private partial void LogUpdateToNoneUniqueRes(Uri refUri, string translateUri);
+    private partial void LogUpdateToNoneUniqueRes(Uri refUri, Uri translateUri);
 
     [LoggerMessage(
         Level = LogLevel.Debug,
         Message = "Skip fragmentonly  referencer: {Referencer}")]
-    private partial void LogFragmentReferencer(string referencer);
+    private partial void LogFragmentReferencer(Uri referencer);
 
     [LoggerMessage(
         Level = LogLevel.Debug,
         Message = "Updated to keep fragment only: {RefUri}")]
-    private partial void LogKeepFragmentOnly(string refUri);
+    private partial void LogKeepFragmentOnly(Uri refUri);
 }

@@ -7,6 +7,7 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
     public static ResourceUriTranslater BaseTranslater { get; } = ResourceUriTranslater.NewBaseTranslater(
         new Uri("http://example.com/"),
         new Uri("http://test.com/"));
+
     public sealed class ReferencerNode(string reference) : IStructDocReferencer
     {
         public string Reference { get; set; } = reference;
@@ -36,7 +37,7 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         referencerUpdater.UpdateReferencers(referencerResource, [referencer], resources);
 
         // Then
-        Assert.Equal("#fragment", referencer.Reference);
+        Assert.Equal("wiki:/#^fragment", referencer.Reference);
     }
 
     [Fact]
@@ -70,12 +71,15 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         referencerUpdater.UpdateReferencers(referencerResource, [referencer], resources);
 
         // Then
-        Assert.Equal("#frag", referencer.Reference);
+        Assert.Equal("wiki:/#^frag", referencer.Reference);
     }
 
     [Theory]
-    [InlineData("http://example.com/ref", "ref")]
-    [InlineData("http://example.com/ref#frag", "ref#frag")]
+    [InlineData("http://example.com/ref", "wiki:ref")]
+    [InlineData("http://example.com/ref#frag", "wiki:ref#^frag")]
+    [InlineData("http://example.com/ref with space", "wiki:ref with space")]
+    [InlineData("http://example.com/ref with space#frag", "wiki:ref with space#^frag")]
+    [InlineData("http://example.com/folder/ref with space#frag", "wiki:ref with space#^frag")]
     public void ReferenceToUniqueFileName_SetToFileName(string reference, string expected)
     {
         // Given
