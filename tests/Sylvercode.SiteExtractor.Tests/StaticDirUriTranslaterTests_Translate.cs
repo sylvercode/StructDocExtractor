@@ -9,7 +9,7 @@ public class StaticDirUriTranslaterTests_Translate
     [InlineData("https://www.example.com/dir/test.html", "output", "output/test.html")]
     [InlineData("https://www.example.com/test.html", "", "test.html")]
     [InlineData("https://www.example.com/dir/test.html", "", "test.html")]
-    public void WithValideUri_ShouldReturnRelativeUri(string input, string outputPath, string expected)
+    public void WithValideUri_ReturnConfigureDir(string input, string outputPath, string expected)
     {
         // Arrange
         var uri = new Uri(input);
