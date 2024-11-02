@@ -42,8 +42,8 @@ public partial class ResourceCopier : IResourceCopiler
     {
         if (options.IsOutputPathAbsolute)
         {
-            return new ToRootUriTranslater(options.OutputPath,
-                loggerFactory?.CreateLogger<ToRootUriTranslater>());
+            return new StaticDirUriTranslater(options.OutputPath,
+                loggerFactory?.CreateLogger<StaticDirUriTranslater>());
         }
         else
         {

@@ -3,11 +3,11 @@ using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Sylvercode.SiteExtractor.UriUtils;
 
-public partial class ToRootUriTranslater(
+public partial class StaticDirUriTranslater(
     string outputPath,
-    ILogger<ToRootUriTranslater>? logger) : IUriTranslater
+    ILogger<StaticDirUriTranslater>? logger) : IUriTranslater
 {
-    private readonly ILogger<ToRootUriTranslater> _logger = logger ?? NullLogger<ToRootUriTranslater>.Instance;
+    private readonly ILogger<StaticDirUriTranslater> _logger = logger ?? NullLogger<StaticDirUriTranslater>.Instance;
 
     public Uri Translate(Uri uri)
     {
