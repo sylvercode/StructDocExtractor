@@ -13,7 +13,7 @@ public static class MarkdownSerializerExtentions
         services.AddSerializer<FigCaptionSerializer>();
         services.AddSerializer<HeadingSerializer>();
         services.AddSerializer<ImageSerializer>();
-        services.AddSerializer<LinkSerializer>();
+        services.AddSerializer<AnchorSerializer>();
         services.AddSerializer<ListItemSerializer>();
         services.AddSerializer<ListSerializer>();
         services.AddSerializer<ParagraphSerializer>();

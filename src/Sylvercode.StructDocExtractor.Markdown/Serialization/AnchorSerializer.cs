@@ -6,7 +6,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
-public class LinkSerializer(ILogger<LinkSerializer>? logger = null)
+public class AnchorSerializer(ILogger<AnchorSerializer>? logger = null)
     : BaseMarkdownSerializer<HtmlAnchor>(
         handler: new LinkHandler(),
         logger: logger)
@@ -51,10 +51,10 @@ public class LinkSerializer(ILogger<LinkSerializer>? logger = null)
             return localPath;
         }
 
-        private static void WriteStandardLink(MarkdownStreamWriter stream, string href, string text)
+        private static void WriteStandardLink(TextWriter stream, string href, string text)
             => stream.Write($"[{text}]({href})");
 
-        private static void WriteWikiLink(MarkdownStreamWriter stream, string href, string text)
+        private static void WriteWikiLink(TextWriter stream, string href, string text)
         {
             string unescapeHref = Uri.UnescapeDataString(href);
             if (unescapeHref == text)
