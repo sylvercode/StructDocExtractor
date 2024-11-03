@@ -7,6 +7,9 @@ public class UriReferenceNode(string uri, string reference) : BaseStructDocNode(
 {
     public string Reference { get; set; } = reference;
 
+    public IStructDocReferencer.ReferenceType GetReferenceType()
+        => IStructDocReferencer.ReferenceType.External;
+
     public string GetReference()
         => Reference;
 

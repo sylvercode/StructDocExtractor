@@ -17,7 +17,12 @@ public class HtmlAnchor(string href, string id) :
 
     public string TextContent => ContentIsTextOnly ? ((PlainTextNode)Content.Single()).Text : string.Empty;
 
+    #region IStructDocReferencer
     public string GetReference() => Href;
 
+    public IStructDocReferencer.ReferenceType GetReferenceType()
+        => IStructDocReferencer.ReferenceType.External;
+
     public void UpdateReference(string newReference) => Href = newReference;
+    #endregion
 }

@@ -12,11 +12,26 @@ public class ResourceProcessorProvider : IResourceProcessorProvider
 
     private readonly List<Entry> _entries = [];
 
-    public void RegisterProcessor(IUriMatcher matcher, IResourceProcessor processor)
-        => _entries.Add(new Entry(matcher, processor));
+    private IResourceProcessor? _defaultProcessor;
+
+    public void RegisterDefaultProcessor(IResourceProcessor processor)
+    {
+        if (_defaultProcessor is not null)
+            throw new InvalidOperationException("Default processor is already registered.");
+
+        _defaultProcessor = processor;
+    }
+
+    public void RegisterProcessor(IUriMatcher? matcher, IResourceProcessor processor)
+    {
+        if (matcher is null)
+            RegisterDefaultProcessor(processor);
+        else
+            _entries.Add(new Entry(matcher, processor));
+    }
 
     public IResourceProcessor? GetProcessor(Uri uri)
         => _entries
             .FirstOrDefault(entry => entry.Matcher.IsMatching(uri))
-            ?.Processor;
+            ?.Processor ?? _defaultProcessor;
 }

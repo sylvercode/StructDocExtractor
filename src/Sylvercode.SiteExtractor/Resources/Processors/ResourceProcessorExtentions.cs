@@ -14,16 +14,18 @@ public static class ResourceProcessorProviderExtentions
     public static IServiceCollection AddImageCopierProcessor(this IServiceCollection services) =>
         services.AddResourceProcessor<ResourceCopier>(ImageUriMatcher.Default);
 
-    public static IServiceCollection AddResourceDataExtractorProcessor<TExtractionData>(this IServiceCollection services) =>
-        services.AddResourceProcessor<ResourceDataExtractor<TExtractionData>, IOptions<SiteExtractorOptions>>((options)
-            => new UriMatcherByBase(options.Value.GetSourceBaseUri()));
+    public static IServiceCollection AddResourceDataExtractorProcessor<TExtractionData>(
+        this IServiceCollection services) =>
+        services.AddResourceProcessor<ResourceDataExtractor<TExtractionData>, IOptions<SiteExtractorOptions>>(
+            (options) => new UriMatcherByBase(options.Value.GetSourceBaseUri()));
 
     public static IServiceCollection AddResourceProcessorProvider(this IServiceCollection services)
     {
         services.AddOptions<ResourceProcessorCollection>();
         services.TryAddSingleton<IResourceProcessorProvider>((serviceProvider) =>
         {
-            var ResourceProcessorCollection = serviceProvider.GetRequiredService<IOptions<ResourceProcessorCollection>>();
+            var ResourceProcessorCollection =
+                serviceProvider.GetRequiredService<IOptions<ResourceProcessorCollection>>();
             ResourceProcessorProvider provider = new();
             foreach (var entry in ResourceProcessorCollection.Value)
                 provider.RegisterProcessor(entry.UriMatcher, entry.Processor);
@@ -33,30 +35,52 @@ public static class ResourceProcessorProviderExtentions
         return services;
     }
 
-    public static IServiceCollection AddResourceProcessor<TProcessor>(this IServiceCollection services, IUriMatcher uriMatcher)
-        where TProcessor : class, IResourceProcessor
-        => services.AddResourceProcessor<TProcessor>(() => uriMatcher);
-
-    public static IServiceCollection AddResourceProcessor<TProcessor>(this IServiceCollection services, Func<IUriMatcher> uriMatcherProvider)
-        where TProcessor : class, IResourceProcessor
+    public static IServiceCollection AddDefaultResourceProcessor<TProcessor>(
+        this IServiceCollection services)
+            where TProcessor : class, IResourceProcessor
     {
         services.TryAddSingleton<TProcessor>();
-        services.AddOptions<ResourceProcessorCollection>().Configure<TProcessor>((col, p) => col.Add(uriMatcherProvider(), p));
+        services.AddOptions<ResourceProcessorCollection>().Configure<TProcessor>(
+            (col, p) => col.Add(p));
         return services;
     }
 
-    public static IServiceCollection AddResourceProcessor<TProcessor, TDep>(this IServiceCollection services, Func<TDep, IUriMatcher> uriMatcherProvider)
+    public static IServiceCollection AddResourceProcessor<TProcessor>(
+        this IServiceCollection services,
+        IUriMatcher uriMatcher)
+        where TProcessor : class, IResourceProcessor
+        => services.AddResourceProcessor<TProcessor>(() => uriMatcher);
+
+    public static IServiceCollection AddResourceProcessor<TProcessor>(
+        this IServiceCollection services,
+        Func<IUriMatcher> uriMatcherProvider)
+        where TProcessor : class, IResourceProcessor
+    {
+        services.TryAddSingleton<TProcessor>();
+        services.AddOptions<ResourceProcessorCollection>().Configure<TProcessor>(
+            (col, p) => col.Add(uriMatcherProvider(), p));
+        return services;
+    }
+
+    public static IServiceCollection AddResourceProcessor<TProcessor, TDep>(
+        this IServiceCollection services,
+        Func<TDep, IUriMatcher> uriMatcherProvider)
         where TProcessor : class, IResourceProcessor
         where TDep : class
     {
         services.TryAddSingleton<TProcessor>();
-        services.AddOptions<ResourceProcessorCollection>().Configure<TProcessor, TDep>((col, p, dep) => col.Add(uriMatcherProvider(dep), p));
+        services.AddOptions<ResourceProcessorCollection>().Configure<TProcessor, TDep>(
+            (col, p, dep) => col.Add(uriMatcherProvider(dep), p));
         return services;
     }
 
-    public static IServiceCollection AddResourceProcessor(this IServiceCollection services, IResourceProcessor resourceProcessor, IUriMatcher uriMatcherProvider)
+    public static IServiceCollection AddResourceProcessor(
+        this IServiceCollection services,
+        IResourceProcessor resourceProcessor,
+        IUriMatcher uriMatcherProvider)
     {
-        services.AddOptions<ResourceProcessorCollection>().Configure(col => col.Add(uriMatcherProvider, resourceProcessor));
+        services.AddOptions<ResourceProcessorCollection>().Configure(
+            col => col.Add(uriMatcherProvider, resourceProcessor));
         return services;
     }
 
@@ -64,13 +88,16 @@ public static class ResourceProcessorProviderExtentions
     {
         private readonly List<Entry> _entries = [];
 
-        public class Entry(IUriMatcher uriMatcher, IResourceProcessor processor)
+        public class Entry(IUriMatcher? uriMatcher, IResourceProcessor processor)
         {
-            public IUriMatcher UriMatcher { get; } = uriMatcher;
+            public IUriMatcher? UriMatcher { get; } = uriMatcher;
             public IResourceProcessor Processor { get; } = processor;
         }
 
-        public void Add(IUriMatcher uriMatcher, IResourceProcessor processor)
+        public void Add(IResourceProcessor processor)
+            => Add(new Entry(null, processor));
+
+        public void Add(IUriMatcher? uriMatcher, IResourceProcessor processor)
             => _entries.Add(new Entry(uriMatcher, processor));
 
         #region ICollection

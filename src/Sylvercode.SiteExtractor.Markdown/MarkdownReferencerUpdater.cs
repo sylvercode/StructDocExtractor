@@ -8,7 +8,6 @@ namespace Sylvercode.SiteExtractor.Markdown;
 
 public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater>? logger = null) : IReferencerUpdater
 {
-    private static readonly Uri _tempRootUri = new("http://root/");
     private readonly ILogger<MarkdownReferencerUpdater> _logger = logger ?? NullLogger<MarkdownReferencerUpdater>.Instance;
 
     public void UpdateReferencers(Resource referencerResource,

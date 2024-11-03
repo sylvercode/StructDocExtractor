@@ -12,6 +12,9 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
     {
         public string Reference { get; set; } = reference;
 
+        public IStructDocReferencer.ReferenceType GetReferenceType()
+            => IStructDocReferencer.ReferenceType.External;
+
         public string GetReference() => Reference;
 
         public void UpdateReference(string newReference) => Reference = newReference;
