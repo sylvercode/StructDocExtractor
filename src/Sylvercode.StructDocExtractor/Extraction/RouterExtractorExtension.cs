@@ -24,10 +24,35 @@ public static class RouterExtractorExtension
         }
 
         public void AddDefaultExtractorFor<TDataDiscriminator, TNodeFactoryProvider>(
+            ExtractorOption? extractorOption = default)
+            where TNodeFactoryProvider :
+                class,
+                IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator>,
+                IRouterExtractorSelectorProvider<TExtractionData>
+        {
+            services.TryAddSingleton<TNodeFactoryProvider>();
+            services.AddOptions<RouterExtractorList<TExtractionData>>()
+                .Configure<IServiceProvider, TNodeFactoryProvider>((option, sp, nfp) =>
+                {
+                    var dataDiscriminatorFactory = sp.GetService<IDataDiscriminatorFactory<TExtractionData, TDataDiscriminator>>();
+                    var dataPreviewProvider = sp.GetService<IDataPreviewProvider<TExtractionData>>();
+                    var loggerFactory = sp.GetService<ILoggerFactory>();
+                    Extractor<TExtractionData, TDataDiscriminator> extractor = new(
+                        nfp,
+                        extractorOption ?? default,
+                        dataDiscriminatorFactory,
+                        dataPreviewProvider,
+                        loggerFactory);
+                    option.Add(nfp.DefaultRouterSelector, extractor);
+                });
+        }
+
+        public void AddDefaultExtractorFor<TDataDiscriminator, TNodeFactoryProvider>(
             IRouterExtractorSelector<TExtractionData> selector,
             ExtractorOption? extractorOption = default)
             where TNodeFactoryProvider : class, IStructDocNodeFactoryProvider<TExtractionData, TDataDiscriminator>
         {
+            services.TryAddSingleton<TNodeFactoryProvider>();
             services.AddOptions<RouterExtractorList<TExtractionData>>()
                 .Configure<IServiceProvider, TNodeFactoryProvider>((option, sp, nfp) =>
                 {
