@@ -18,5 +18,6 @@ public class ParagraphSerializer(ILogger<ParagraphSerializer>? logger = null)
         yield return typeof(HtmlParagraph);
         yield return typeof(HtmlDiv);
         yield return typeof(HtmlFigure);
+        yield return typeof(HtmlAside);
     }
 }

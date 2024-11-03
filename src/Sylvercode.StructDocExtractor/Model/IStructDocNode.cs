@@ -3,7 +3,7 @@ namespace Sylvercode.StructDocExtractor.Model;
 public interface IStructDocNode
 {
     IStructDocNodeHolder Parent { get; }
-    string Id { get; }
+    string Id { get; init; }
 
     bool IsRoot { get; }
     bool IsLeaf { get; }
