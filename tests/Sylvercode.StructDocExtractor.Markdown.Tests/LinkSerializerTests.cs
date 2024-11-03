@@ -18,7 +18,7 @@ public class LinkSerializerTests
             {
                 services.AddMarkdownStreamWriterProvider();
                 services.AddStructDocSerializer();
-                services.AddSerializer<LinkSerializer>();
+                services.AddSerializer<AnchorSerializer>();
                 services.AddSerializer<PlainTextSerializer>();
                 services.AddSingleton<StringTextWriter<MarkdownStreamWriter>>();
             }).Build();
