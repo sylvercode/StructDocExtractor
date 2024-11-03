@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Sylvercode.SiteExtractor.AngleSharp;
 using Sylvercode.SiteExtractor.Sources;
+using Sylvercode.SiteExtractor.StdHtml;
 using Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
 using Sylvercode.StructDocExtractor.Extraction.Factory;
 using Sylvercode.StructDocExtractor.Extraction.PreviewProvider;
@@ -52,7 +53,8 @@ public static class AngleSharpSiteExtractorExtentions
     {
         services.AddSiteExtractor()
             .AddResourceProcessorProvider()
-            .AddResourceDataExtractorProcessor<INode>();
+            .AddResourceDataExtractorProcessor<INode>()
+            .AddHtmlResourceDependencyFilter();
 
         if (withDefaultSource)
             // Must be added before AddHttpDownloader so its cookie container can be share.
