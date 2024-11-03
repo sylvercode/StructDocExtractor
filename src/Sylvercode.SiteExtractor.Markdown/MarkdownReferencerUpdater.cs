@@ -30,7 +30,7 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
         {
             UriBuilder uriBuilder = new()
             {
-                Scheme = AnchorSerializer.WikiScheme,
+                Scheme = MarkdownLinkFormater.WikiScheme,
                 Host = string.Empty,
                 Fragment = FragmentAsBlockReference(refStr),
                 Path = string.Empty,
@@ -57,7 +57,7 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
         {
             UriBuilder uriBuilder = new()
             {
-                Scheme = AnchorSerializer.WikiScheme,
+                Scheme = MarkdownLinkFormater.WikiScheme,
                 Host = string.Empty,
                 Path = string.Empty,
                 Fragment = FragmentAsBlockReference(refUri.Fragment)
@@ -71,7 +71,7 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
         {
             UriBuilder uriBuilder = new()
             {
-                Scheme = AnchorSerializer.WikiScheme,
+                Scheme = MarkdownLinkFormater.WikiScheme,
                 Host = string.Empty,
                 Path = uniqueFimeName,
                 Fragment = FragmentAsBlockReference(refUri.Fragment)
