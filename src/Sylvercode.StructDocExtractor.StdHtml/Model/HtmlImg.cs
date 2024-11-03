@@ -9,7 +9,12 @@ public class HtmlImg(string src, string id = "") :
 {
     public string Src { get; private set; } = src;
 
+    #region IStructDocReferencer
+    public IStructDocReferencer.ReferenceType GetReferenceType()
+        => IStructDocReferencer.ReferenceType.Embeded;
+
     public string GetReference() => Src;
 
     public void UpdateReference(string newReference) => Src = newReference;
+    #endregion
 }
