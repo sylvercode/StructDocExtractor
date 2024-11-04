@@ -28,8 +28,8 @@ public class HtmlExtractionStack<TExtractionData>(
         return new BaseStructDataStack<HtmlNodeDiscriminator>(
             from entry in m_Stack
             let node = entry.NodeDiscriminator
-            where node.HasValue
-            select node.Value
+            where node is not null
+            select node
         );
     }
 
