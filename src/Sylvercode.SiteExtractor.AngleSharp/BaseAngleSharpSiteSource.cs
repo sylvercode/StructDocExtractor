@@ -16,9 +16,8 @@ public abstract class BaseAngleSharpSiteSource : ISiteSource<INode>
     public BaseAngleSharpSiteSource(IOptions<SiteExtractorOptions> options, IConfiguration? config, IBrowsingContext? browsingContext)
     {
         BaseUri = options.Value.GetOutputUri();
-        Config = config ?? Configuration.Default;
+        Config = config ?? Configuration.Default.WithRequesters().WithDefaultLoader();
         BrowsingContext = browsingContext ?? global::AngleSharp.BrowsingContext.New(Config);
-        
     }
 
     protected static Url AsAngleSharpUrl(Uri uri)

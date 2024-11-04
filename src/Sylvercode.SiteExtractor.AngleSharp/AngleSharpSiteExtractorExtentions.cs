@@ -23,7 +23,11 @@ public static class AngleSharpSiteExtractorExtentions
     public static IServiceCollection AddAngleSharpWebSource(this IServiceCollection services)
     {
         services.AddMemoryCookieProvider();
-        services.TryAddSingleton((sp) => AngleSharp.Configuration.Default.With(sp.GetRequiredService<MemoryCookieProvider>()));
+        services.TryAddSingleton((sp) =>
+            AngleSharp.Configuration.Default
+                .With(sp.GetRequiredService<MemoryCookieProvider>())
+                .WithRequesters()
+                .WithDefaultLoader());
         services.TryAddSingleton<IBrowsingContext, BrowsingContext>();
         services.TryAddSingleton<ISiteSource<INode>, AngleSharpWebSource>();
 
