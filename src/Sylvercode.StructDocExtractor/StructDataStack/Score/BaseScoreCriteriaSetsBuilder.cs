@@ -56,7 +56,7 @@ public class BaseScoreCriteriaSetsBuilder<TDiscriminator, TBuilder>
         where TEquatable : IEquatable<string>
     {
         ConstructorInfo ctor = typeof(TEquatable).GetConstructor([typeof(string)])
-            ?? throw new InvalidOperationException();
+            ?? throw new InvalidOperationException($"No constructor of one string found for type {typeof(TEquatable).Name}");
         return (IEquatable<string>)ctor.Invoke([value]);
     }
 

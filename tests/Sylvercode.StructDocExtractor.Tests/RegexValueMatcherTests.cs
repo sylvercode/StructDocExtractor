@@ -48,7 +48,7 @@ public class RegexValueMatcher_WithMultiValues
     public void Match_WithOneOfTheValues_ReturnTrue(string input)
     {
         // Given
-        RegexValueMatcher matcher = new("on[ey]", "two.*", ".*oo.?");
+        RegexValueMatcher matcher = new(["on[ey]", "two.*", ".*oo.?"]);
 
         // When
         bool result = matcher.Equals(input);
@@ -64,7 +64,7 @@ public class RegexValueMatcher_WithMultiValues
     public void Match_WithNoneOfTheValues_ReturnsFalse(string input)
     {
         // Given
-        RegexValueMatcher matcher = new("on[ey]", "two.*", ".*oo.?");
+        RegexValueMatcher matcher = new(["on[ey]", "two.*", ".*oo.?"]);
 
         // When
         bool result = matcher.Equals(input);

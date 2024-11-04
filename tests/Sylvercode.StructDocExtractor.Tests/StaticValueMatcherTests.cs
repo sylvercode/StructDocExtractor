@@ -43,7 +43,7 @@ public class StaticValueMatcher_WithMultiValues
         const string foo1 = nameof(foo1);
         const string foo2 = nameof(foo2);
         const string foo3 = nameof(foo3);
-        StaticValueMatcher matcher = new(foo1, foo2, foo3);
+        StaticValueMatcher matcher = new([foo1, foo2, foo3]);
 
         // When
         bool result = matcher.Equals(foo2);
@@ -59,7 +59,7 @@ public class StaticValueMatcher_WithMultiValues
         const string foo1 = nameof(foo1);
         const string foo2 = nameof(foo2);
         const string foo3 = nameof(foo3);
-        StaticValueMatcher matcher = new(foo1, foo2, foo3);
+        StaticValueMatcher matcher = new([foo1, foo2, foo3]);
 
         // When
         bool result = matcher.Equals(foo1 + foo2);
