@@ -15,7 +15,7 @@ public abstract class BaseStructDocNode<TParent>(string id) :
     public virtual bool IsRoot => ReferenceEquals(this, _parent);
     public virtual bool IsLeaf => true;
 
-    public string Id { get; } = id;
+    public string Id { get; init; } = id;
 
     public string NodeSnippet() => ((IStructDocNode)this).DebugName;
 
