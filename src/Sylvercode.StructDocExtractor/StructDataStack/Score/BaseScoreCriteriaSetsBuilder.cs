@@ -5,18 +5,18 @@ namespace Sylvercode.StructDocExtractor.StructDataStack.Score;
 public class BaseScoreCriteriaSetsBuilder<TDiscriminator, TBuilder>
     where TBuilder : BaseScoreCriteriaSetsBuilder<TDiscriminator, TBuilder>
 {
-    private readonly List<NodeScoreCriteriaSet<TDiscriminator>.NodeScoreCriterion> _criterionList = [];
+    private List<NodeScoreCriteriaSet<TDiscriminator>.NodeScoreCriterion> _criterionList = [];
 
-    private readonly List<NodeScoreCriteriaSet<TDiscriminator>.NodeScoreCriteria> _criteriaList = [];
+    private List<NodeScoreCriteriaSet<TDiscriminator>.NodeScoreCriteria> _criteriaList = [];
 
-    private readonly List<NodeScoreCriteriaSet<TDiscriminator>> _criteriaSetList = [];
+    private List<NodeScoreCriteriaSet<TDiscriminator>> _criteriaSetList = [];
 
     public TBuilder Or()
     {
         if (_criterionList.Count == 0)
             return (TBuilder)this;
         _criteriaList.Add(new(_criterionList));
-        _criterionList.Clear();
+        _criterionList = [];
         return (TBuilder)this;
     }
 
@@ -26,7 +26,7 @@ public class BaseScoreCriteriaSetsBuilder<TDiscriminator, TBuilder>
         if (_criteriaList.Count == 0)
             return (TBuilder)this;
         _criteriaSetList.Add(new(_criteriaList.ToArray()));
-        _criteriaList.Clear();
+        _criteriaList = [];
         return (TBuilder)this;
     }
 
@@ -41,7 +41,8 @@ public class BaseScoreCriteriaSetsBuilder<TDiscriminator, TBuilder>
     public List<NodeScoreCriteriaSet<TDiscriminator>> BuildSets()
     {
         AndParent();
-        return _criteriaSetList;
+        (List<NodeScoreCriteriaSet<TDiscriminator>> result, _criteriaSetList) = (_criteriaSetList, []);
+        return result;
     }
 
     protected static ValuesMatcherAll NewAllCriterion<TEquatable>(string[] valueMatchers)
