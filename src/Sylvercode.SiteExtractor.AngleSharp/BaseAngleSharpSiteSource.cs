@@ -32,7 +32,7 @@ public abstract class BaseAngleSharpSiteSource : ISiteSource<INode>
     public virtual INode GetData(Uri uri)
     {
         IDocument document = GetDocument(uri); ;
-        return document.Body ?? throw new InvalidOperationException("Document has no body");
+        return document?.Body ?? throw new InvalidOperationException("Document has no body");
     }
 
     protected abstract IDocument GetDocument(Uri uri);
