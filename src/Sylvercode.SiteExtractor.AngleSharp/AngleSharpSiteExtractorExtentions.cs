@@ -35,7 +35,7 @@ public static class AngleSharpSiteExtractorExtentions
         services.TryAddSingleton((sp) =>
         {
             MemoryCookieProvider provider = new();
-            provider.Container.Add(sp.GetRequiredKeyedService<IOptions<CookieCollection>>(AngleSharpCookieColKey).Value);
+            provider.Container.Add(sp.GetRequiredService<IOptionsMonitor<CookieCollection>>().Get(AngleSharpCookieColKey));
             return provider;
         });
         services.TryAddSingleton((sp) => sp.GetRequiredService<MemoryCookieProvider>().Container);
