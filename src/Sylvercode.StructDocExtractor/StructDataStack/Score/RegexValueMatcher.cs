@@ -4,18 +4,20 @@ namespace Sylvercode.StructDocExtractor.StructDataStack.Score;
 
 public class RegexValueMatcher(Regex[] regex) : IEquatable<string>
 {
+    public IEnumerable<Regex> Regex => regex;
+
     public RegexValueMatcher(Regex regex)
         : this([regex])
     {
     }
 
-    public RegexValueMatcher(IEnumerable<string> patterns) 
+    public RegexValueMatcher(IEnumerable<string> patterns)
         : this(patterns.Select(p => new Regex(p, RegexOptions.IgnoreCase)).ToArray())
     {
 
     }
 
-    public RegexValueMatcher(string pattern) 
+    public RegexValueMatcher(string pattern)
         : this(new Regex(pattern, RegexOptions.IgnoreCase))
     {
 

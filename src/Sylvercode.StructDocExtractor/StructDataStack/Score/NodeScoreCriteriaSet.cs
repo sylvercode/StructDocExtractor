@@ -24,6 +24,7 @@ public class NodeScoreCriteriaSet<TDiscriminator>(IEnumerable<NodeScoreCriteriaS
 
         }
         public int Priority => priority;
+        public IValueMatcher Matcher => matcher;
         public int Match(TDiscriminator node) => matcher.Match(evaluator.Invoke(node));
     }
 
@@ -34,6 +35,8 @@ public class NodeScoreCriteriaSet<TDiscriminator>(IEnumerable<NodeScoreCriteriaS
     /// <param name="subCriteria">Criteria to calculate the score</param>
     public class NodeScoreCriteria(IEnumerable<NodeScoreCriterion> subCriteria)
     {
+        public IEnumerable<NodeScoreCriterion> SubCriteria => subCriteria;
+
         public NodeScore CalculateScore(TDiscriminator node)
         {
             List<NodeScore.SubScore> result = [];

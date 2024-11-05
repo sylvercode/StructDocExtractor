@@ -2,6 +2,10 @@ namespace Sylvercode.StructDocExtractor.StructDataStack.Score;
 
 public class ValuesMatcherAll(IEquatable<string>[] valueMatchers, bool skipUnmatchValues = true) : IValueMatcher
 {
+    public IEnumerable<IEquatable<string>> ValueMatchers => valueMatchers;
+
+    public bool SkipUnmatchValues => skipUnmatchValues;
+
     public ValuesMatcherAll(IEquatable<string> valueMatcher, bool skipUnmatchValues = true)
             : this([valueMatcher], skipUnmatchValues)
     {
