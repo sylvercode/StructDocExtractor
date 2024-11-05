@@ -20,12 +20,12 @@ public partial class DirectoryDataStore(
         Uri completeUri = GetCompleteUri(uri);
         EnsureDirectoryExists(completeUri);
         LogOpenFile(completeUri);
-        return File.OpenRead(Path.GetFullPath(completeUri.LocalPath));
+        return File.OpenWrite(Path.GetFullPath(completeUri.LocalPath));
     }
 
     private void EnsureDirectoryExists(Uri uri)
     {
-        string path = uri.LocalPath;
+        string path = Path.GetDirectoryName(uri.LocalPath) ?? throw new InvalidOperationException("Destionation is not a directory");
         if (!Directory.Exists(path))
         {
             if (!MustAutoCreateBaseDir)
