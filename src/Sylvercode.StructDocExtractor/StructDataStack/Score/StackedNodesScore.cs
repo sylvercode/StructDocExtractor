@@ -32,7 +32,7 @@ public class StackedNodesScore(IDictionary<int, NodeScore> stackedNodesScore) : 
         {
             var keyDiff = criteriaIt.Current.Key - otherIt.Current.Key;
             if (keyDiff != 0)
-                return -keyDiff;
+                return keyDiff;
 
             int scoreDiff = criteriaIt.Current.Value.CompareTo(otherIt.Current.Value);
             if (scoreDiff != 0)
