@@ -186,4 +186,24 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
             _stream.Write(buffer, 0, buffer.Length);
         }
     }
+
+    public override void Close()
+    {
+        base.Close();
+        lock (_stream)
+            _stream.Close();
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+            _stream.Dispose();
+        base.Dispose(disposing);
+    }
+
+    public override void Flush()
+    {
+        lock (_stream)
+            _stream.Flush();
+    }
 }
