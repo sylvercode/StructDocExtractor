@@ -21,11 +21,15 @@ public partial class HtmlResourceDependencyFilter(
 
     public bool IsAccepted(IStructDocReferencer referencer)
     {
+        string nodeReference = referencer.GetReference();
+        if (string.IsNullOrWhiteSpace(nodeReference))
+            return false;
+
         HtmlResourceDependencyFilterMode filterMode =
             filterOptions.Value.GetFilterMode(referencer.GetReferenceType());
 
         using var scope = _logger.BeginScope((
-            reference: referencer.GetReference(),
+            reference: nodeReference,
              type: referencer.GetReferenceType(),
              filterMode
         ));
@@ -38,7 +42,7 @@ public partial class HtmlResourceDependencyFilter(
 
         if (filterMode.HasFlag(HtmlResourceDependencyFilterMode.InSourceBase))
         {
-            Uri refUri = new(referencer.GetReference());
+            Uri refUri = new(nodeReference);
             Uri sourceBaseUri = siteExtractorOptions.Value.GetSourceBaseUri();
             if (!refUri.IsAbsoluteUri)
                 refUri = new(sourceBaseUri, refUri);
@@ -53,7 +57,7 @@ public partial class HtmlResourceDependencyFilter(
 
         if (filterMode.HasFlag(HtmlResourceDependencyFilterMode.IsImage))
         {
-            if (!_imageUriMatcher.IsMatching(new Uri(referencer.GetReference())))
+            if (!_imageUriMatcher.IsMatching(new Uri(nodeReference)))
             {
                 LogRejectedSinceNotAnImage();
                 return false;
@@ -63,7 +67,7 @@ public partial class HtmlResourceDependencyFilter(
 
         if (filterMode.HasFlag(HtmlResourceDependencyFilterMode.IsNotImage))
         {
-            if (_imageUriMatcher.IsMatching(new Uri(referencer.GetReference())))
+            if (_imageUriMatcher.IsMatching(new Uri(nodeReference)))
             {
                 LogRejectedSinceIsAnImage();
                 return false;
