@@ -15,6 +15,6 @@ public class HtmlNodeDiscriminatorFactory : IDataDiscriminatorFactory<INode, Htm
         if (data is not IElement element)
             return new();
 
-        return new(element.Id ?? "", [.. element.ClassList], element.TagName);
+        return new(element.Id ?? "", [.. element.ClassList], element.TagName.ToLowerInvariant());
     }
 }
