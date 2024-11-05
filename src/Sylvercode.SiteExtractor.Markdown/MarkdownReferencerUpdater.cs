@@ -8,6 +8,8 @@ namespace Sylvercode.SiteExtractor.Markdown;
 
 public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater>? logger = null) : IReferencerUpdater
 {
+    private static readonly Uri _tempBaseUri = new("temp://fake.host");
+
     private readonly ILogger<MarkdownReferencerUpdater> _logger = logger ?? NullLogger<MarkdownReferencerUpdater>.Instance;
 
     public void UpdateReferencers(Resource referencerResource,
@@ -93,7 +95,11 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
         Dictionary<string, (int count, Resource resource)> fileNameMap = [];
         foreach (Resource resource in resourceRepository)
         {
-            UriBuilder uriBuilder = new(resource.TranslatedResourceUri);
+            if (!resource.State.IsPullable)
+                continue;
+
+            Uri fakeAbsoluteUri = new(_tempBaseUri, resource.TranslatedResourceUri);
+            UriBuilder uriBuilder = new(fakeAbsoluteUri);
             string fileName = Path.GetFileName(uriBuilder.Path);
             if (fileNameMap.TryGetValue(fileName, out var value))
             {
