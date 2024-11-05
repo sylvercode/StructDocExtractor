@@ -17,13 +17,19 @@ public class Resource(Uri sourceUri, bool isPullable = false)
 
     public MetadataDictionary Metadata { get; } = [];
 
-    public Uri TranslateUri(Uri sourceUri)
+    public Uri TranslateUri(Uri? sourceUri = null)
     {
-        var (uri, _) = sourceUri.GetUriAndFragment();
-        if (uri != sourceUri)
-            throw new ArgumentException("Not a fragment uri of the resouce.", nameof(sourceUri));
+        Uri uri;
+        if (sourceUri is null)
+            uri = Uri;
+        else
+        {
+            (uri, _) = sourceUri.GetUriAndFragment();
+            if (uri != sourceUri)
+                throw new ArgumentException("Not a fragment uri of the resouce.", nameof(sourceUri));
+        }
 
-        return UriTranslater.Translate(this, sourceUri);
+        return UriTranslater.Translate(this, uri);
     }
 
     public void MarkAsPulling()

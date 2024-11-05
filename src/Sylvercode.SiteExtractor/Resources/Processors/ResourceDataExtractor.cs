@@ -94,7 +94,7 @@ public partial class ResourceDataExtractor<TExtractionData>(
             lastResult.ResourceRepository);
 
         using TextWriter writer = GetTextWriter(
-            lastResult.Resource.TranslateUri(dataStore.BaseUri),
+            lastResult.Resource.TranslateUri(),
             serisalizer.TextWriterProvider);
 
         serisalizer.Serialize(writer, lastResult.Result.StructDocNodes[0]);
