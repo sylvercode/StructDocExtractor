@@ -24,7 +24,8 @@ public class ProcessTaskResultBuilder<TExtractionData, TDataDiscriminator>
             DataDiscriminator = _dataDiscriminator,
             NodeFactoryProvider = _nodeFactoryProvider,
             SubTasksExtractionData = _subTasksExtractionData,
-            ExtraTasksExtractionData = _extraTasksExtractionData
+            ExtraTasksExtractionData = _extraTasksExtractionData,
+            Metadatas = _metadatas,
         };
 
         return result;
