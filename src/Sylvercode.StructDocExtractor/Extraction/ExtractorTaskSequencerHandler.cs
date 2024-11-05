@@ -40,9 +40,13 @@ public partial class ExtractorTaskSequencerHandler<TExtractionData, TDataDiscrim
 
         IStructDocNodeFactory<TExtractionData, TDataDiscriminator>? factory =
             factoryProvider.GetFactoryForStack(taskContext.GetStructDataStack(discriminator));
-        LogNoNodeFactoryFound(ExtractorOption.MissingNodeFactoryLogLevel, discriminator?.ToString());
         if (factory is null)
+        {
+            LogNoNodeFactoryFound(ExtractorOption.MissingNodeFactoryLogLevel, discriminator?.ToString());
             return ProcessTaskResult.NewErrorOrSkipped<TExtractionData, TDataDiscriminator>(ExtractorOption.MissingNodeFactoryAsError);
+        }
+        else
+            LogNodeFactoryFound(factory.GetType().Name);
 
         return factory.NewNode(discriminator, taskContext.ExtractionData);
     }
@@ -73,4 +77,9 @@ public partial class ExtractorTaskSequencerHandler<TExtractionData, TDataDiscrim
     [LoggerMessage(
         Message = "No factory found for `{dataDiscriminator}`.")]
     private partial void LogNoNodeFactoryFound(LogLevel level, string? dataDiscriminator);
+
+    [LoggerMessage(
+        Level = LogLevel.Debug,
+        Message = "Factory `{FactoryName}` found.")]
+    private partial void LogNodeFactoryFound(string factoryName);
 }
