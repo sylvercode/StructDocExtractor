@@ -10,7 +10,7 @@ public class PlainTextSerializer(ILogger<PlainTextSerializer>? logger = null)
         handler: new PlainTextHandler(),
         logger: logger)
 {
-    private sealed class PlainTextHandler : BaseStructDocNodeSerializer<PlainTextNode, MarkdownStreamWriter>.Handler
+    private sealed class PlainTextHandler : Handler
     {
         public override void Serialize(PlainTextNode obj, MarkdownStreamWriter stream, NodeSerializationResult result)
         {
