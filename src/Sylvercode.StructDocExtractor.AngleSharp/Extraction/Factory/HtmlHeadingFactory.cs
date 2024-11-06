@@ -31,10 +31,12 @@ public class HtmlHeadingFactory(HtmlHeadingFactory.Options? options = null) : Ba
         if (node is not IHtmlHeadingElement headingElement)
             throw new ArgumentException("Node is not an heading element", nameof(node));
 
-        if (_options.UseTopHendingAsKey)
+        var level = int.Parse(headingElement.TagName[1..]);
+        if (level == 1
+            && _options.UseTopHendingAsKey)
             resultBuilder.WithMetadata(StdMetadata.PageTopHeadingKey, headingElement.TextContent);
 
-        var level = int.Parse(headingElement.TagName[1..]);
+
         if (_options.DeminishHeadingLevel)
             level--;
 
