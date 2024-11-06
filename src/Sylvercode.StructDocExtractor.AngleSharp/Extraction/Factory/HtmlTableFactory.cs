@@ -17,10 +17,10 @@ public class HtmlTableFactory : BaseAngleNodeFactory
     protected override bool BuildFromElement(AngleProcessTaskResultBuilder resultBuilder, IElement node)
     {
         resultBuilder.WithNode<HtmlTable>();
-        resultBuilder.WithSubTaskByAll(TagNames.Thead);
-        resultBuilder.WithSubTaskByAll(TagNames.Tbody);
-        resultBuilder.WithSubTaskByAll(TagNames.Tfoot);
-        resultBuilder.WithSubTaskByAll(TagNames.Tr);
+        resultBuilder.WithSubTaskByAll($":scope>{TagNames.Thead}");
+        resultBuilder.WithSubTaskByAll($":scope>{TagNames.Tbody}");
+        resultBuilder.WithSubTaskByAll($":scope>{TagNames.Tfoot}");
+        resultBuilder.WithSubTaskByAll($":scope>{TagNames.Tr}");
         return true;
     }
 }

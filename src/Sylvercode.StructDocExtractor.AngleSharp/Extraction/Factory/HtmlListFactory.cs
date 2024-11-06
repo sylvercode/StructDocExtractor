@@ -19,7 +19,7 @@ public class HtmlListFactory : BaseAngleNodeFactory
     protected override bool BuildFromElement(AngleProcessTaskResultBuilder resultBuilder, IElement node)
     {
         resultBuilder.WithNode<HtmlList>();
-        resultBuilder.WithSubTaskByAll(TagNames.Li);
+        resultBuilder.WithSubTaskByAll($":scope>{TagNames.Li}");
         return true;
     }
 }

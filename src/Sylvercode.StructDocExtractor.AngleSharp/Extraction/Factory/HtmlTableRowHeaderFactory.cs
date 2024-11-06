@@ -9,7 +9,7 @@ public class HtmlTableRowHeaderFactory : BaseAngleNodeFactory
 {
     public static List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>> Selector { get; } =
         new HtmlScoreCriteriaSetsBuilder()
-            .WithTagName(TagNames.Tr)
+            .WithTagName(TagNames.Th)
             .AndParentCriteriaSets(HtmlTableRowFactory.Selector)
             .BuildSets();
 
@@ -17,7 +17,7 @@ public class HtmlTableRowHeaderFactory : BaseAngleNodeFactory
 
     protected override bool BuildFromElement(AngleProcessTaskResultBuilder resultBuilder, IElement node)
     {
-        resultBuilder.WithNode<HtmlTableRow>();
+        resultBuilder.WithNode<HtmlTableRowHeader>();
         resultBuilder.WithChildNodesAsSubTasks();
         return true;
     }
