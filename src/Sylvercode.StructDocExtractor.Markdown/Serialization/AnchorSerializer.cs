@@ -12,12 +12,15 @@ public class AnchorSerializer(ILogger<AnchorSerializer>? logger = null)
         logger: logger)
 {
     public sealed class LinkHandler() : IndentedSerializerHandler<HtmlAnchor, MarkdownStreamWriter>(
-            new Options(IndentedStreamWriter.SpaceOperationType.Word))
+            new Options(IndentedStreamWriter.SpaceOperationType.None))
     {
         private static readonly MarkdownLinkFormater _linkFormater = new(useWikilink: true);
 
         public override void Serialize(HtmlAnchor obj, MarkdownStreamWriter stream, NodeSerializationResult result)
         {
+            if (!obj.HasContent)
+                return;
+
             if (obj.ContentIsTextOnly)
             {
                 result.ContentSerialized = true;
