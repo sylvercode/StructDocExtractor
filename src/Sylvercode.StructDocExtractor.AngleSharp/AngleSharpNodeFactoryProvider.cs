@@ -37,6 +37,7 @@ public class AngleSharpNodeFactoryProvider : HtmlNodeFactoryProvider<INode>, IRo
     {
         AddFactory(new PlainTextNodeFactory());
         AddFactory(new HtmlHeadingFactory(HtmlHeadingFactoryOptions));
+        AddFactory(new HtmlBrFactory());
         AddFactory(new HtmlParagraphFactory());
         AddFactory(new HtmlDivFactory());
         AddFactory(new HtmlFigureFactory());
