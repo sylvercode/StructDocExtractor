@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Sylvercode.SiteExtractor.Resources;
+using Sylvercode.SiteExtractor.UriUtils;
 using Sylvercode.StructDocExtractor.Markdown.Serialization;
 using Sylvercode.StructDocExtractor.Model;
 
@@ -9,6 +10,8 @@ namespace Sylvercode.SiteExtractor.Markdown;
 public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater>? logger = null) : IReferencerUpdater
 {
     private static readonly Uri _tempBaseUri = new("temp://fake.host");
+
+    private static readonly ImageUriMatcher _imageUriMatcher = new();
 
     private readonly ILogger<MarkdownReferencerUpdater> _logger = logger ?? NullLogger<MarkdownReferencerUpdater>.Instance;
 
@@ -85,7 +88,17 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
 
         Uri translateUri = reference.TranslateUri(refUri);
         LogUpdateToNoneUniqueRes(refUri, translateUri);
-        referencer.UpdateReference(translateUri.ToString());
+        string result = GetRelativeFromResource(referencerResource, translateUri);
+        LogRelativeTransation(result);
+        referencer.UpdateReference(result);
+    }
+
+    private static string GetRelativeFromResource(Resource referencerResource, Uri refefernceUri)
+    {
+        Uri AbsoluteReferencerUri = new(_tempBaseUri, referencerResource.TranslateUri());
+        Uri AbsoluteReferenceUri = new(_tempBaseUri, refefernceUri);
+        string result = AbsoluteReferencerUri.MakeRelativeUri(AbsoluteReferenceUri).ToString();
+        return result;
     }
 
     private static string FragmentAsBlockReference(string fragment) => fragment.Replace("#", "#^");
@@ -99,8 +112,11 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
                 continue;
 
             Uri fakeAbsoluteUri = new(_tempBaseUri, resource.TranslatedResourceUri);
+            if (_imageUriMatcher.IsMatching(fakeAbsoluteUri))
+                continue;
+
             UriBuilder uriBuilder = new(fakeAbsoluteUri);
-            string fileName = Path.GetFileName(uriBuilder.Path);
+            string fileName = Path.GetFileNameWithoutExtension(uriBuilder.Path);
             if (fileNameMap.TryGetValue(fileName, out var value))
             {
                 value.count++;
@@ -112,6 +128,11 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
 
         return fileNameMap.Where(pair => pair.Value.count == 1).Select((kv) => (kv.Value.resource, kv.Key)).ToDictionary();
     }
+
+    [LoggerMessage(
+        Level = LogLevel.Debug,
+        Message = "Relative translation result: {Result}")]
+    private partial void LogRelativeTransation(string result);
 
     [LoggerMessage(
         Level = LogLevel.Debug,
