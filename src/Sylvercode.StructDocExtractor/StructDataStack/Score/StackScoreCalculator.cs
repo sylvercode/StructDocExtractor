@@ -27,11 +27,11 @@ public class StackScoreCalculator<TDiscriminator>(IEnumerable<NodeScoreCriteriaS
         while (hasNextCriterion && stackEntriesIt.MoveNext())
         {
             NodeScore nodeScore = criteriaIt.Current.CalculateScore(stackEntriesIt.Current.NodeDiscriminator);
-            if (!nodeScore.IsEmpty)
-            {
-                result.Add(stackEntriesIt.Current.Depth, nodeScore);
-                hasNextCriterion = criteriaIt.MoveNext();
-            }
+            if (nodeScore.IsEmpty)
+                return new StackedNodesScore();
+
+            result.Add(stackEntriesIt.Current.Depth, nodeScore);
+            hasNextCriterion = criteriaIt.MoveNext();
         }
 
         return hasNextCriterion ? new StackedNodesScore() : new StackedNodesScore(result);
