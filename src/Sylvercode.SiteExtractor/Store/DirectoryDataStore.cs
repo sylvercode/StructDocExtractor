@@ -6,30 +6,26 @@ using Microsoft.Extensions.Options;
 namespace Sylvercode.SiteExtractor.Store;
 
 public partial class DirectoryDataStore(
-    IOptions<DirectoryDataStoreOptions> options,
     IOptions<SiteExtractorOptions> siteProcessorOptions,
     ILogger<DirectoryDataStore>? logger = null)
     : BaseDataStore(siteProcessorOptions, logger)
 {
     private readonly ILogger<DirectoryDataStore> _logger = logger ?? NullLogger<DirectoryDataStore>.Instance;
 
-    private bool MustAutoCreateBaseDir => options.Value.AutoCreateBaseDir;
-
     public override Stream GetStream(Uri uri)
     {
         Uri completeUri = GetCompleteUri(uri);
         EnsureDirectoryExists(completeUri);
         LogOpenFile(completeUri);
-        return File.OpenWrite(Path.GetFullPath(completeUri.LocalPath));
+        return File.OpenWrite(Path.GetFullPath(Uri.UnescapeDataString(completeUri.LocalPath)));
     }
 
     private void EnsureDirectoryExists(Uri uri)
     {
         string path = Path.GetDirectoryName(uri.LocalPath) ?? throw new InvalidOperationException("Destionation is not a directory");
+        path = Uri.UnescapeDataString(path);
         if (!Directory.Exists(path))
         {
-            if (!MustAutoCreateBaseDir)
-                throw new DirectoryNotFoundException(path);
             Directory.CreateDirectory(path);
             LogDirectoryCreated(path);
         }
