@@ -31,12 +31,5 @@ public class SiteExtractorOptions
         return new Uri(new Uri(SourceAuthority, UriKind.Absolute), SourceBasePath);
     }
 
-    public Uri GetOutputUri()
-    {
-        string path = OutputDirectory;
-        if (!Path.IsPathFullyQualified(path))
-            path = Path.Combine(Directory.GetCurrentDirectory(), path);
-
-        return new(path);
-    }
+    public Uri GetOutputUri() => new(OutputDirectory, UriKind.RelativeOrAbsolute);
 }

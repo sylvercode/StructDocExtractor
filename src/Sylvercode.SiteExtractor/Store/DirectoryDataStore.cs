@@ -12,6 +12,18 @@ public partial class DirectoryDataStore(
 {
     private readonly ILogger<DirectoryDataStore> _logger = logger ?? NullLogger<DirectoryDataStore>.Instance;
 
+    public override Uri BaseUri
+    {
+        get
+        {
+            Uri baseUri = base.BaseUri;
+            if (baseUri.IsAbsoluteUri)
+                return baseUri;
+
+            return new Uri(Path.Combine(Directory.GetCurrentDirectory(), baseUri.ToString()));
+        }
+    }
+
     public override Stream GetStream(Uri uri)
     {
         Uri completeUri = GetCompleteUri(uri);
