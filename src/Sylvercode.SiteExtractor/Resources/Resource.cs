@@ -24,9 +24,10 @@ public class Resource(Uri sourceUri, bool isPullable = false)
             uri = Uri;
         else
         {
-            (uri, _) = sourceUri.GetUriAndFragment();
-            if (uri != sourceUri)
+            (Uri uriNoFrag, _) = sourceUri.GetUriAndFragment();
+            if (uriNoFrag != Uri)
                 throw new ArgumentException("Not a fragment uri of the resouce.", nameof(sourceUri));
+            uri = sourceUri;
         }
 
         return UriTranslater.Translate(this, uri);
