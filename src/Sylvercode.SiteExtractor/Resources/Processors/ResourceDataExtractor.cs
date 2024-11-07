@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Sylvercode.SiteExtractor.Sources;
 using Sylvercode.SiteExtractor.Store;
+using Sylvercode.SiteExtractor.UriUtils;
 using Sylvercode.StructDocExtractor.Extraction;
 using Sylvercode.StructDocExtractor.Model;
 using Sylvercode.StructDocExtractor.Serialization;
@@ -16,10 +17,12 @@ public partial class ResourceDataExtractor<TExtractionData>(
     IResourceUriTranslater? uriTranslater = null,
     IReferencerUpdater? referencerUpdater = null,
     IResourceDependancyFilter? resourceDependancyFilter = null,
+    IUriRedirector? uriRedirector = null,
     ILogger<ResourceDataExtractor<TExtractionData>>? logger = null) : IResourceDataExtractor<TExtractionData>
 {
     private sealed class ExtractionTaskObserver(
-        IResourceDependancyFilter? resourceDependancyFilter
+        IResourceDependancyFilter? resourceDependancyFilter,
+        IUriRedirector? uriRedirector
     ) : IObserver<ExtractionTask>
     {
         public List<IStructDocReferencer> Referencers { get; } = [];
@@ -30,6 +33,9 @@ public partial class ResourceDataExtractor<TExtractionData>(
         {
             if (value.TaskResult?.SrcNode is not IStructDocReferencer referencer)
                 return;
+
+            if (uriRedirector?.RedirectUri(referencer.GetReference(), out string? redirectedUri) ?? false)
+                referencer.UpdateReference(redirectedUri);
 
             if (resourceDependancyFilter?.IsAccepted(referencer) ?? true)
                 Referencers.Add(referencer);
@@ -52,7 +58,7 @@ public partial class ResourceDataExtractor<TExtractionData>(
             return new FinishedProcessResult(this, resource);
         }
 
-        ExtractionTaskObserver observer = new(resourceDependancyFilter);
+        ExtractionTaskObserver observer = new(resourceDependancyFilter, uriRedirector);
         ExtractionResult result = extractor.Extract(extractionData, observer);
 
         if (result.Metadatas.Count != 0)
