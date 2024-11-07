@@ -116,6 +116,6 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         referencerUpdater.UpdateReferencers(referencerResource, [referencer], resources);
 
         // Then
-        Assert.Equal("http://test.com/ref", referencer.Reference);
+        Assert.Equal("ref", referencer.Reference);
     }
 }
