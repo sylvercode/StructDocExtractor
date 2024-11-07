@@ -24,7 +24,8 @@ public static class HttpDownloaderExtentions
                 AllowAutoRedirect = true,
                 UseCookies = true,
                 CookieContainer = sp.GetRequiredService<CookieContainer>()
-            });
+            })
+            .RemoveAllLoggers();
 
         return services;
     }
