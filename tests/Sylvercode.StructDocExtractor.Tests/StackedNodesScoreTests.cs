@@ -9,7 +9,9 @@ public class StackedNodesScoreTests_CompareTo
 
     [Theory]
     [MemberData(nameof(LeftStackPrioritizedData))]
-    public void LeftStackPrioritized_ReturnPositive(IDictionary<int, NodeScore> leftStack, IDictionary<int, NodeScore>? rightStack)
+    public void LeftStackPrioritized_ReturnPositive(
+        IDictionary<int, NodeScore> leftStack,
+        IDictionary<int, NodeScore>? rightStack)
     {
         // Given
         StackedNodesScore left = new(leftStack);
@@ -25,25 +27,25 @@ public class StackedNodesScoreTests_CompareTo
     {
         yield return [
             new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 2) } },
-            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 1) } }
+            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 1) } },
         ];
 
         yield return [
+            new Dictionary<int, NodeScore>() { { 2, NewNodeScore(1, 2) } },
             new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 1) } },
-            new Dictionary<int, NodeScore>() { { 2, NewNodeScore(1, 2) } }
         ];
 
         yield return [
             new Dictionary<int, NodeScore>() {
                 { 1, NewNodeScore(1, 2) },
                 { 2, NewNodeScore(1, 2) },
-                { 3, NewNodeScore(1, 2) }
+                { 4, NewNodeScore(1, 2) },
             },
             new Dictionary<int, NodeScore>() {
                 { 1, NewNodeScore(1, 2) },
                 { 2, NewNodeScore(1, 2) },
-                { 4, NewNodeScore(1, 2) }
-            }
+                { 3, NewNodeScore(1, 2) },
+            },
         ];
 
         yield return [
@@ -80,25 +82,25 @@ public class StackedNodesScoreTests_CompareTo
     {
         yield return [
             new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 1) } },
-            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 2) } }
+            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 2) } },
         ];
 
         yield return [
+            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 1) } },
             new Dictionary<int, NodeScore>() { { 2, NewNodeScore(1, 2) } },
-            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 1) } }
         ];
 
         yield return [
-            new Dictionary<int, NodeScore>() {
-                { 1, NewNodeScore(1, 2) },
-                { 2, NewNodeScore(1, 2) },
-                { 4, NewNodeScore(1, 2) }
-            },
             new Dictionary<int, NodeScore>() {
                 { 1, NewNodeScore(1, 2) },
                 { 2, NewNodeScore(1, 2) },
                 { 3, NewNodeScore(1, 2) }
-            }
+            },
+            new Dictionary<int, NodeScore>() {
+                { 1, NewNodeScore(1, 2) },
+                { 2, NewNodeScore(1, 2) },
+                { 4, NewNodeScore(1, 2) },
+            },
         ];
 
         yield return [

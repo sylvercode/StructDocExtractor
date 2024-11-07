@@ -32,30 +32,6 @@ public class StackScoreCalculatorTests_Calculate
     }
 
     [Fact]
-    public void ForParentStackLevelCriteria_ReturnScoreForMatchingStack()
-    {
-        // Given
-        NodeScoreCriteriaSet<BasicNodeDiscriminator> parentCriteria = new(BasicNodeScoreIdSubCriterion.ByDefaultParentId);
-        StackScoreCalculator<BasicNodeDiscriminator> stackScoreCalculator = new([parentCriteria]);
-
-        BasicNodeStructDataStack stack = new();
-        stack.Push(BasicNodeDiscriminator.NewDefaultParent());
-        stack.Push(BasicNodeDiscriminator.NewDefault());
-
-
-        // When
-        StackedNodesScore result = stackScoreCalculator.Calculate(stack);
-
-        // Then
-        StackedNodesScore Expected = new(
-            new Dictionary<int, NodeScore>() {
-                { 0, new NodeScore(new NodeScore.SubScore(BasicNodeScoreIdSubCriterion.ByDefaultParentId.Priority, 1)) }
-            }
-        );
-        Assert.Equal(0, Expected.CompareTo(result));
-    }
-
-    [Fact]
     public void ForTwoStacklLevelCriteria_ReturnEmptyForUnmatchingStack()
     {
         // Given

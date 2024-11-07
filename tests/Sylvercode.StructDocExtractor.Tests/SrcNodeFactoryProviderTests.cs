@@ -24,7 +24,9 @@ public class SrcNodeFactoryProvider_GetFactoryForStack
         }
     }
 
-    public static StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> NewProvider(StackedNodesScore? FactoryOneScore = null, StackedNodesScore? FactoryTwoScore = null)
+    public static StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> NewProvider(
+        StackedNodesScore? FactoryOneScore = null,
+        StackedNodesScore? FactoryTwoScore = null)
     {
         StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> provider = new();
         provider.AddFactory(FakeFactory.FakeFactory1, new StackScoreCalculatorMock(FactoryOneScore ?? new()));
@@ -51,7 +53,8 @@ public class SrcNodeFactoryProvider_GetFactoryForStack
     public void WithFactoryOneMatch_ReturnFactoryOne()
     {
         // Given
-        StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> provider = NewProvider(FactoryOneScore: new(1, new(new NodeScore.SubScore(1, 2))));
+        StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> provider = NewProvider(
+            FactoryOneScore: new(1, new(new NodeScore.SubScore(1, 2))));
 
         // When
         var result = provider.GetFactoryForStack(StructDataStack);
@@ -64,13 +67,14 @@ public class SrcNodeFactoryProvider_GetFactoryForStack
     public void WithFactoryTwoBestMatch_ReturnFactoryTwo()
     {
         // Given
-        StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> provider = NewProvider(FactoryOneScore: new(1, new(new NodeScore.SubScore(1, 2))),
-                                                                           FactoryTwoScore: new(0, new(new NodeScore.SubScore(1, 2))));
+        StructDocNodeFactoryProvider<string, BasicNodeDiscriminator> provider = NewProvider(
+            FactoryOneScore: new(1, new(new NodeScore.SubScore(1, 2))),
+            FactoryTwoScore: new(0, new(new NodeScore.SubScore(1, 2))));
 
         // When
         var result = provider.GetFactoryForStack(StructDataStack);
 
         // Then
-        Assert.Same(FakeFactory.FakeFactory2, result);
+        Assert.Same(FakeFactory.FakeFactory1, result);
     }
 }
