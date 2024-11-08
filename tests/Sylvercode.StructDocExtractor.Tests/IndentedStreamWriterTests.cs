@@ -359,3 +359,69 @@ public class IndentedStreamWriterTests_EnsureEndXNext
     }
 
 }
+
+public class IndentedStreamWriterTests_LineHeadTokens
+{
+    private static void AddTokens(IndentedStreamWriter writer, string[] tokens)
+    {
+        foreach (string token in tokens)
+        {
+            if (string.IsNullOrEmpty(token))
+                continue;
+
+            writer.PushLineHeadToken(token);
+        }
+    }
+
+    private static string BuildExpected(string text1, string text2, string token1, string token2, string token3)
+    {
+        string head1 = token1 + token2 + token3;
+        string head2 =
+            !string.IsNullOrEmpty(token3) ? token1 + token2 :
+            !string.IsNullOrEmpty(token2) ? token1 : "";
+
+
+        string separator1 = $"\n{head1}";
+        if (text1.EndsWith("\n\n"))
+            separator1 = "";
+
+        string separator2 = $"\n{head1}";
+        if (text1.EndsWith('\n'))
+            separator2 = "";
+
+        return text1.Replace("\n", $"\n{head1}") + $"{separator1}{separator2}" + text2.Replace("\n", $"\n{head2}");
+    }
+
+    [Theory]
+    [InlineData(
+        "Hello,\nWorld!\n\nThis is a test.",
+        "The new line should be there before.",
+        "> ", "- ", "* ")]
+    [InlineData(
+        "\nHello,World!This is a test.\n",
+        "\nThe new line should be there before.",
+        "> ", " -", "")]
+    [InlineData(
+        "\nHello,World!This is a test.\n\n",
+        "\nThe new line should be there before.",
+        "> ", "", "")]
+    public void WriteNewLineWithLineHeadTokens(string text1, string text2, string token1, string token2, string token3)
+    {
+        // Given
+        using IHost host = IndentedStreamWriterTestsSetup.GetHost();
+        StringTextWriter<IndentedStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<IndentedStreamWriter>>();
+        IndentedStreamWriter writer = stringTextWriter.Writer;
+        AddTokens(writer, [token1, token2, token3]);
+
+        // When
+        writer.Write(text1);
+        writer.EnsureEndParagraphNext();
+        writer.PopLineHeadToken();
+        writer.Write(text2);
+
+        // Then
+        string result = stringTextWriter.GetResult();
+        string expected = BuildExpected(text1, text2, token1, token2, token3);
+        Assert.Equal(expected, result);
+    }
+}

@@ -6,11 +6,13 @@ using Sylvercode.StructDocExtractor.StructDataStack.Score;
 
 namespace Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
 
-public class BaseParagraphFactory<TParaNode>(string tagName) : BaseAngleNodeFactory
+public class BaseParagraphFactory<TParaNode>(string tagName = "") : BaseAngleNodeFactory
     where TParaNode : IStructDocNode, new()
 {
     public override List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>>? DefaultSelector { get; } =
-        new HtmlScoreCriteriaSetsBuilder()
+        string.IsNullOrWhiteSpace(tagName)
+            ? null
+            : new HtmlScoreCriteriaSetsBuilder()
                 .WithTagName(tagName)
                 .BuildSets();
 

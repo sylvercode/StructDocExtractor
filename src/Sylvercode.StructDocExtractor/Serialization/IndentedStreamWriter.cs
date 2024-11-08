@@ -37,6 +37,8 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
 
     private SpaceOperationType _pendingOperation = SpaceOperationType.None;
 
+    private readonly LinkedList<string> _LineHeadTokens = new();
+
     private readonly ILogger<IndentedStreamWriter>? _logger = logger ?? NullLogger<IndentedStreamWriter>.Instance;
 
     public IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding encoding) : this(stream, indentSpec, encoding, null)
@@ -107,6 +109,16 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
     }
 
     public SpaceOperationType PendingOperation => _pendingOperation;
+
+    public void PushLineHeadToken(string token) => _LineHeadTokens.AddLast(token);
+
+    public void PopLineHeadToken()
+    {
+        if (_LineHeadTokens.Count == 0)
+            throw new InvalidOperationException("No line head token to pop.");
+        CheckPendingOperation();
+        _LineHeadTokens.RemoveLast();
+    }
 
     private void CheckPendingOperation()
     {
@@ -184,6 +196,17 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
 
             byte[] buffer = Encoding.GetBytes([value]);
             _stream.Write(buffer, 0, buffer.Length);
+
+            if (value == '\n')
+            {
+                if (_LineHeadTokens.Count > 0)
+                {
+                    string head = string.Join("", _LineHeadTokens);
+                    buffer = Encoding.GetBytes(head);
+                    _stream.Write(buffer, 0, buffer.Length);
+                    _IsAfterSpace = head[^1] == ' ';
+                }
+            }
         }
     }
 

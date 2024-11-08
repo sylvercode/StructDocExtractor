@@ -38,7 +38,7 @@ public static class SerializerExtansions
     public static IServiceCollection ConfigureSerializer(this IServiceCollection services, IStructDocNodeSerializerServiceInit serializer)
         => services.ConfigureSerializer(serializer, serializer.GetDefaultSeriazableType());
 
-    public static IServiceCollection ConfigureSerializer(this IServiceCollection services, IStructDocNodeSerializerServiceInit serializer, IEnumerable<Type> seriazableType)
+    public static IServiceCollection ConfigureSerializer(this IServiceCollection services, ISerializer serializer, IEnumerable<Type> seriazableType)
     {
         services.AddOptions<SerializerProvider.SerializerCollection>().Configure(col =>
             col.AddSerializer(seriazableType, serializer));

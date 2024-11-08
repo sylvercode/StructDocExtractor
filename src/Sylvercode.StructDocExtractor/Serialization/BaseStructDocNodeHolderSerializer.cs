@@ -16,7 +16,7 @@ public partial class BaseStructDocNodeHolderSerializer<TData, TWriter, TChild>(
 {
     public class HolderHandler
     {
-        public virtual void OnBeforeFirstChildSerialize(TData parent, TChild nextChild, TWriter stream)
+        public virtual void OnBeforeFirstChildSerialize(TData parent, TChild firstChild, TWriter stream)
         {
         }
 
@@ -24,7 +24,7 @@ public partial class BaseStructDocNodeHolderSerializer<TData, TWriter, TChild>(
         {
         }
 
-        public virtual void OnAfterLastChildSerialize(TData parent, TChild previousChild, TWriter stream)
+        public virtual void OnAfterLastChildSerialize(TData parent, TChild lastChild, TWriter stream)
         {
         }
 
