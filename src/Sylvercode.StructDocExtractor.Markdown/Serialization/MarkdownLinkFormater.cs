@@ -35,7 +35,7 @@ public class MarkdownLinkFormater(bool useWikilink = true)
         if (unescapeHref == text)
             return $"[[{unescapeHref}]]";
         else
-            return $"[[{unescapeHref}|{text}]]";
+            return $"[[{unescapeHref}\\|{text}]]";
     }
 
     private static string WikiPath(Uri uri)
