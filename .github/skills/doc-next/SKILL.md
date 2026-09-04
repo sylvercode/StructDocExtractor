@@ -1,7 +1,6 @@
-# Skill: doc-next
-
-**Trigger**: invoke this skill when the user says "doc-next", "document next layer", or similar.
-
+---
+name: doc-next
+description: Drive one full DOCPLAN.md layer of XML documentation per session. Use when asked to "doc-next", "document next layer", or similar.
 ---
 
 ## Purpose
@@ -72,7 +71,7 @@ For existing files: read the file first, then classify.
 
 ### 3c. Load the template
 
-Read `.github/copilot-skills/templates/<template-type>.md` as the documentation guide.
+Read `templates/<template-type>.md` from this skill's directory as the documentation guide.
 
 ### 3d. Decide whether to launch a Haiku subagent
 
@@ -191,7 +190,7 @@ Then prompt the user:
 
 ## Template reference
 
-All templates live in `.github/copilot-skills/templates/`:
+All templates live in `templates/` within this skill's directory:
 
 | File | Applies to |
 |------|-----------|
