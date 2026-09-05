@@ -145,21 +145,21 @@ Scoring machinery used by both StdHtml and AngleSharp layers.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 96 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.StructDataStack` — stack-based structural data selection. |
-| 97 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/IStructDataStack.cs` | Contract for a stack of structural data nodes used during discriminated extraction. |
-| 98 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/BaseStructDataStack.cs` | Abstract base stack implementation providing push/pop and access to stacked entries. |
-| 99 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.StructDataStack.Score` — score-based node selection criteria. |
-| 100 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/IValueMatcher.cs` | Contract for testing whether a given value matches a criterion. |
-| 101 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/StaticValueMatcher.cs` | Matcher that compares a value against a fixed constant string. |
-| 102 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/RegexValueMatcher.cs` | Matcher that tests a value against a compiled regular expression. |
-| 103 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/ValuesMatcherAll.cs` | Composite matcher that requires all inner matchers to pass (logical AND). |
-| 104 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/ValuesMatcherAny.cs` | Composite matcher that passes when at least one inner matcher passes (logical OR). |
-| 105 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/NodeScoreCriteriaSet.cs` | Defines a named set of criteria whose cumulative score can be evaluated on a node. |
-| 106 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/NodeScore.cs` | Stores the computed score for a node against a criteria set. |
-| 107 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/StackedNodesScore.cs` | Aggregated score across all stacked nodes for a criteria set evaluation. |
-| 108 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/IStackScoreCalculator.cs` | Contract for calculating the aggregate score of a node stack against criteria. |
-| 109 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/StackScoreCalculator.cs` | Default `IStackScoreCalculator` implementation summing individual node scores. |
-| 110 | [ ] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/BaseScoreCriteriaSetsBuilder.cs` | Abstract builder for constructing a collection of `NodeScoreCriteriaSet` instances. |
+| 96 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.StructDataStack` — stack-based structural data selection. |
+| 97 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/IStructDataStack.cs` | Contract for a stack of structural data nodes used during discriminated extraction. |
+| 98 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/BaseStructDataStack.cs` | Abstract base stack implementation providing push/pop and access to stacked entries. |
+| 99 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.StructDataStack.Score` — score-based node selection criteria. |
+| 100 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/IValueMatcher.cs` | Contract for testing whether a given value matches a criterion. |
+| 101 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/StaticValueMatcher.cs` | Matcher that compares a value against a fixed constant string. |
+| 102 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/RegexValueMatcher.cs` | Matcher that tests a value against a compiled regular expression. |
+| 103 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/ValuesMatcherAll.cs` | Composite matcher that requires all inner matchers to pass (logical AND). |
+| 104 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/ValuesMatcherAny.cs` | Composite matcher that passes when at least one inner matcher passes (logical OR). |
+| 105 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/NodeScoreCriteriaSet.cs` | Defines a named set of criteria whose cumulative score can be evaluated on a node. |
+| 106 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/NodeScore.cs` | Stores the computed score for a node against a criteria set. |
+| 107 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/StackedNodesScore.cs` | Aggregated score across all stacked nodes for a criteria set evaluation. |
+| 108 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/IStackScoreCalculator.cs` | Contract for calculating the aggregate score of a node stack against criteria. |
+| 109 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/StackScoreCalculator.cs` | Default `IStackScoreCalculator` implementation summing individual node scores. |
+| 110 | [x] | `src/Sylvercode.StructDocExtractor/StructDataStack/Score/BaseScoreCriteriaSetsBuilder.cs` | Abstract builder for constructing a collection of `NodeScoreCriteriaSet` instances. |
 
 ---
 
