@@ -386,11 +386,11 @@ Markdown serializers built on the core serialization layer and StdHtml model.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 263 | [ ] | `src/Sylvercode.SiteExtractor/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor` — top-level site extraction orchestration. |
-| 264 | [ ] | `src/Sylvercode.SiteExtractor/ISiteExtractor.cs` | Top-level contract for running a complete site extraction pass. |
-| 265 | [ ] | `src/Sylvercode.SiteExtractor/SiteExtractorOptions.cs` | Configuration options controlling the site extractor (seed URIs, depth limit, etc.). |
-| 266 | [ ] | `src/Sylvercode.SiteExtractor/SiteExtractor.cs` | Main `ISiteExtractor` implementation coordinating source fetch, processing, and storage. |
-| 267 | [ ] | `src/Sylvercode.SiteExtractor/SiteExtractorExtensions.cs` | DI/builder extensions for registering the full `SiteExtractor` pipeline. |
+| 263 | [x] | `src/Sylvercode.SiteExtractor/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor` — top-level site extraction orchestration. |
+| 264 | [x] | `src/Sylvercode.SiteExtractor/ISiteExtractor.cs` | Top-level contract for running a complete site extraction pass. |
+| 265 | [x] | `src/Sylvercode.SiteExtractor/SiteExtractorOptions.cs` | Configuration options controlling the site extractor (seed URIs, depth limit, etc.). |
+| 266 | [x] | `src/Sylvercode.SiteExtractor/SiteExtractor.cs` | Main `ISiteExtractor` implementation coordinating source fetch, processing, and storage. |
+| 267 | [x] | `src/Sylvercode.SiteExtractor/SiteExtractorExtensions.cs` | DI/builder extensions for registering the full `SiteExtractor` pipeline. |
 
 ---
 
