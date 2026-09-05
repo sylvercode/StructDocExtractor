@@ -112,30 +112,30 @@ Serialization pipeline built on top of the core model.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 72 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Serialization` — serialization pipeline for structural documents. |
-| 73 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/ISerializer.cs` | Base contract for all node serializers in the pipeline. |
-| 74 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/ISerializerProvider.cs` | Contract for resolving the correct `ISerializer` for a given node type. |
-| 75 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/IStructDocNodeSerializer.cs` | Contract for a serializer that operates on a single `IStructDocNode`. |
-| 76 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/IStructDocNodeHolderSerializer.cs` | Contract for a serializer that also serializes a node's children. |
-| 77 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/IStructDocSerializer.cs` | Top-level contract for serializing an entire structured document tree. |
-| 78 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/ITextWriterAdapterProvider.cs` | Contract for providing a `TextWriter` adapter used during serialization output. |
-| 79 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/IndentType.cs` | Enum of indentation strategies (spaces, tabs, none) for the indented writer. |
-| 80 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/IndentSpec.cs` | Value type specifying indent type and size used by `IndentedStreamWriter`. |
-| 81 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/IndentedStreamWriter.cs` | `TextWriter` decorator that prepends configurable indentation on each new line. |
-| 82 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/IndentedSerializerHandler.cs` | Serializer handler that manages indentation depth as nodes are serialized. |
-| 83 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/IndentedStreamWriterProvider.cs` | Provides `IndentedStreamWriter` instances scoped to a serialization pass. |
-| 84 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/IndentedStreamWriterProviderExtensions.cs` | DI/builder extensions for registering `IndentedStreamWriterProvider`. |
-| 85 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/NodeSerializationResult.cs` | Holds the textual result produced by serializing a single node. |
-| 86 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/SerializerTask.cs` | Describes a pending serialization unit (node + writer + parent context). |
-| 87 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/SerializerTaskParentInfo.cs` | Carries parent-context data needed by a serializer task. |
-| 88 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/SerializerProvider.cs` | Default `ISerializerProvider` that resolves serializers by exact or base node type. |
-| 89 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/SerializerExtansions.cs` | Extension helpers for invoking serializers on nodes and collections. |
-| 90 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/StringTextWriter.cs` | In-memory `TextWriter` adapter that accumulates output in a `StringBuilder`. |
-| 91 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/BaseStructDocNodeSerializer.cs` | Abstract base providing common dispatch logic for all node serializers. |
-| 92 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/BaseStructDocNodeHolderSerializer.cs` | Abstract base for holder serializers that recurse into child node serialization. |
-| 93 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/StructDocSerializer.cs` | Main `IStructDocSerializer` implementation that drives the serialization pipeline. |
-| 94 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/StructDocSerializerExecutor.cs` | Executes a serializer task queue, dispatching tasks to the resolved serializers. |
-| 95 | [ ] | `src/Sylvercode.StructDocExtractor/Serialization/Init/IStructDocSerializerServiceInit.cs` | Contract for service-initialisation hooks run before the serializer pipeline starts. |
+| 72 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Serialization` — serialization pipeline for structural documents. |
+| 73 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/ISerializer.cs` | Base contract for all node serializers in the pipeline. |
+| 74 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/ISerializerProvider.cs` | Contract for resolving the correct `ISerializer` for a given node type. |
+| 75 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/IStructDocNodeSerializer.cs` | Contract for a serializer that operates on a single `IStructDocNode`. |
+| 76 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/IStructDocNodeHolderSerializer.cs` | Contract for a serializer that also serializes a node's children. |
+| 77 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/IStructDocSerializer.cs` | Top-level contract for serializing an entire structured document tree. |
+| 78 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/ITextWriterAdapterProvider.cs` | Contract for providing a `TextWriter` adapter used during serialization output. |
+| 79 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/IndentType.cs` | Enum of indentation strategies (spaces, tabs, none) for the indented writer. |
+| 80 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/IndentSpec.cs` | Value type specifying indent type and size used by `IndentedStreamWriter`. |
+| 81 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/IndentedStreamWriter.cs` | `TextWriter` decorator that prepends configurable indentation on each new line. |
+| 82 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/IndentedSerializerHandler.cs` | Serializer handler that manages indentation depth as nodes are serialized. |
+| 83 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/IndentedStreamWriterProvider.cs` | Provides `IndentedStreamWriter` instances scoped to a serialization pass. |
+| 84 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/IndentedStreamWriterProviderExtensions.cs` | DI/builder extensions for registering `IndentedStreamWriterProvider`. |
+| 85 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/NodeSerializationResult.cs` | Holds the textual result produced by serializing a single node. |
+| 86 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/SerializerTask.cs` | Describes a pending serialization unit (node + writer + parent context). |
+| 87 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/SerializerTaskParentInfo.cs` | Carries parent-context data needed by a serializer task. |
+| 88 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/SerializerProvider.cs` | Default `ISerializerProvider` that resolves serializers by exact or base node type. |
+| 89 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/SerializerExtansions.cs` | Extension helpers for invoking serializers on nodes and collections. |
+| 90 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/StringTextWriter.cs` | In-memory `TextWriter` adapter that accumulates output in a `StringBuilder`. |
+| 91 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/BaseStructDocNodeSerializer.cs` | Abstract base providing common dispatch logic for all node serializers. |
+| 92 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/BaseStructDocNodeHolderSerializer.cs` | Abstract base for holder serializers that recurse into child node serialization. |
+| 93 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/StructDocSerializer.cs` | Main `IStructDocSerializer` implementation that drives the serialization pipeline. |
+| 94 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/StructDocSerializerExecutor.cs` | Executes a serializer task queue, dispatching tasks to the resolved serializers. |
+| 95 | [x] | `src/Sylvercode.StructDocExtractor/Serialization/Init/IStructDocSerializerServiceInit.cs` | Contract for service-initialisation hooks run before the serializer pipeline starts. |
 
 ---
 
