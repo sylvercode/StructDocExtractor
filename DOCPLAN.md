@@ -376,9 +376,9 @@ Markdown serializers built on the core serialization layer and StdHtml model.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 260 | [ ] | `src/Sylvercode.SiteExtractor/Downloader/Http/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.Downloader.Http` — HTTP-based resource downloader. |
-| 261 | [ ] | `src/Sylvercode.SiteExtractor/Downloader/Http/HttpDownloader.cs` | `IResourceCopiler` that downloads resources over HTTP and writes them to the data store. |
-| 262 | [ ] | `src/Sylvercode.SiteExtractor/Downloader/Http/HttpDownloaderExtentions.cs` | DI extension methods for registering `HttpDownloader` and its HTTP client. |
+| 260 | [x] | `src/Sylvercode.SiteExtractor/Downloader/Http/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.Downloader.Http` — HTTP-based resource downloader. |
+| 261 | [x] | `src/Sylvercode.SiteExtractor/Downloader/Http/HttpDownloader.cs` | `IResourceCopiler` that downloads resources over HTTP and writes them to the data store. |
+| 262 | [x] | `src/Sylvercode.SiteExtractor/Downloader/Http/HttpDownloaderExtentions.cs` | DI extension methods for registering `HttpDownloader` and its HTTP client. |
 
 ---
 
