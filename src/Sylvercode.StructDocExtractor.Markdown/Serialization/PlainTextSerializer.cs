@@ -5,6 +5,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
+/// <summary>Serializer that writes <see cref="PlainTextNode"/> content verbatim to the Markdown output stream.</summary>
 public class PlainTextSerializer(ILogger<PlainTextSerializer>? logger = null)
     : BaseStructDocNodeSerializer<PlainTextNode, MarkdownStreamWriter>(
         handler: new PlainTextHandler(),

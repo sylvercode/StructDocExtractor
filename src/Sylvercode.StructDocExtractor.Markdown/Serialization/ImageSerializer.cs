@@ -5,6 +5,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
+/// <summary>Serializer that emits <see cref="HtmlImg"/> nodes as Markdown image syntax <c>![](src)</c>.</summary>
 public class ImageSerializer(ILogger<ImageSerializer>? logger = null)
     : BaseStructDocNodeSerializer<HtmlImg, MarkdownStreamWriter>(
         handler: new ImageHandler(),

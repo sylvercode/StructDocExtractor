@@ -7,6 +7,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
+/// <summary>Serializer that emits <see cref="HtmlTable"/> nodes as Markdown GFM tables, writing a synthetic empty header row and separator when the table has no explicit <c>&lt;thead&gt;</c> section.</summary>
 public class TableSerializer(ILogger<TableSerializer>? logger = null)
     : BaseMarkdownSerializer<HtmlTable>(
         holderHandler: new TableHolderHandler(),
@@ -35,6 +36,9 @@ public class TableSerializer(ILogger<TableSerializer>? logger = null)
         }
     }
 
+    /// <summary>Writes a GFM header separator row (<c>|-|-|</c>) with the specified number of columns to <paramref name="stream"/>.</summary>
+    /// <param name="stream">The Markdown stream writer to write to.</param>
+    /// <param name="columnCount">The number of columns in the table.</param>
     public static void WriteHeaderSeparater(MarkdownStreamWriter stream, int columnCount)
     {
         stream.StartLine();

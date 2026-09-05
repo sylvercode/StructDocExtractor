@@ -6,6 +6,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
+/// <summary>Serializer that emits <see cref="HtmlTableRow"/> nodes as <c>| … |</c> Markdown GFM table rows, writing cell separators between children and a header separator when the row contains header cells.</summary>
 public class TableRowSerializer(ILogger<TableRowSerializer>? logger = null)
     : BaseMarkdownSerializer<HtmlTableRow, IHtmlTableRowElement>(
         handler: NewIndentedHandler(IndentedStreamWriter.SpaceOperationType.Line),

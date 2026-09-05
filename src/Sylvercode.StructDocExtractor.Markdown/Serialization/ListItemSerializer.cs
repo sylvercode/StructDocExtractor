@@ -6,6 +6,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
+/// <summary>Serializer that emits <see cref="HtmlListItem"/> nodes as individual Markdown list item lines prefixed with <c>- </c>.</summary>
 public class ListItemSerializer(ILogger<ListItemSerializer>? logger = null)
     : BaseMarkdownSerializer<HtmlListItem>(
         handler: new ListItemHandler(),

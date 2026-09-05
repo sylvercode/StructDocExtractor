@@ -261,38 +261,38 @@ Markdown serializers built on the core serialization layer and StdHtml model.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 175 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Writer/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Markdown.Serialization.Writer` — Markdown stream writers. |
-| 176 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Writer/StyleCharacter.cs` | Value type associating a Markdown style marker character with its semantic meaning. |
-| 177 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Writer/MarkdownStyle.cs` | Enum defining Markdown inline styles (bold, italic, code, etc.). |
-| 178 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Writer/MarkdownStreamWriter.cs` | `TextWriter` derivative that emits Markdown syntax, managing style stacks and block scope. |
-| 179 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Writer/MarkdownStreamWriterProvider.cs` | Provides scoped `MarkdownStreamWriter` instances for a serialization session. |
-| 180 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Writer/MarkdownStreamWriterProviderExtensions.cs` | DI/builder extensions for registering `MarkdownStreamWriterProvider`. |
-| 181 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Base/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Markdown.Serialization.Base` — abstract Markdown serializer bases. |
-| 182 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Base/BaseMarkdownSerializer.cs` | Abstract base providing shared Markdown output helpers to all node serializers. |
-| 183 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Base/BaseStyleSerializer.cs` | Abstract base for inline-style serializers (bold, italic) that wrap content in style markers. |
-| 184 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Markdown.Serialization` — Markdown serializers for all node types. |
-| 185 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/MarkdownLinkFormater.cs` | Formats `[text](uri)` Markdown link syntax from anchor and image nodes. |
-| 186 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/IStructDocNodeExtentions.cs` | Extension methods that add Markdown-specific helpers to `IStructDocNode`. |
-| 187 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/PlainTextSerializer.cs` | Serializer that outputs plain-text node content verbatim. |
-| 188 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/HeadingSerializer.cs` | Serializer that outputs `HtmlHeading` nodes as ATX Markdown headings (`# … ######`). |
-| 189 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/ParagraphSerializer.cs` | Serializer that wraps `HtmlParagraph` children in a Markdown paragraph block. |
-| 190 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/AnchorSerializer.cs` | Serializer that emits `HtmlAnchor` nodes as Markdown inline links. |
-| 191 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/ImageSerializer.cs` | Serializer that emits `HtmlImg` nodes as Markdown image syntax `![alt](src)`. |
-| 192 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/BrSerializer.cs` | Serializer that emits `HtmlBr` as a Markdown line break (two trailing spaces). |
-| 193 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/EmphasesSerializer.cs` | Serializer that wraps `HtmlEmphases` content in Markdown italic markers. |
-| 194 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/StrongSerializer.cs` | Serializer that wraps `HtmlStrong` content in Markdown bold markers. |
-| 195 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/ListSerializer.cs` | Serializer that outputs `HtmlList` as a Markdown bulleted or numbered list. |
-| 196 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/ListItemSerializer.cs` | Serializer that emits `HtmlListItem` as a single Markdown list item line. |
-| 197 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/CalloutSerializer.cs` | Serializer that emits callout/aside nodes as Markdown block-quote sections. |
-| 198 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/FigCaptionSerializer.cs` | Serializer that emits `HtmlFigCaption` as an italicised Markdown caption line. |
-| 199 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableSerializer.cs` | Serializer that emits `HtmlTable` nodes as a Markdown GFM table. |
-| 200 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableHeaderSerializer.cs` | Serializer that emits the `<thead>` portion of a Markdown GFM table. |
-| 201 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableBodySerializer.cs` | Serializer that emits the `<tbody>` rows of a Markdown GFM table. |
-| 202 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableFooterSerializer.cs` | Serializer that emits the `<tfoot>` rows of a Markdown GFM table. |
-| 203 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableRowSerializer.cs` | Serializer that emits a `HtmlTableRow` as a `| … |` Markdown table row. |
-| 204 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableRowDataSerializer.cs` | Serializer that emits `<td>` cells within a Markdown table row. |
-| 205 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableRowHeaderSerializer.cs` | Serializer that emits `<th>` cells within a Markdown table header row. |
-| 206 | [ ] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/MarkdownSerializationExtentions.cs` | DI extension methods (in `Microsoft.Extensions.DependencyInjection`) that register all Markdown serializers. |
+| 175 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Writer/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Markdown.Serialization.Writer` — Markdown stream writers. |
+| 176 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Writer/StyleCharacter.cs` | Value type associating a Markdown style marker character with its semantic meaning. |
+| 177 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Writer/MarkdownStyle.cs` | Enum defining Markdown inline styles (bold, italic, code, etc.). |
+| 178 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Writer/MarkdownStreamWriter.cs` | `TextWriter` derivative that emits Markdown syntax, managing style stacks and block scope. |
+| 179 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Writer/MarkdownStreamWriterProvider.cs` | Provides scoped `MarkdownStreamWriter` instances for a serialization session. |
+| 180 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Writer/MarkdownStreamWriterProviderExtensions.cs` | DI/builder extensions for registering `MarkdownStreamWriterProvider`. |
+| 181 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Base/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Markdown.Serialization.Base` — abstract Markdown serializer bases. |
+| 182 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Base/BaseMarkdownSerializer.cs` | Abstract base providing shared Markdown output helpers to all node serializers. |
+| 183 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Base/BaseStyleSerializer.cs` | Abstract base for inline-style serializers (bold, italic) that wrap content in style markers. |
+| 184 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Markdown.Serialization` — Markdown serializers for all node types. |
+| 185 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/MarkdownLinkFormater.cs` | Formats `[text](uri)` Markdown link syntax from anchor and image nodes. |
+| 186 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/IStructDocNodeExtentions.cs` | Extension methods that add Markdown-specific helpers to `IStructDocNode`. |
+| 187 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/PlainTextSerializer.cs` | Serializer that outputs plain-text node content verbatim. |
+| 188 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/HeadingSerializer.cs` | Serializer that outputs `HtmlHeading` nodes as ATX Markdown headings (`# … ######`). |
+| 189 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/ParagraphSerializer.cs` | Serializer that wraps `HtmlParagraph` children in a Markdown paragraph block. |
+| 190 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/AnchorSerializer.cs` | Serializer that emits `HtmlAnchor` nodes as Markdown inline links. |
+| 191 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/ImageSerializer.cs` | Serializer that emits `HtmlImg` nodes as Markdown image syntax `![alt](src)`. |
+| 192 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/BrSerializer.cs` | Serializer that emits `HtmlBr` as a Markdown line break (two trailing spaces). |
+| 193 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/EmphasesSerializer.cs` | Serializer that wraps `HtmlEmphases` content in Markdown italic markers. |
+| 194 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/StrongSerializer.cs` | Serializer that wraps `HtmlStrong` content in Markdown bold markers. |
+| 195 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/ListSerializer.cs` | Serializer that outputs `HtmlList` as a Markdown bulleted or numbered list. |
+| 196 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/ListItemSerializer.cs` | Serializer that emits `HtmlListItem` as a single Markdown list item line. |
+| 197 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/CalloutSerializer.cs` | Serializer that emits callout/aside nodes as Markdown block-quote sections. |
+| 198 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/FigCaptionSerializer.cs` | Serializer that emits `HtmlFigCaption` as an italicised Markdown caption line. |
+| 199 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableSerializer.cs` | Serializer that emits `HtmlTable` nodes as a Markdown GFM table. |
+| 200 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableHeaderSerializer.cs` | Serializer that emits the `<thead>` portion of a Markdown GFM table. |
+| 201 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableBodySerializer.cs` | Serializer that emits the `<tbody>` rows of a Markdown GFM table. |
+| 202 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableFooterSerializer.cs` | Serializer that emits the `<tfoot>` rows of a Markdown GFM table. |
+| 203 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableRowSerializer.cs` | Serializer that emits a `HtmlTableRow` as a `| … |` Markdown table row. |
+| 204 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableRowDataSerializer.cs` | Serializer that emits `<td>` cells within a Markdown table row. |
+| 205 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/TableRowHeaderSerializer.cs` | Serializer that emits `<th>` cells within a Markdown table header row. |
+| 206 | [x] | `src/Sylvercode.StructDocExtractor.Markdown/Serialization/MarkdownSerializationExtentions.cs` | DI extension methods (in `Microsoft.Extensions.DependencyInjection`) that register all Markdown serializers. |
 
 ---
 

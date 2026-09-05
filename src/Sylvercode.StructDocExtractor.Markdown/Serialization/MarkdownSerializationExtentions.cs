@@ -4,8 +4,12 @@
 namespace Microsoft.Extensions.DependencyInjection;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+/// <summary>Provides extension methods for registering all Markdown serializers in a DI container.</summary>
 public static class MarkdownSerializerExtentions
 {
+    /// <summary>Registers all standard Markdown serializers in <paramref name="services"/>.</summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add serializers to.</param>
+    /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
     public static IServiceCollection AddMarkdownSerializers(this IServiceCollection services)
     {
         services.AddSerializer<BrSerializer>();

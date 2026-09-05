@@ -5,6 +5,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
+/// <summary>Serializer that emits the <see cref="HtmlTableHeader"/> section of a GFM table, writing each header row followed by the separator line.</summary>
 public class TableHeaderSerializer(ILogger<TableHeaderSerializer>? logger = null)
     : BaseMarkdownSerializer<HtmlTableHeader, HtmlTableRow>(
         holderHandler: new TableHeaderHolderHandler(),

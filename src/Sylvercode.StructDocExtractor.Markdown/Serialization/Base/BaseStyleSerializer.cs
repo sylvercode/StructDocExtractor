@@ -4,6 +4,9 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization.Base;
 
+/// <summary>Abstract base for inline-style serializers that wrap node content in Markdown emphasis or strong markers using the <see cref="MarkdownStreamWriter"/> style stack.</summary>
+/// <typeparam name="THtmlNode">The holder node type being serialized (typically <see cref="HtmlEmphases"/> or <see cref="HtmlStrong"/>).</typeparam>
+/// <remarks>Pushes the configured style state before the first child is serialized and pops it after the last child, ensuring correct nesting and delimiter character selection.</remarks>
 public abstract class BaseStyleSerializer<THtmlNode>(
     MarkdownStreamWriter.StyleState style,
     ILogger<BaseStyleSerializer<THtmlNode>>? logger = null)
