@@ -7,6 +7,13 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.SiteExtractor.StdHtml;
 
+/// <summary>Implementation of <see cref="IResourceDependancyFilter"/> that classifies HTML resource links by applying configurable flag-based criteria to each referenced URI.</summary>
+/// <remarks>
+/// Filter behaviour is driven by <see cref="HtmlResourceDependencyFilterOptions"/>, which provides separate
+/// <see cref="HtmlResourceDependencyFilterMode"/> flag sets for external and embedded references.
+/// References with an empty or whitespace URI are always rejected. When the resolved mode is
+/// <see cref="HtmlResourceDependencyFilterMode.None"/> the reference is also rejected without further evaluation.
+/// </remarks>
 public partial class HtmlResourceDependencyFilter(
     IOptions<HtmlResourceDependencyFilterOptions> filterOptions,
     IOptions<SiteExtractorOptions> siteExtractorOptions,
@@ -19,6 +26,7 @@ public partial class HtmlResourceDependencyFilter(
 
     private readonly static ImageUriMatcher _imageUriMatcher = new();
 
+    /// <inheritdoc/>
     public bool IsAccepted(IStructDocReferencer referencer)
     {
         string nodeReference = referencer.GetReference();

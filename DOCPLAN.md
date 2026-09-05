@@ -398,11 +398,11 @@ Markdown serializers built on the core serialization layer and StdHtml model.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 268 | [ ] | `src/Sylvercode.SiteExtractor.StdHtml/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.StdHtml` — HTML-specific dependency filtering for site extraction. |
-| 269 | [ ] | `src/Sylvercode.SiteExtractor.StdHtml/HtmlResourceDependencyFilterMode.cs` | Enum of filter modes (Keep, Remove, Download) applied to HTML dependency links. |
-| 270 | [ ] | `src/Sylvercode.SiteExtractor.StdHtml/HtmlResourceDependencyFilterOptions.cs` | Configuration options for the HTML resource dependency filter (rules per link type). |
-| 271 | [ ] | `src/Sylvercode.SiteExtractor.StdHtml/HtmlResourceDependencyFilter.cs` | `IResourceDependancyFilter` that classifies HTML resource links (stylesheets, scripts, images). |
-| 272 | [ ] | `src/Sylvercode.SiteExtractor.StdHtml/HtmlResourceDependencyFilterExtensions.cs` | DI extensions for registering the HTML dependency filter. |
+| 268 | [x] | `src/Sylvercode.SiteExtractor.StdHtml/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.StdHtml` — HTML-specific dependency filtering for site extraction. |
+| 269 | [x] | `src/Sylvercode.SiteExtractor.StdHtml/HtmlResourceDependencyFilterMode.cs` | Enum of filter modes (Keep, Remove, Download) applied to HTML dependency links. |
+| 270 | [x] | `src/Sylvercode.SiteExtractor.StdHtml/HtmlResourceDependencyFilterOptions.cs` | Configuration options for the HTML resource dependency filter (rules per link type). |
+| 271 | [x] | `src/Sylvercode.SiteExtractor.StdHtml/HtmlResourceDependencyFilter.cs` | `IResourceDependancyFilter` that classifies HTML resource links (stylesheets, scripts, images). |
+| 272 | [x] | `src/Sylvercode.SiteExtractor.StdHtml/HtmlResourceDependencyFilterExtensions.cs` | DI extensions for registering the HTML dependency filter. |
 
 ---
 
