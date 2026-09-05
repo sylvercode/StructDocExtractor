@@ -174,7 +174,8 @@ HTML-specific node types built on the core model; no extraction logic yet.
 | 113 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlNodeDiscriminator.cs` | Value type carrying the HTML tag name and CSS classes used to discriminate factory selection. |
 | 114 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlHeading.cs` | Node representing an HTML heading element (`h1`–`h6`) with its level. |
 | 115 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlParagraph.cs` | Node representing an HTML `<p>` paragraph element. |
-| 116 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlAnchor.cs` | Node representing an HTML `<a>` anchor element with its `href` URI. |
+| 116a| [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlAnchor.cs` | Node representing an HTML `<a>` anchor element with its `href` URI. |
+| 116b| [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/Base/BaseHtmlHref.cs` | Base Node that with a `href` URI and text. |
 | 117 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlImg.cs` | Node representing an HTML `<img>` element with its `src` URI and alt text. |
 | 118 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlBr.cs` | Node representing an HTML `<br>` line-break element. |
 | 119 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlEmphases.cs` | Node representing an HTML `<em>` emphasis element. |
