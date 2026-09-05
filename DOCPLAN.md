@@ -421,11 +421,11 @@ Markdown serializers built on the core serialization layer and StdHtml model.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 277 | [ ] | `src/Sylvercode.SiteExtractor.AngleSharp/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.AngleSharp` — AngleSharp-powered live and proxy site sources. |
-| 278 | [ ] | `src/Sylvercode.SiteExtractor.AngleSharp/BaseAngleSharpSiteSource.cs` | Abstract base `ISiteSource` managing AngleSharp browsing context and HTTP client setup. |
-| 279 | [ ] | `src/Sylvercode.SiteExtractor.AngleSharp/AngleSharpWebSource.cs` | `ISiteSource` that fetches and parses live web pages over the internet via AngleSharp. |
-| 280 | [ ] | `src/Sylvercode.SiteExtractor.AngleSharp/AngleSharpProxySource.cs` | `ISiteSource` that fetches pages through a configured HTTP proxy via AngleSharp. |
-| 281 | [ ] | `src/Sylvercode.SiteExtractor.AngleSharp/AngleSharpSiteExtractorExtentions.cs` | DI extensions (in `Microsoft.Extensions.DependencyInjection`) for registering AngleSharp site sources. |
+| 277 | [x] | `src/Sylvercode.SiteExtractor.AngleSharp/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.AngleSharp` — AngleSharp-powered live and proxy site sources. |
+| 278 | [x] | `src/Sylvercode.SiteExtractor.AngleSharp/BaseAngleSharpSiteSource.cs` | Abstract base `ISiteSource` managing AngleSharp browsing context and HTTP client setup. |
+| 279 | [x] | `src/Sylvercode.SiteExtractor.AngleSharp/AngleSharpWebSource.cs` | `ISiteSource` that fetches and parses live web pages over the internet via AngleSharp. |
+| 280 | [x] | `src/Sylvercode.SiteExtractor.AngleSharp/AngleSharpProxySource.cs` | `ISiteSource` that fetches pages through a configured HTTP proxy via AngleSharp. |
+| 281 | [x] | `src/Sylvercode.SiteExtractor.AngleSharp/AngleSharpSiteExtractorExtentions.cs` | DI extensions (in `Microsoft.Extensions.DependencyInjection`) for registering AngleSharp site sources. |
 
 ---
 
