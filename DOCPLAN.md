@@ -169,33 +169,33 @@ HTML-specific node types built on the core model; no extraction logic yet.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 111 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.StdHtml.Model` — concrete HTML structural node types. |
-| 112 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/PlainTextNode.cs` | Node representing raw inline text content without markup. |
-| 113 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlNodeDiscriminator.cs` | Value type carrying the HTML tag name and CSS classes used to discriminate factory selection. |
-| 114 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlHeading.cs` | Node representing an HTML heading element (`h1`–`h6`) with its level. |
-| 115 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlParagraph.cs` | Node representing an HTML `<p>` paragraph element. |
-| 116a| [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlAnchor.cs` | Node representing an HTML `<a>` anchor element with its `href` URI. |
-| 116b| [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/Base/BaseHtmlHref.cs` | Base Node that with a `href` URI and text. |
-| 117 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlImg.cs` | Node representing an HTML `<img>` element with its `src` URI and alt text. |
-| 118 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlBr.cs` | Node representing an HTML `<br>` line-break element. |
-| 119 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlEmphases.cs` | Node representing an HTML `<em>` emphasis element. |
-| 120 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlStrong.cs` | Node representing an HTML `<strong>` bold element. |
-| 121 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlList.cs` | Node representing an HTML `<ul>` or `<ol>` list container. |
-| 122 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlListItem.cs` | Node representing an HTML `<li>` list item. |
-| 123 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlDiv.cs` | Node representing an HTML `<div>` generic block container. |
-| 124 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlAside.cs` | Node representing an HTML `<aside>` supplemental content block. |
-| 125 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlFigure.cs` | Node representing an HTML `<figure>` grouped media block. |
-| 126 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlFigCaption.cs` | Node representing an HTML `<figcaption>` caption for a figure. |
-| 127 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/IHtmlTableElement.cs` | Marker contract for all HTML table-related structural nodes. |
-| 128 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/IHtmlTableRowElement.cs` | Marker contract for nodes that represent a row within an HTML table. |
-| 129 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTable.cs` | Node representing an HTML `<table>` element. |
-| 130 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTableHeader.cs` | Node representing an HTML `<thead>` table header section. |
-| 131 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTableBody.cs` | Node representing an HTML `<tbody>` table body section. |
-| 132 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTableFooter.cs` | Node representing an HTML `<tfoot>` table footer section. |
-| 133 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTableRow.cs` | Node representing an HTML `<tr>` table row. |
-| 134 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTableRowData.cs` | Node representing an HTML `<td>` table data cell. |
-| 135 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTableRowHeader.cs` | Node representing an HTML `<th>` table header cell. |
-| 136 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlExtractionStack.cs` | Stack of HTML node discriminators maintained during recursive extraction. |
+| 111 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.StdHtml.Model` — concrete HTML structural node types. |
+| 112 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/PlainTextNode.cs` | Node representing raw inline text content without markup. |
+| 113 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlNodeDiscriminator.cs` | Value type carrying the HTML tag name and CSS classes used to discriminate factory selection. |
+| 114 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlHeading.cs` | Node representing an HTML heading element (`h1`–`h6`) with its level. |
+| 115 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlParagraph.cs` | Node representing an HTML `<p>` paragraph element. |
+| 116a| [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlAnchor.cs` | Node representing an HTML `<a>` anchor element with its `href` URI. |
+| 116b| [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/Base/BaseHtmlHref.cs` | Base Node that with a `href` URI and text. |
+| 117 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlImg.cs` | Node representing an HTML `<img>` element with its `src` URI and alt text. |
+| 118 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlBr.cs` | Node representing an HTML `<br>` line-break element. |
+| 119 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlEmphases.cs` | Node representing an HTML `<em>` emphasis element. |
+| 120 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlStrong.cs` | Node representing an HTML `<strong>` bold element. |
+| 121 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlList.cs` | Node representing an HTML `<ul>` or `<ol>` list container. |
+| 122 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlListItem.cs` | Node representing an HTML `<li>` list item. |
+| 123 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlDiv.cs` | Node representing an HTML `<div>` generic block container. |
+| 124 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlAside.cs` | Node representing an HTML `<aside>` supplemental content block. |
+| 125 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlFigure.cs` | Node representing an HTML `<figure>` grouped media block. |
+| 126 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlFigCaption.cs` | Node representing an HTML `<figcaption>` caption for a figure. |
+| 127 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/IHtmlTableElement.cs` | Marker contract for all HTML table-related structural nodes. |
+| 128 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/IHtmlTableRowElement.cs` | Marker contract for nodes that represent a row within an HTML table. |
+| 129 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTable.cs` | Node representing an HTML `<table>` element. |
+| 130 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTableHeader.cs` | Node representing an HTML `<thead>` table header section. |
+| 131 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTableBody.cs` | Node representing an HTML `<tbody>` table body section. |
+| 132 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTableFooter.cs` | Node representing an HTML `<tfoot>` table footer section. |
+| 133 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTableRow.cs` | Node representing an HTML `<tr>` table row. |
+| 134 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTableRowData.cs` | Node representing an HTML `<td>` table data cell. |
+| 135 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlTableRowHeader.cs` | Node representing an HTML `<th>` table header cell. |
+| 136 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Model/HtmlExtractionStack.cs` | Stack of HTML node discriminators maintained during recursive extraction. |
 
 ---
 
