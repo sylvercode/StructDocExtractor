@@ -410,10 +410,10 @@ Markdown serializers built on the core serialization layer and StdHtml model.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 273 | [ ] | `src/Sylvercode.SiteExtractor.Markdown/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.Markdown` — Markdown-specific URI updating after site extraction. |
-| 274 | [ ] | `src/Sylvercode.SiteExtractor.Markdown/MarkdownUriTranslater.cs` | Translates resource URIs embedded inside serialised Markdown text. |
-| 275 | [ ] | `src/Sylvercode.SiteExtractor.Markdown/MarkdownReferencerUpdater.cs` | `IReferencerUpdater` that rewrites link and image URIs in Markdown content post-extraction. |
-| 276 | [ ] | `src/Sylvercode.SiteExtractor.Markdown/MarkdownSerializationExtentions.cs` | DI extensions (in `Microsoft.Extensions.DependencyInjection`) for registering Markdown site-extraction services. |
+| 273 | [x] | `src/Sylvercode.SiteExtractor.Markdown/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.Markdown` — Markdown-specific URI updating after site extraction. |
+| 274 | [x] | `src/Sylvercode.SiteExtractor.Markdown/MarkdownUriTranslater.cs` | Translates resource URIs embedded inside serialised Markdown text. |
+| 275 | [x] | `src/Sylvercode.SiteExtractor.Markdown/MarkdownReferencerUpdater.cs` | `IReferencerUpdater` that rewrites link and image URIs in Markdown content post-extraction. |
+| 276 | [x] | `src/Sylvercode.SiteExtractor.Markdown/MarkdownSerializationExtentions.cs` | DI extensions (in `Microsoft.Extensions.DependencyInjection`) for registering Markdown site-extraction services. |
 
 ---
 

@@ -7,6 +7,14 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.SiteExtractor.Markdown;
 
+/// <summary><see cref="IReferencerUpdater"/> implementation that rewrites embedded URIs in Markdown content to their final translated output paths after site extraction.</summary>
+/// <remarks>
+/// Processes each reference node by resolving it against the resource repository and converting URIs to
+/// Markdown-compatible wiki-link format. Handles fragment-only references, same-resource self-links, unique
+/// file name substitution, and relative-path calculation for translated resources. References for unpullable
+/// resources are left unchanged. Depends on <see cref="IReadOnlyResourceRepository"/> to locate resources
+/// and their translated URIs.
+/// </remarks>
 public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater>? logger = null) : IReferencerUpdater
 {
     private static readonly Uri _tempBaseUri = new("temp://fake.host");
@@ -15,6 +23,7 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
 
     private readonly ILogger<MarkdownReferencerUpdater> _logger = logger ?? NullLogger<MarkdownReferencerUpdater>.Instance;
 
+    /// <inheritdoc/>
     public void UpdateReferencers(Resource referencerResource,
                                   List<IStructDocReferencer> referencers,
                                   IReadOnlyResourceRepository resourceRepository)

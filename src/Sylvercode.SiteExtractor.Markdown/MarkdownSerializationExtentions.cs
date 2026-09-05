@@ -6,8 +6,12 @@ using Sylvercode.SiteExtractor.Resources;
 namespace Microsoft.Extensions.DependencyInjection;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+/// <summary>Provides extension methods for <see cref="IServiceCollection"/> to register all Markdown serialization and site-extraction services.</summary>
 public static class MarkdownSerializationExtentions
 {
+    /// <summary>Registers the Markdown serializer pipeline, stream-writer provider, URI translater, and referencer updater in <paramref name="services"/>.</summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+    /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
     public static IServiceCollection AddMarkdownSerialization(this IServiceCollection services)
     {
         services.AddStructDocSerializer();
