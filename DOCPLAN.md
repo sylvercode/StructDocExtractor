@@ -302,20 +302,20 @@ Markdown serializers built on the core serialization layer and StdHtml model.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 207 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.UriUtils` — URI matching, translation, and redirection helpers. |
-| 208 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/IUriMatcher.cs` | Contract for testing whether a `Uri` satisfies a given matching rule. |
-| 209 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/IUriTranslater.cs` | Contract for translating a `Uri` from one form to another during extraction. |
-| 210 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/IUriRedirector.cs` | Contract for redirecting a `Uri` to a different target location. |
-| 211 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/UriExtentions.cs` | Extension helpers for `Uri` manipulation (combining, normalising, relativising, etc.). |
-| 212 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/ImageUriMatcher.cs` | Matcher that identifies URIs pointing to common image file extensions. |
-| 213 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/UriMatcherByBase.cs` | Matcher that accepts URIs whose base matches a configured root URI. |
-| 214 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/NoopUriTranslater.cs` | Identity translater that returns its input URI unchanged. |
-| 215 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/UriBaseTranslater.cs` | Translater that rewrites a URI by swapping its base to a new root. |
-| 216 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/RelativeUriTranslater.cs` | Translater that resolves a relative URI against a configured base. |
-| 217 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/StaticDirUriTranslater.cs` | Translater that maps a URI to a path inside a static output directory. |
-| 218 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/UriRelativeFromBaseTranslater.cs` | Translater that produces a relative URI expressed from a given base URI. |
-| 219 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/UriRedirector.cs` | Default `IUriRedirector` that applies a list of redirect rules in order. |
-| 220 | [ ] | `src/Sylvercode.SiteExtractor/UriUtils/UriRedirectorExtentions.cs` | Extension helpers for registering and composing `IUriRedirector` instances. |
+| 207 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.UriUtils` — URI matching, translation, and redirection helpers. |
+| 208 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/IUriMatcher.cs` | Contract for testing whether a `Uri` satisfies a given matching rule. |
+| 209 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/IUriTranslater.cs` | Contract for translating a `Uri` from one form to another during extraction. |
+| 210 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/IUriRedirector.cs` | Contract for redirecting a `Uri` to a different target location. |
+| 211 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/UriExtentions.cs` | Extension helpers for `Uri` manipulation (combining, normalising, relativising, etc.). |
+| 212 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/ImageUriMatcher.cs` | Matcher that identifies URIs pointing to common image file extensions. |
+| 213 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/UriMatcherByBase.cs` | Matcher that accepts URIs whose base matches a configured root URI. |
+| 214 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/NoopUriTranslater.cs` | Identity translater that returns its input URI unchanged. |
+| 215 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/UriBaseTranslater.cs` | Translater that rewrites a URI by swapping its base to a new root. |
+| 216 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/RelativeUriTranslater.cs` | Translater that resolves a relative URI against a configured base. |
+| 217 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/StaticDirUriTranslater.cs` | Translater that maps a URI to a path inside a static output directory. |
+| 218 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/UriRelativeFromBaseTranslater.cs` | Translater that produces a relative URI expressed from a given base URI. |
+| 219 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/UriRedirector.cs` | Default `IUriRedirector` that applies a list of redirect rules in order. |
+| 220 | [x] | `src/Sylvercode.SiteExtractor/UriUtils/UriRedirectorExtentions.cs` | Extension helpers for registering and composing `IUriRedirector` instances. |
 
 ---
 
