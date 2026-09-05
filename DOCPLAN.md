@@ -220,38 +220,38 @@ AngleSharp-backed factories that convert DOM nodes to `IStructDocNode`s.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 143 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory` — AngleSharp DOM-to-model factories. |
-| 144 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/BaseAngleNodeFactory.cs` | Abstract base factory for all AngleSharp node factories, handling DOM element access. |
-| 145 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/BaseParagraphFactory.cs` | Abstract factory for paragraph-like AngleSharp elements (reusable inline-text logic). |
-| 146 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/PlainTextNodeFactory.cs` | Factory that converts AngleSharp text nodes to `PlainTextNode`. |
-| 147 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlAnchorFactory.cs` | Factory that converts `<a>` elements to `HtmlAnchor` nodes with resolved `href`. |
-| 148 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlAsideFactory.cs` | Factory that converts `<aside>` elements to `HtmlAside` nodes. |
-| 149 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlBrFactory.cs` | Factory that converts `<br>` elements to `HtmlBr` nodes. |
-| 150 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlDivFactory.cs` | Factory that converts `<div>` elements to `HtmlDiv` nodes. |
-| 151 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlEmphasesFactory.cs` | Factory that converts `<em>` elements to `HtmlEmphases` nodes. |
-| 152 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlFigCaptionFactory.cs` | Factory that converts `<figcaption>` elements to `HtmlFigCaption` nodes. |
-| 153 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlFigureFactory.cs` | Factory that converts `<figure>` elements to `HtmlFigure` nodes. |
-| 154 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlHeadingFactory.cs` | Factory that converts `<h1>`–`<h6>` elements to `HtmlHeading` nodes with level. |
-| 155 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlImgFactory.cs` | Factory that converts `<img>` elements to `HtmlImg` nodes with resolved `src`. |
-| 156 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlListFactory.cs` | Factory that converts `<ul>`/`<ol>` elements to `HtmlList` nodes. |
-| 157 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlListItemFactory.cs` | Factory that converts `<li>` elements to `HtmlListItem` nodes. |
-| 158 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlNodeDiscriminatorFactory.cs` | Factory that creates a `HtmlNodeDiscriminator` from an AngleSharp element. |
-| 159 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlParagraphFactory.cs` | Factory that converts `<p>` elements to `HtmlParagraph` nodes. |
-| 160 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlStrongFactory.cs` | Factory that converts `<strong>` elements to `HtmlStrong` nodes. |
-| 161 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableBodyFactory.cs` | Factory that converts `<tbody>` elements to `HtmlTableBody` nodes. |
-| 162 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableFactory.cs` | Factory that converts `<table>` elements to `HtmlTable` nodes. |
-| 163 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableFooterFactory.cs` | Factory that converts `<tfoot>` elements to `HtmlTableFooter` nodes. |
-| 164 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableHeaderFactory.cs` | Factory that converts `<thead>` elements to `HtmlTableHeader` nodes. |
-| 165 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableRowDataFactory.cs` | Factory that converts `<td>` elements to `HtmlTableRowData` nodes. |
-| 166 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableRowFactory.cs` | Factory that converts `<tr>` elements to `HtmlTableRow` nodes. |
-| 167 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableRowHeaderFactory.cs` | Factory that converts `<th>` elements to `HtmlTableRowHeader` nodes. |
-| 168 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlDataPreviewProvider.cs` | Preview provider that extracts a short text summary from AngleSharp HTML element data. |
-| 169 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.AngleSharp.Extraction` — AngleSharp pipeline integration. |
-| 170 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/AngleProcessTaskResultBuilder.cs` | Builds `IProcessTaskResult` objects from AngleSharp extraction outcomes. |
-| 171 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/AngleSharpExtractorExtentions.cs` | DI/builder extension methods for registering AngleSharp extractors. |
-| 172 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.AngleSharp` — top-level AngleSharp extraction package. |
-| 173 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/AngleSharpNodeFactoryProvider.cs` | Entry-point provider that assembles the full set of AngleSharp node factories. |
-| 174 | [ ] | `src/Sylvercode.StructDocExtractor.AngleSharp/StructDocNodeFactoryProviderSelector.cs` | Selector that chooses the correct AngleSharp factory provider for a given source. |
+| 143 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory` — AngleSharp DOM-to-model factories. |
+| 144 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/BaseAngleNodeFactory.cs` | Abstract base factory for all AngleSharp node factories, handling DOM element access. |
+| 145 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/BaseParagraphFactory.cs` | Abstract factory for paragraph-like AngleSharp elements (reusable inline-text logic). |
+| 146 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/PlainTextNodeFactory.cs` | Factory that converts AngleSharp text nodes to `PlainTextNode`. |
+| 147 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlAnchorFactory.cs` | Factory that converts `<a>` elements to `HtmlAnchor` nodes with resolved `href`. |
+| 148 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlAsideFactory.cs` | Factory that converts `<aside>` elements to `HtmlAside` nodes. |
+| 149 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlBrFactory.cs` | Factory that converts `<br>` elements to `HtmlBr` nodes. |
+| 150 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlDivFactory.cs` | Factory that converts `<div>` elements to `HtmlDiv` nodes. |
+| 151 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlEmphasesFactory.cs` | Factory that converts `<em>` elements to `HtmlEmphases` nodes. |
+| 152 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlFigCaptionFactory.cs` | Factory that converts `<figcaption>` elements to `HtmlFigCaption` nodes. |
+| 153 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlFigureFactory.cs` | Factory that converts `<figure>` elements to `HtmlFigure` nodes. |
+| 154 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlHeadingFactory.cs` | Factory that converts `<h1>`–`<h6>` elements to `HtmlHeading` nodes with level. |
+| 155 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlImgFactory.cs` | Factory that converts `<img>` elements to `HtmlImg` nodes with resolved `src`. |
+| 156 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlListFactory.cs` | Factory that converts `<ul>`/`<ol>` elements to `HtmlList` nodes. |
+| 157 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlListItemFactory.cs` | Factory that converts `<li>` elements to `HtmlListItem` nodes. |
+| 158 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlNodeDiscriminatorFactory.cs` | Factory that creates a `HtmlNodeDiscriminator` from an AngleSharp element. |
+| 159 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlParagraphFactory.cs` | Factory that converts `<p>` elements to `HtmlParagraph` nodes. |
+| 160 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlStrongFactory.cs` | Factory that converts `<strong>` elements to `HtmlStrong` nodes. |
+| 161 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableBodyFactory.cs` | Factory that converts `<tbody>` elements to `HtmlTableBody` nodes. |
+| 162 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableFactory.cs` | Factory that converts `<table>` elements to `HtmlTable` nodes. |
+| 163 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableFooterFactory.cs` | Factory that converts `<tfoot>` elements to `HtmlTableFooter` nodes. |
+| 164 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableHeaderFactory.cs` | Factory that converts `<thead>` elements to `HtmlTableHeader` nodes. |
+| 165 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableRowDataFactory.cs` | Factory that converts `<td>` elements to `HtmlTableRowData` nodes. |
+| 166 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableRowFactory.cs` | Factory that converts `<tr>` elements to `HtmlTableRow` nodes. |
+| 167 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlTableRowHeaderFactory.cs` | Factory that converts `<th>` elements to `HtmlTableRowHeader` nodes. |
+| 168 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Factory/HtmlDataPreviewProvider.cs` | Preview provider that extracts a short text summary from AngleSharp HTML element data. |
+| 169 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.AngleSharp.Extraction` — AngleSharp pipeline integration. |
+| 170 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/AngleProcessTaskResultBuilder.cs` | Builds `IProcessTaskResult` objects from AngleSharp extraction outcomes. |
+| 171 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Extraction/AngleSharpExtractorExtentions.cs` | DI/builder extension methods for registering AngleSharp extractors. |
+| 172 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.AngleSharp` — top-level AngleSharp extraction package. |
+| 173 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/AngleSharpNodeFactoryProvider.cs` | Entry-point provider that assembles the full set of AngleSharp node factories. |
+| 174 | [x] | `src/Sylvercode.StructDocExtractor.AngleSharp/StructDocNodeFactoryProviderSelector.cs` | Selector that chooses the correct AngleSharp factory provider for a given source. |
 
 ---
 
