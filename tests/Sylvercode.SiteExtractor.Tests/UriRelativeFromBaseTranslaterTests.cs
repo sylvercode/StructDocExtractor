@@ -2,8 +2,10 @@ using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
+/// <summary>Tests for <see cref="UriRelativeFromBaseTranslater.Translate"/> producing relative-from-base URIs.</summary>
 public class UriRelativeFromBaseTranslater_Translaste
 {
+    /// <summary>Verifies that a URI with a matching base is correctly expressed as a relative URI.</summary>
     [Fact]
     public void ValidBase_ReturnsValidUri()
     {
@@ -20,6 +22,7 @@ public class UriRelativeFromBaseTranslater_Translaste
         Assert.Equal("test", result.ToString());
     }
 
+    /// <summary>Verifies that a URI with a mismatched base throws an <see cref="ArgumentException"/>.</summary>
     [Fact]
     public void InvalidBase_WithOtherBaseAsError_ThrowsArgumentException()
     {
@@ -36,6 +39,7 @@ public class UriRelativeFromBaseTranslater_Translaste
         ArgumentException ex = Assert.Throws<ArgumentException>(action);
     }
 
+    /// <summary>Verifies that a URI with a query string is correctly relativised with the query preserved.</summary>
     [Fact]
     public void ValidBase_ReturnsValidUriWithQuery()
     {
@@ -52,6 +56,7 @@ public class UriRelativeFromBaseTranslater_Translaste
         Assert.Equal("test?query=1", result.ToString());
     }
 
+    /// <summary>Verifies that a URI with a fragment is correctly relativised with the fragment preserved.</summary>
     [Fact]
     public void ValidBase_ReturnsValidUriWithFragment()
     {
@@ -68,6 +73,7 @@ public class UriRelativeFromBaseTranslater_Translaste
         Assert.Equal("test#fragment", result.ToString());
     }
 
+    /// <summary>Verifies that a URI with both a query string and a fragment is correctly relativised with both preserved.</summary>
     [Fact]
     public void ValidBase_ReturnsValidUriWithQueryAndFragment()
     {

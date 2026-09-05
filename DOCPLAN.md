@@ -437,45 +437,45 @@ Test files are documented last (least critical, most knowledge of above layers r
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 282 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/Stubs/UriNode.cs` | Stub `IStructDocNode` carrying a `Uri` used in URI-translation tests. |
-| 283 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/Stubs/UriReferenceNode.cs` | Stub `IStructDocReferencer` node for verifying URI-reference update behaviour. |
-| 284 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/DataStoreMock.cs` | Mock `IDataStore` recording write calls for assertion in unit tests. |
-| 285 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/ExtractorMock.cs` | Mock `IExtractor` returning pre-canned results for isolation testing. |
-| 286 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/MockCallsTracker.cs` | Helper that records method invocation order and arguments across mock objects. |
-| 287 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/ResourceProcessorMock.cs` | Mock `IResourceProcessor` capturing process calls for verification. |
-| 288 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/ResourceProcessorResultMock.cs` | Mock `IResourceProcessorResult` with configurable outcome fields. |
-| 289 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/SiteSourceMock.cs` | Mock `ISiteSource` serving predefined document strings by URI. |
-| 290 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/StructDocSerializerMock.cs` | Mock `IStructDocSerializer` returning stub serialisation strings. |
-| 291 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/Fakes/FakeResourceProcessoProvider.cs` | Fake `IResourceProcessorProvider` returning a fixed processor for all resources. |
-| 292 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/ImageUriMatcherTests.cs` | Tests for `ImageUriMatcher.IsMatching` against various image and non-image URIs. |
-| 293 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/MemorySiteSourceTests.cs` | Tests for `MemorySiteSource` document retrieval and missing-key behaviour. |
-| 294 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/ReferencerUpdaterTests.cs` | Tests for `ReferencerUpdater.UpdateReferencers` rewriting embedded URIs. |
-| 295 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/RelativeUriTranslaterTests_Translate.cs` | Tests for `RelativeUriTranslater.Translate` resolving relative URIs against a base. |
-| 296 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/ResourceCopierTests.cs` | Tests for `ResourceCopier.Download` copying bytes to the data store. |
-| 297 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/ResourceDataExtractorTests.cs` | Tests for `ResourceDataExtractor.Extract` producing structured nodes from documents. |
-| 298 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/ResourceDictionaryTests.cs` | Tests for `ResourceRepository.Add` deduplication and indexing logic. |
-| 299 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/ResourceProcessorProviderTests.cs` | Tests for `ResourceProcessorProvider.GetProcessor` resolution by MIME type and URI. |
-| 300 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/ResourceStateTests.cs` | Tests for `ResourceState.IsPullable` state-machine transitions. |
-| 301 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/ResourceTests.cs` | Tests for `Resource.TranslateUri` producing correct output URIs. |
-| 302 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/ResourcesTrackerTests.cs` | Tests for `ResourcesTracker.AddResource` discovery and deduplication. |
-| 303 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/SiteExtractorTests.cs` | End-to-end tests for `SiteExtractor.Extract` orchestrating the full pipeline. |
-| 304 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/StaticDirUriTranslaterTests_Translate.cs` | Tests for `StaticDirUriTranslater.Translate` mapping URIs to local paths. |
-| 305 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/UriBaseTranslaterTests.cs` | Tests for `UriBaseTranslater.Translaste` swapping URI bases. |
-| 306 | [ ] | `tests/Sylvercode.SiteExtractor.Tests/UriRelativeFromBaseTranslaterTests.cs` | Tests for `UriRelativeFromBaseTranslater.Translate` producing relative-from-base URIs. |
+| 282 | [x] | `tests/Sylvercode.SiteExtractor.Tests/Stubs/UriNode.cs` | Stub `IStructDocNode` carrying a `Uri` used in URI-translation tests. |
+| 283 | [x] | `tests/Sylvercode.SiteExtractor.Tests/Stubs/UriReferenceNode.cs` | Stub `IStructDocReferencer` node for verifying URI-reference update behaviour. |
+| 284 | [x] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/DataStoreMock.cs` | Mock `IDataStore` recording write calls for assertion in unit tests. |
+| 285 | [x] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/ExtractorMock.cs` | Mock `IExtractor` returning pre-canned results for isolation testing. |
+| 286 | [x] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/MockCallsTracker.cs` | Helper that records method invocation order and arguments across mock objects. |
+| 287 | [x] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/ResourceProcessorMock.cs` | Mock `IResourceProcessor` capturing process calls for verification. |
+| 288 | [x] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/ResourceProcessorResultMock.cs` | Mock `IResourceProcessorResult` with configurable outcome fields. |
+| 289 | [x] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/SiteSourceMock.cs` | Mock `ISiteSource` serving predefined document strings by URI. |
+| 290 | [x] | `tests/Sylvercode.SiteExtractor.Tests/Mocks/StructDocSerializerMock.cs` | Mock `IStructDocSerializer` returning stub serialisation strings. |
+| 291 | [x] | `tests/Sylvercode.SiteExtractor.Tests/Fakes/FakeResourceProcessoProvider.cs` | Fake `IResourceProcessorProvider` returning a fixed processor for all resources. |
+| 292 | [x] | `tests/Sylvercode.SiteExtractor.Tests/ImageUriMatcherTests.cs` | Tests for `ImageUriMatcher.IsMatching` against various image and non-image URIs. |
+| 293 | [x] | `tests/Sylvercode.SiteExtractor.Tests/MemorySiteSourceTests.cs` | Tests for `MemorySiteSource` document retrieval and missing-key behaviour. |
+| 294 | [x] | `tests/Sylvercode.SiteExtractor.Tests/ReferencerUpdaterTests.cs` | Tests for `ReferencerUpdater.UpdateReferencers` rewriting embedded URIs. |
+| 295 | [x] | `tests/Sylvercode.SiteExtractor.Tests/RelativeUriTranslaterTests_Translate.cs` | Tests for `RelativeUriTranslater.Translate` resolving relative URIs against a base. |
+| 296 | [x] | `tests/Sylvercode.SiteExtractor.Tests/ResourceCopierTests.cs` | Tests for `ResourceCopier.Download` copying bytes to the data store. |
+| 297 | [x] | `tests/Sylvercode.SiteExtractor.Tests/ResourceDataExtractorTests.cs` | Tests for `ResourceDataExtractor.Extract` producing structured nodes from documents. |
+| 298 | [x] | `tests/Sylvercode.SiteExtractor.Tests/ResourceDictionaryTests.cs` | Tests for `ResourceRepository.Add` deduplication and indexing logic. |
+| 299 | [x] | `tests/Sylvercode.SiteExtractor.Tests/ResourceProcessorProviderTests.cs` | Tests for `ResourceProcessorProvider.GetProcessor` resolution by MIME type and URI. |
+| 300 | [x] | `tests/Sylvercode.SiteExtractor.Tests/ResourceStateTests.cs` | Tests for `ResourceState.IsPullable` state-machine transitions. |
+| 301 | [x] | `tests/Sylvercode.SiteExtractor.Tests/ResourceTests.cs` | Tests for `Resource.TranslateUri` producing correct output URIs. |
+| 302 | [x] | `tests/Sylvercode.SiteExtractor.Tests/ResourcesTrackerTests.cs` | Tests for `ResourcesTracker.AddResource` discovery and deduplication. |
+| 303 | [x] | `tests/Sylvercode.SiteExtractor.Tests/SiteExtractorTests.cs` | End-to-end tests for `SiteExtractor.Extract` orchestrating the full pipeline. |
+| 304 | [x] | `tests/Sylvercode.SiteExtractor.Tests/StaticDirUriTranslaterTests_Translate.cs` | Tests for `StaticDirUriTranslater.Translate` mapping URIs to local paths. |
+| 305 | [x] | `tests/Sylvercode.SiteExtractor.Tests/UriBaseTranslaterTests.cs` | Tests for `UriBaseTranslater.Translaste` swapping URI bases. |
+| 306 | [x] | `tests/Sylvercode.SiteExtractor.Tests/UriRelativeFromBaseTranslaterTests.cs` | Tests for `UriRelativeFromBaseTranslater.Translate` producing relative-from-base URIs. |
 
 ### `Sylvercode.SiteExtractor.StdHtml.Tests`
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 307 | [ ] | `tests/Sylvercode.SiteExtractor.StdHtml.Tests/Stubs/StubReferencer.cs` | Stub `IStructDocReferencer` for verifying HTML dependency filter behaviour. |
-| 308 | [ ] | `tests/Sylvercode.SiteExtractor.StdHtml.Tests/HtmlResourceDependencyFilterTetsts.cs` | Tests for `HtmlResourceDependencyFilter.Accepted` against various HTML link types. |
+| 307 | [x] | `tests/Sylvercode.SiteExtractor.StdHtml.Tests/Stubs/StubReferencer.cs` | Stub `IStructDocReferencer` for verifying HTML dependency filter behaviour. |
+| 308 | [x] | `tests/Sylvercode.SiteExtractor.StdHtml.Tests/HtmlResourceDependencyFilterTetsts.cs` | Tests for `HtmlResourceDependencyFilter.Accepted` against various HTML link types. |
 
 ### `Sylvercode.SiteExtractor.Markdown.Tests`
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 309 | [ ] | `tests/Sylvercode.SiteExtractor.Markdown.Tests/MarkdownReferencerUpdaterTests.cs` | Tests for `MarkdownReferencerUpdater.UpdateReferencers` rewriting Markdown links. |
-| 310 | [ ] | `tests/Sylvercode.SiteExtractor.Markdown.Tests/MarkdownUriTranslaterTests.cs` | Tests for `MarkdownUriTranslater.Translate` converting URIs in Markdown text. |
+| 309 | [x] | `tests/Sylvercode.SiteExtractor.Markdown.Tests/MarkdownReferencerUpdaterTests.cs` | Tests for `MarkdownReferencerUpdater.UpdateReferencers` rewriting Markdown links. |
+| 310 | [x] | `tests/Sylvercode.SiteExtractor.Markdown.Tests/MarkdownUriTranslaterTests.cs` | Tests for `MarkdownUriTranslater.Translate` converting URIs in Markdown text. |
 
 ---
 

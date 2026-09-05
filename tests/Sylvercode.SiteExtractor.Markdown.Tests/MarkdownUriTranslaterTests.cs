@@ -5,6 +5,7 @@ using Sylvercode.StructDocExtractor.Metadatas;
 
 namespace Sylvercode.SiteExtractor.Markdown.Tests;
 
+/// <summary>Tests for <see cref="MarkdownUriTranslater.Translate"/> converting URIs in Markdown text.</summary>
 public class MarkdownUriTranslaterTests_Translate
 {
     private static IHost CreateDefaultHost()
@@ -21,6 +22,7 @@ public class MarkdownUriTranslaterTests_Translate
             }).Build();
     }
 
+    /// <summary>Verifies that a source URI without a page heading is translated to a relative Markdown path by renaming the extension to <c>.md</c>.</summary>
     [Theory]
     [InlineData("https://example.com/source/page.html", "page.md")]
     [InlineData("https://example.com/source/dir/page.html", "dir/page.md")]
@@ -44,6 +46,7 @@ public class MarkdownUriTranslaterTests_Translate
         Assert.Equal(expected, Uri.UnescapeDataString(result.ToString()));
     }
 
+    /// <summary>Verifies that a source URI with a page heading metadata entry is translated using the heading as the file name.</summary>
     [Theory]
     [InlineData("https://example.com/source/page.html", "Page Title", "Page Title.md")]
     [InlineData("https://example.com/source/page.html#frag", "Page Title", "Page Title.md#frag")]

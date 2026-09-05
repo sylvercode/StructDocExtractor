@@ -2,8 +2,10 @@
 
 namespace Sylvercode.SiteExtractor.Tests;
 
+/// <summary>Tests for <see cref="ResourceState"/> initial state after construction.</summary>
 public class ResourceStateTests_IsPullable
 {
+    /// <summary>Verifies that a pullable resource starts in the pending state awaiting a pull.</summary>
     [Fact]
     public void IsPullable()
     {
@@ -18,6 +20,7 @@ public class ResourceStateTests_IsPullable
         Assert.False(resourceState.IsPulling);
         Assert.False(resourceState.IsPulled);
     }
+    /// <summary>Verifies that a non-pullable resource is already considered pulled from the start.</summary>
     [Fact]
     public void IsNotPullable()
     {
@@ -34,8 +37,10 @@ public class ResourceStateTests_IsPullable
     }
 }
 
+/// <summary>Tests for <see cref="ResourceState.AsPulled"/> state-machine transitions.</summary>
 public class ResourceStateTests_AsPulled
 {
+    /// <summary>Verifies that transitioning a non-pullable resource to pulled throws an <see cref="InvalidOperationException"/>.</summary>
     [Fact]
     public void NotPullable_Throws()
     {
@@ -49,6 +54,7 @@ public class ResourceStateTests_AsPulled
         Assert.Throws<InvalidOperationException>(action);
     }
 
+    /// <summary>Verifies that transitioning an already-pulled resource to pulled again throws an <see cref="InvalidOperationException"/>.</summary>
     [Fact]
     public void Pulled_Throws()
     {
@@ -62,6 +68,7 @@ public class ResourceStateTests_AsPulled
         Assert.Throws<InvalidOperationException>(action);
     }
 
+    /// <summary>Verifies that a pending pullable resource transitions correctly to the pulled state.</summary>
     [Fact]
     public void Pending_ReturnsPulled()
     {
@@ -78,6 +85,7 @@ public class ResourceStateTests_AsPulled
         Assert.False(result.IsPulling);
     }
 
+    /// <summary>Verifies that a currently-pulling resource transitions correctly to the pulled state.</summary>
     [Fact]
     public void Pulling_ReturnsPulled()
     {
@@ -95,8 +103,10 @@ public class ResourceStateTests_AsPulled
     }
 }
 
+/// <summary>Tests for <see cref="ResourceState.AsPulling"/> state-machine transitions.</summary>
 public class ResourceStateTests_AsPulling
 {
+    /// <summary>Verifies that transitioning a non-pullable resource to pulling throws an <see cref="InvalidOperationException"/>.</summary>
     [Fact]
     public void NotPullable_Throws()
     {
@@ -110,6 +120,7 @@ public class ResourceStateTests_AsPulling
         Assert.Throws<InvalidOperationException>(action);
     }
 
+    /// <summary>Verifies that transitioning an already-pulled resource to pulling throws an <see cref="InvalidOperationException"/>.</summary>
     [Fact]
     public void Pulled_Throws()
     {
@@ -123,6 +134,7 @@ public class ResourceStateTests_AsPulling
         Assert.Throws<InvalidOperationException>(action);
     }
 
+    /// <summary>Verifies that a pending pullable resource transitions correctly to the pulling state.</summary>
     [Fact]
     public void Pending_ReturnsPulling()
     {
@@ -139,6 +151,7 @@ public class ResourceStateTests_AsPulling
         Assert.False(result.IsPulled);
     }
 
+    /// <summary>Verifies that a resource already in the pulling state can remain in the pulling state.</summary>
     [Fact]
     public void Pulling_ReturnsPulling()
     {
