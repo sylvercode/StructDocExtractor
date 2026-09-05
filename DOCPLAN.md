@@ -342,33 +342,33 @@ Markdown serializers built on the core serialization layer and StdHtml model.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 233 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.Resources` — resource tracking and update orchestration. |
-| 234 | [ ] | `src/Sylvercode.SiteExtractor/Resources/IReadOnlyResourceRepository.cs` | Read-only contract for querying the set of tracked site resources. |
-| 235 | [ ] | `src/Sylvercode.SiteExtractor/Resources/IReferencerUpdater.cs` | Contract for updating embedded URIs inside a resource's serialized content. |
-| 236 | [ ] | `src/Sylvercode.SiteExtractor/Resources/IResourceUriTranslater.cs` | Contract for translating a resource URI into its final output path. |
-| 237 | [ ] | `src/Sylvercode.SiteExtractor/Resources/ResourcePullState.cs` | Enum of states a resource can be in during the download/copy cycle (pending, pulled, etc.). |
-| 238 | [ ] | `src/Sylvercode.SiteExtractor/Resources/ResourceState.cs` | Tracks the current pull state and any error for a single resource entry. |
-| 239 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Resource.cs` | Represents a site resource (page or asset) with its source URI and pull state. |
-| 240 | [ ] | `src/Sylvercode.SiteExtractor/Resources/ResourceQueue.cs` | Thread-safe queue of resources pending extraction or download. |
-| 241 | [ ] | `src/Sylvercode.SiteExtractor/Resources/ResourceRepository.cs` | Writable repository that stores and indexes all discovered `Resource` objects. |
-| 242 | [ ] | `src/Sylvercode.SiteExtractor/Resources/ResourcesTracker.cs` | Coordinates resource discovery, deduplication, and state transitions. |
-| 243 | [ ] | `src/Sylvercode.SiteExtractor/Resources/ReferencerUpdater.cs` | Applies `IReferencerUpdater` passes on serialized content to rewrite embedded URIs. |
-| 244 | [ ] | `src/Sylvercode.SiteExtractor/Resources/ResourceUriTranslater.cs` | Default `IResourceUriTranslater` composing an ordered chain of URI translaters. |
-| 245 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.Resources.Processors` — resource processing contracts and implementations. |
-| 246 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/IResourceProcessorResult.cs` | Contract for the outcome produced by a resource processor. |
-| 247 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/IResourceProcessor.cs` | Contract for processing a single resource (extracting data, copying bytes, etc.). |
-| 248 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/IResourceProcessorProvider.cs` | Contract for resolving the correct `IResourceProcessor` for a given resource. |
-| 249 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/IResourceCopiler.cs` | Contract for copying resource bytes from source to a data store. |
-| 250 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/IResourceDataExtractor.cs` | Contract for extracting structured data from a resource document. |
-| 251 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/IResourceDependancyFilter.cs` | Contract for filtering which dependency links within a resource should be followed. |
-| 252 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/BaseResourceProcessorResult.cs` | Abstract base for processor results sharing common outcome fields. |
-| 253 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/NoPostProcessResult.cs` | Processor result indicating no further post-processing is required. |
-| 254 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/DataExtractedProcessorResult.cs` | Processor result carrying extracted structural data and discovered child URIs. |
-| 255 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/ResourceCopierOptions.cs` | Configuration options for the `ResourceCopier` (retry policy, buffer size, etc.). |
-| 256 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/ResourceCopier.cs` | `IResourceProcessor` that copies resource bytes verbatim to the data store. |
-| 257 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/ResourceDataExtractor.cs` | `IResourceProcessor` that parses and extracts structured data from a document resource. |
-| 258 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/ResourceProcessorProvider.cs` | Default `IResourceProcessorProvider` selecting processors by resource MIME type or URI pattern. |
-| 259 | [ ] | `src/Sylvercode.SiteExtractor/Resources/Processors/ResourceProcessorExtentions.cs` | Extension methods for composing and registering resource processors. |
+| 233 | [x] | `src/Sylvercode.SiteExtractor/Resources/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.Resources` — resource tracking and update orchestration. |
+| 234 | [x] | `src/Sylvercode.SiteExtractor/Resources/IReadOnlyResourceRepository.cs` | Read-only contract for querying the set of tracked site resources. |
+| 235 | [x] | `src/Sylvercode.SiteExtractor/Resources/IReferencerUpdater.cs` | Contract for updating embedded URIs inside a resource's serialized content. |
+| 236 | [x] | `src/Sylvercode.SiteExtractor/Resources/IResourceUriTranslater.cs` | Contract for translating a resource URI into its final output path. |
+| 237 | [x] | `src/Sylvercode.SiteExtractor/Resources/ResourcePullState.cs` | Enum of states a resource can be in during the download/copy cycle (pending, pulled, etc.). |
+| 238 | [x] | `src/Sylvercode.SiteExtractor/Resources/ResourceState.cs` | Tracks the current pull state and any error for a single resource entry. |
+| 239 | [x] | `src/Sylvercode.SiteExtractor/Resources/Resource.cs` | Represents a site resource (page or asset) with its source URI and pull state. |
+| 240 | [x] | `src/Sylvercode.SiteExtractor/Resources/ResourceQueue.cs` | Thread-safe queue of resources pending extraction or download. |
+| 241 | [x] | `src/Sylvercode.SiteExtractor/Resources/ResourceRepository.cs` | Writable repository that stores and indexes all discovered `Resource` objects. |
+| 242 | [x] | `src/Sylvercode.SiteExtractor/Resources/ResourcesTracker.cs` | Coordinates resource discovery, deduplication, and state transitions. |
+| 243 | [x] | `src/Sylvercode.SiteExtractor/Resources/ReferencerUpdater.cs` | Applies `IReferencerUpdater` passes on serialized content to rewrite embedded URIs. |
+| 244 | [x] | `src/Sylvercode.SiteExtractor/Resources/ResourceUriTranslater.cs` | Default `IResourceUriTranslater` composing an ordered chain of URI translaters. |
+| 245 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.Resources.Processors` — resource processing contracts and implementations. |
+| 246 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/IResourceProcessorResult.cs` | Contract for the outcome produced by a resource processor. |
+| 247 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/IResourceProcessor.cs` | Contract for processing a single resource (extracting data, copying bytes, etc.). |
+| 248 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/IResourceProcessorProvider.cs` | Contract for resolving the correct `IResourceProcessor` for a given resource. |
+| 249 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/IResourceCopiler.cs` | Contract for copying resource bytes from source to a data store. |
+| 250 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/IResourceDataExtractor.cs` | Contract for extracting structured data from a resource document. |
+| 251 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/IResourceDependancyFilter.cs` | Contract for filtering which dependency links within a resource should be followed. |
+| 252 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/BaseResourceProcessorResult.cs` | Abstract base for processor results sharing common outcome fields. |
+| 253 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/NoPostProcessResult.cs` | Processor result indicating no further post-processing is required. |
+| 254 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/DataExtractedProcessorResult.cs` | Processor result carrying extracted structural data and discovered child URIs. |
+| 255 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/ResourceCopierOptions.cs` | Configuration options for the `ResourceCopier` (retry policy, buffer size, etc.). |
+| 256 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/ResourceCopier.cs` | `IResourceProcessor` that copies resource bytes verbatim to the data store. |
+| 257 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/ResourceDataExtractor.cs` | `IResourceProcessor` that parses and extracts structured data from a document resource. |
+| 258 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/ResourceProcessorProvider.cs` | Default `IResourceProcessorProvider` selecting processors by resource MIME type or URI pattern. |
+| 259 | [x] | `src/Sylvercode.SiteExtractor/Resources/Processors/ResourceProcessorExtentions.cs` | Extension methods for composing and registering resource processors. |
 
 ---
 
