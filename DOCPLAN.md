@@ -323,18 +323,18 @@ Markdown serializers built on the core serialization layer and StdHtml model.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 221 | [ ] | `src/Sylvercode.SiteExtractor/Sources/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.Sources` — site source contracts and in-memory implementation. |
-| 222 | [ ] | `src/Sylvercode.SiteExtractor/Sources/ISiteSource.cs` | Contract for fetching the raw document content of a resource by URI. |
-| 223 | [ ] | `src/Sylvercode.SiteExtractor/Sources/ISiteSourceProvider.cs` | Contract for providing the appropriate `ISiteSource` for a given URI. |
-| 224 | [ ] | `src/Sylvercode.SiteExtractor/Sources/MemorySiteSource.cs` | In-memory `ISiteSource` backed by a dictionary of pre-loaded document strings. |
-| 225 | [ ] | `src/Sylvercode.SiteExtractor/Sources/MemorySiteSourceExtensions.cs` | Extension helpers for populating and registering `MemorySiteSource`. |
-| 226 | [ ] | `src/Sylvercode.SiteExtractor/Store/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.Store` — data stores for persisting extracted content. |
-| 227 | [ ] | `src/Sylvercode.SiteExtractor/Store/IDataStore.cs` | Contract for reading and writing extracted document data to a persistent store. |
-| 228 | [ ] | `src/Sylvercode.SiteExtractor/Store/BaseDataStore.cs` | Abstract base providing common implementation helpers for `IDataStore`. |
-| 229 | [ ] | `src/Sylvercode.SiteExtractor/Store/MemoryDataStore.cs` | In-memory `IDataStore` implementation suitable for testing and temporary buffering. |
-| 230 | [ ] | `src/Sylvercode.SiteExtractor/Store/MemoryDataStoreExtensions.cs` | Extension methods for registering `MemoryDataStore` in DI containers. |
-| 231 | [ ] | `src/Sylvercode.SiteExtractor/Store/DirectoryDataStore.cs` | `IDataStore` implementation that writes extracted files to a directory on disk. |
-| 232 | [ ] | `src/Sylvercode.SiteExtractor/Store/DirectoryDataStoreExtensions.cs` | Extension methods for registering `DirectoryDataStore` in DI containers. |
+| 221 | [x] | `src/Sylvercode.SiteExtractor/Sources/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.Sources` — site source contracts and in-memory implementation. |
+| 222 | [x] | `src/Sylvercode.SiteExtractor/Sources/ISiteSource.cs` | Contract for fetching the raw document content of a resource by URI. |
+| 223 | [x] | `src/Sylvercode.SiteExtractor/Sources/ISiteSourceProvider.cs` | Contract for providing the appropriate `ISiteSource` for a given URI. |
+| 224 | [x] | `src/Sylvercode.SiteExtractor/Sources/MemorySiteSource.cs` | In-memory `ISiteSource` backed by a dictionary of pre-loaded document strings. |
+| 225 | [x] | `src/Sylvercode.SiteExtractor/Sources/MemorySiteSourceExtensions.cs` | Extension helpers for populating and registering `MemorySiteSource`. |
+| 226 | [x] | `src/Sylvercode.SiteExtractor/Store/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.SiteExtractor.Store` — data stores for persisting extracted content. |
+| 227 | [x] | `src/Sylvercode.SiteExtractor/Store/IDataStore.cs` | Contract for reading and writing extracted document data to a persistent store. |
+| 228 | [x] | `src/Sylvercode.SiteExtractor/Store/BaseDataStore.cs` | Abstract base providing common implementation helpers for `IDataStore`. |
+| 229 | [x] | `src/Sylvercode.SiteExtractor/Store/MemoryDataStore.cs` | In-memory `IDataStore` implementation suitable for testing and temporary buffering. |
+| 230 | [x] | `src/Sylvercode.SiteExtractor/Store/MemoryDataStoreExtensions.cs` | Extension methods for registering `MemoryDataStore` in DI containers. |
+| 231 | [x] | `src/Sylvercode.SiteExtractor/Store/DirectoryDataStore.cs` | `IDataStore` implementation that writes extracted files to a directory on disk. |
+| 232 | [x] | `src/Sylvercode.SiteExtractor/Store/DirectoryDataStoreExtensions.cs` | Extension methods for registering `DirectoryDataStore` in DI containers. |
 
 ---
 
