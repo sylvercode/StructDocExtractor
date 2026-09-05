@@ -4,6 +4,14 @@ using Sylvercode.StructDocExtractor.Model.Init;
 
 namespace Sylvercode.StructDocExtractor.Extraction;
 
+/// <summary>Sequences and processes extraction tasks in order, managing the pending-task queue and notifying observers as each task completes.</summary>
+/// <typeparam name="TExtractionData">The type of source data element being extracted.</typeparam>
+/// <typeparam name="TDataDiscriminator">The discriminator type used to select node factories.</typeparam>
+/// <param name="handler">The handler responsible for processing each individual extraction task.</param>
+/// <remarks>
+/// Uses a <see cref="LinkedList{T}"/> to allow child tasks to be prepended (depth-first) or appended (breadth-first).
+/// Implements <see cref="IObservable{T}"/> so callers can subscribe to task-completion events.
+/// </remarks>
 public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
     (IExtractorTaskSequencerHandler<TExtractionData, TDataDiscriminator> handler)
     : IObservable<ExtractionTask>
@@ -12,8 +20,11 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
 
     private readonly LinkedList<ExtractionTask> _pendingTacks = [];
 
+    /// <summary>Gets a value indicating whether there are tasks remaining in the pending-task queue.</summary>
     public bool HasPendingTask => _pendingTacks.First is not null;
 
+    /// <summary>Drains the task queue, processes each task via the handler, and returns the aggregated extraction result.</summary>
+    /// <returns>An <see cref="ExtractionResult"/> containing all produced nodes, merged metadata, and task statistics.</returns>
     public ExtractionResult ProcessTasks()
     {
         ExtractionResult result = new();
@@ -102,6 +113,9 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
             AddTask(data, asNext);
     }
 
+    /// <summary>Enqueues a sequence of typed data items as new extraction tasks.</summary>
+    /// <param name="extractionDatas">The source data elements to enqueue.</param>
+    /// <param name="asNext">When <see langword="true"/>, prepends each item so it is processed next (depth-first); otherwise appends (breadth-first).</param>
     public void AddTasks(IEnumerable<TExtractionData> extractionDatas, bool asNext = false)
     {
         var iterable = asNext ? extractionDatas.Reverse() : extractionDatas;
@@ -112,6 +126,9 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
         }
     }
 
+    /// <summary>Enqueues a single typed data item as a new extraction task.</summary>
+    /// <param name="data">The source data element to enqueue.</param>
+    /// <param name="asNext">When <see langword="true"/>, prepends the task so it is processed next (depth-first); otherwise appends (breadth-first).</param>
     public void AddTask([DisallowNull] TExtractionData data, bool asNext = false)
         => AddTask(new ExtractionTask(data, logger: handler.CreateLogger<ExtractionTask>()), asNext);
 
@@ -144,6 +161,9 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
 
     #region IObservable
     private readonly List<IObserver<ExtractionTask>> observers = [];
+    /// <summary>Registers an observer to receive completed <see cref="ExtractionTask"/> notifications as each task result is set.</summary>
+    /// <param name="observer">The observer to register.</param>
+    /// <returns>An <see cref="IDisposable"/> that removes the observer when disposed.</returns>
     public IDisposable Subscribe(IObserver<ExtractionTask> observer)
     {
         if (!observers.Contains(observer))

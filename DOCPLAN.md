@@ -85,24 +85,24 @@ Concrete pipeline logic that builds on the Layer 2 contracts.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 54 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/ExtractionTask.cs` | Concrete extraction task carrying source data, context, and target node reference. |
-| 55 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/ExtractionResult.cs` | Outcome of a completed extraction task, including the produced node. |
-| 56 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/ExtractionTaskResult.cs` | Wraps an `ExtractionResult` together with its task result type. |
-| 57 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/TaskContext.cs` | Immutable context passed through the extraction task chain (depth, parent info, etc.). |
-| 58 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/ProcessTaskResult.cs` | Default implementation of `IProcessTaskResult` returned by factory-based extraction. |
-| 59 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/ProcessTaskResultBuilder.cs` | Fluent builder for constructing `ProcessTaskResult` instances. |
-| 60 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/ExtractorOption.cs` | Configuration options that control extractor behaviour (depth limits, etc.). |
-| 61 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/Extractor.cs` | Main implementation of `IExtractor` — drives the recursive extraction pipeline. |
-| 62 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/ExtractorTaskSequencer.cs` | Sequences extraction tasks in breadth/depth order, calling sequencer handlers. |
-| 63 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/BaseTaskSequencerHandler.cs` | Abstract base for `IExtractorTaskSequencerHandler` providing shared dispatch logic. |
-| 64 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/ExtractorTaskSequencerHandler.cs` | Default sequencer handler that processes each task and enqueues children. |
-| 65 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/FactoryProviderStackByTask.cs` | Builds and exposes the factory-provider stack scoped to a specific task. |
-| 66 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/RouterExtractor.cs` | Extractor that routes each task to a sub-extractor selected by a selector. |
-| 67 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/RouterExtractorList.cs` | Ordered list of router extractors consulted in priority order. |
-| 68 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/RouterExtractorExtension.cs` | Extension methods for registering and composing router extractors. |
-| 69 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/StructDocNodeFactoryProvider.cs` | Default `IStructDocNodeFactoryProvider` resolving factories by element type. |
-| 70 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/ExtractionTaskFactory.cs` | Creates `IExtractionTask` instances for child nodes discovered during extraction. |
-| 71 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/ChildrenTaskInfoFactory.cs` | Default `IChildrenTaskInfoFactory` that produces child-task info from node children. |
+| 54 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/ExtractionTask.cs` | Concrete extraction task carrying source data, context, and target node reference. |
+| 55 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/ExtractionResult.cs` | Outcome of a completed extraction task, including the produced node. |
+| 56 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/ExtractionTaskResult.cs` | Wraps an `ExtractionResult` together with its task result type. |
+| 57 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/TaskContext.cs` | Immutable context passed through the extraction task chain (depth, parent info, etc.). |
+| 58 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/ProcessTaskResult.cs` | Default implementation of `IProcessTaskResult` returned by factory-based extraction. |
+| 59 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/ProcessTaskResultBuilder.cs` | Fluent builder for constructing `ProcessTaskResult` instances. |
+| 60 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/ExtractorOption.cs` | Configuration options that control extractor behaviour (depth limits, etc.). |
+| 61 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/Extractor.cs` | Main implementation of `IExtractor` — drives the recursive extraction pipeline. |
+| 62 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/ExtractorTaskSequencer.cs` | Sequences extraction tasks in breadth/depth order, calling sequencer handlers. |
+| 63 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/BaseTaskSequencerHandler.cs` | Abstract base for `IExtractorTaskSequencerHandler` providing shared dispatch logic. |
+| 64 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/ExtractorTaskSequencerHandler.cs` | Default sequencer handler that processes each task and enqueues children. |
+| 65 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/FactoryProviderStackByTask.cs` | Builds and exposes the factory-provider stack scoped to a specific task. |
+| 66 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/RouterExtractor.cs` | Extractor that routes each task to a sub-extractor selected by a selector. |
+| 67 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/RouterExtractorList.cs` | Ordered list of router extractors consulted in priority order. |
+| 68 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/RouterExtractorExtension.cs` | Extension methods for registering and composing router extractors. |
+| 69 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/StructDocNodeFactoryProvider.cs` | Default `IStructDocNodeFactoryProvider` resolving factories by element type. |
+| 70 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/ExtractionTaskFactory.cs` | Creates `IExtractionTask` instances for child nodes discovered during extraction. |
+| 71 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/ChildrenTaskInfoFactory.cs` | Default `IChildrenTaskInfoFactory` that produces child-task info from node children. |
 
 ---
 
