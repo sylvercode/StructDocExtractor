@@ -51,31 +51,31 @@ Abstractions for the extraction pipeline; no implementations yet.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 29 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Extraction` — orchestration of node extraction tasks. |
-| 30 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/IExtractionTask.cs` | Contract for a single unit of work that extracts a node from source data. |
-| 31 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/IExtractor.cs` | Top-level contract for running an extraction pass on a document. |
-| 32 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/IProcessTaskResult.cs` | Contract for the outcome returned by a processed extraction task. |
-| 33 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/IExtractorTaskSequencerHandler.cs` | Contract for handling sequenced task execution in the extractor pipeline. |
-| 34 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/IRouterExtractorSelector.cs` | Contract for selecting the appropriate extractor from a router based on the task. |
-| 35 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/IRouterExtractorSelectorProvider.cs` | Contract for providing `IRouterExtractorSelector` instances. |
-| 36 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/TaskResultType.cs` | Enum of possible task result types (e.g., Success, Skip, Abort). |
-| 37 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Extraction.Factory` — factory contracts for node creation. |
-| 38 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/IStructDocNodeFactory.cs` | Contract for creating a `IStructDocNode` from a source element and task context. |
-| 39 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/IStructDocNodeFactoryProvider.cs` | Contract for resolving the correct `IStructDocNodeFactory` for a given source element. |
-| 40 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/IStructDocNodeFactoryProviderStack.cs` | Contract for a stack of factory providers enabling layered factory resolution. |
-| 41 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/IDataDiscriminatorFactory.cs` | Contract for discriminating which factory should handle a given source data element. |
-| 42 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/IChildrenTaskInfoFactory.cs` | Contract for creating child-task descriptors from a parent extraction result. |
-| 43 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/PreviewProvider/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Extraction.PreviewProvider` — preview text generation. |
-| 44 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/PreviewProvider/IDataPreviewProvider.cs` | Contract for generating a human-readable preview string from source data. |
-| 45 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/PreviewProvider/StringPreviewProvider.cs` | Preview provider that returns a string source value directly as the preview. |
-| 46 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/PreviewProvider/ToStringPreviewProvider.cs` | Preview provider that calls `ToString()` on the source data to produce a preview. |
-| 47 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Extraction.TaskInfo` — descriptors for child task dispatch. |
-| 48 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/IChildrenTaskInfo.cs` | Contract describing how child tasks should be created from an extracted parent node. |
-| 49 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/ChildrenTaskInfo.cs` | Standard children-task descriptor carrying child source data for further extraction. |
-| 50 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/NodeHolderChildrenTaskInfo.cs` | Children-task descriptor that targets a node holder's children list. |
-| 51 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/ParentTaskInfo.cs` | Carries parent-context information that child extraction tasks may need. |
-| 52 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/ProxyChildrenTaskInfo.cs` | Children-task descriptor that proxies another descriptor to override behaviour. |
-| 53 | [ ] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/TaskIndex.cs` | Represents the positional index of a task within a sibling task sequence. |
+| 29 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Extraction` — orchestration of node extraction tasks. |
+| 30 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/IExtractionTask.cs` | Contract for a single unit of work that extracts a node from source data. |
+| 31 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/IExtractor.cs` | Top-level contract for running an extraction pass on a document. |
+| 32 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/IProcessTaskResult.cs` | Contract for the outcome returned by a processed extraction task. |
+| 33 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/IExtractorTaskSequencerHandler.cs` | Contract for handling sequenced task execution in the extractor pipeline. |
+| 34 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/IRouterExtractorSelector.cs` | Contract for selecting the appropriate extractor from a router based on the task. |
+| 35 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/IRouterExtractorSelectorProvider.cs` | Contract for providing `IRouterExtractorSelector` instances. |
+| 36 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/TaskResultType.cs` | Enum of possible task result types (e.g., Success, Skip, Abort). |
+| 37 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Extraction.Factory` — factory contracts for node creation. |
+| 38 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/IStructDocNodeFactory.cs` | Contract for creating a `IStructDocNode` from a source element and task context. |
+| 39 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/IStructDocNodeFactoryProvider.cs` | Contract for resolving the correct `IStructDocNodeFactory` for a given source element. |
+| 40 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/IStructDocNodeFactoryProviderStack.cs` | Contract for a stack of factory providers enabling layered factory resolution. |
+| 41 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/IDataDiscriminatorFactory.cs` | Contract for discriminating which factory should handle a given source data element. |
+| 42 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/Factory/IChildrenTaskInfoFactory.cs` | Contract for creating child-task descriptors from a parent extraction result. |
+| 43 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/PreviewProvider/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Extraction.PreviewProvider` — preview text generation. |
+| 44 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/PreviewProvider/IDataPreviewProvider.cs` | Contract for generating a human-readable preview string from source data. |
+| 45 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/PreviewProvider/StringPreviewProvider.cs` | Preview provider that returns a string source value directly as the preview. |
+| 46 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/PreviewProvider/ToStringPreviewProvider.cs` | Preview provider that calls `ToString()` on the source data to produce a preview. |
+| 47 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Extraction.TaskInfo` — descriptors for child task dispatch. |
+| 48 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/IChildrenTaskInfo.cs` | Contract describing how child tasks should be created from an extracted parent node. |
+| 49 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/ChildrenTaskInfo.cs` | Standard children-task descriptor carrying child source data for further extraction. |
+| 50 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/NodeHolderChildrenTaskInfo.cs` | Children-task descriptor that targets a node holder's children list. |
+| 51 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/ParentTaskInfo.cs` | Carries parent-context information that child extraction tasks may need. |
+| 52 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/ProxyChildrenTaskInfo.cs` | Children-task descriptor that proxies another descriptor to override behaviour. |
+| 53 | [x] | `src/Sylvercode.StructDocExtractor/Extraction/TaskInfo/TaskIndex.cs` | Represents the positional index of a task within a sibling task sequence. |
 
 ---
 
