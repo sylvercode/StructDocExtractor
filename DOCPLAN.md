@@ -205,12 +205,12 @@ HTML node factory contracts and score criteria on top of Layer 5 & 6.
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 137 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Extraction/Factory/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.StdHtml.Extraction.Factory` — HTML-specific factory contracts. |
-| 138 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Extraction/Factory/IHtmlNodeFactory.cs` | Contract for HTML-specific node factories keyed on `HtmlNodeDiscriminator`. |
-| 139 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/Extraction/Factory/HtmlNodeFactoryProvider.cs` | Provides `IHtmlNodeFactory` instances, selecting by discriminator matching. |
-| 140 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/StructDataStack/Score/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.StdHtml.StructDataStack.Score` — HTML-specific score helpers. |
-| 141 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/StructDataStack/Score/HtmlNodeDiscriminatorExtentions.cs` | Extension methods on `HtmlNodeDiscriminator` for fluent score-criteria construction. |
-| 142 | [ ] | `src/Sylvercode.StructDocExtractor.StdHtml/StructDataStack/Score/HtmlScoreCriteriaBuilder.cs` | Fluent builder for assembling HTML-specific `NodeScoreCriteriaSet` collections. |
+| 137 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Extraction/Factory/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.StdHtml.Extraction.Factory` — HTML-specific factory contracts. |
+| 138 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Extraction/Factory/IHtmlNodeFactory.cs` | Contract for HTML-specific node factories keyed on `HtmlNodeDiscriminator`. |
+| 139 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/Extraction/Factory/HtmlNodeFactoryProvider.cs` | Provides `IHtmlNodeFactory` instances, selecting by discriminator matching. |
+| 140 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/StructDataStack/Score/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.StdHtml.StructDataStack.Score` — HTML-specific score helpers. |
+| 141 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/StructDataStack/Score/HtmlNodeDiscriminatorExtentions.cs` | Extension methods on `HtmlNodeDiscriminator` for fluent score-criteria construction. |
+| 142 | [x] | `src/Sylvercode.StructDocExtractor.StdHtml/StructDataStack/Score/HtmlScoreCriteriaBuilder.cs` | Fluent builder for assembling HTML-specific `NodeScoreCriteriaSet` collections. |
 
 ---
 
