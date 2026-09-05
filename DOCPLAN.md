@@ -14,34 +14,34 @@ These types have no intra-project dependencies and form the vocabulary of the wh
 
 | # | Status | File | One-liner |
 |---|--------|------|-----------|
-| 1 | [ ] | `src/Sylvercode.StructDocExtractor/Metadatas/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Metadatas` — key/value metadata attached to nodes. |
-| 2 | [ ] | `src/Sylvercode.StructDocExtractor/Metadatas/Metadata.cs` | Immutable key/value pair representing a single metadata entry. |
-| 3 | [ ] | `src/Sylvercode.StructDocExtractor/Metadatas/MetadataDictionary.cs` | Dictionary of `Metadata` entries keyed by name, attached to structural nodes. |
-| 4 | [ ] | `src/Sylvercode.StructDocExtractor/Metadatas/StdMetadata.cs` | Constants for well-known metadata key names used across the extractor pipeline. |
-| 5 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Model` — core structural document node contracts. |
-| 6 | [ ] | `src/Sylvercode.StructDocExtractor/Model/IStructDocNode.cs` | Base contract for every node in the structured document tree. |
-| 7 | [ ] | `src/Sylvercode.StructDocExtractor/Model/IStructDocBlock.cs` | Marker contract identifying block-level structural document nodes. |
-| 8 | [ ] | `src/Sylvercode.StructDocExtractor/Model/IStructDocNodeHolder.cs` | Contract for nodes that hold an ordered collection of child `IStructDocNode`s. |
-| 9 | [ ] | `src/Sylvercode.StructDocExtractor/Model/IStructDocReferencer.cs` | Contract for nodes that carry a URI reference (links, images, etc.). |
-| 10 | [ ] | `src/Sylvercode.StructDocExtractor/Model/StructDocRootBlock.cs` | Concrete root block node that is the top-level container of a structured document. |
-| 11 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Base/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Model.Base` — abstract base classes for node types. |
-| 12 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocNode.cs` | Abstract base providing identity and metadata storage for all structural nodes. |
-| 13 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocBlock.cs` | Abstract base for block-level nodes, implementing `IStructDocBlock`. |
-| 14 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocBlockWithAnyContent.cs` | Abstract base for block nodes that accept any content type as children. |
-| 15 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocBlockWithAnyParent.cs` | Abstract base for block nodes that can live under any parent node. |
-| 16 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocBlockWithAnyParentAndContent.cs` | Abstract base for block nodes with unrestricted parent and content constraints. |
-| 17 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocRootBlock.cs` | Abstract base for root-level container block nodes. |
-| 18 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocRootBlockWithAnyContent.cs` | Abstract base for root blocks that accept any child content type. |
-| 19 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Init/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Model.Init` — initializers that link parent/child relationships. |
-| 20 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Init/IStructDocNodeInitializer.cs` | Contract for initializing a single structural node after construction. |
-| 21 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Init/IStructDocNodeInitializerExtensions.cs` | Extension helpers that apply `IStructDocNodeInitializer` to collections. |
-| 22 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Init/IStructDocNodeHolderInitializer.cs` | Contract for initializing a node holder and wiring its children. |
-| 23 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Init/IStructDocNodeHolderInitializerExtetnion.cs` | Extension helpers for `IStructDocNodeHolderInitializer` bulk initialization. |
-| 24 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Init/IParentChildLinkInitializer.cs` | Contract for setting up bi-directional parent/child links between nodes. |
-| 25 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Init/ParentChildLinkInitializer.cs` | Default implementation that establishes parent/child links during tree construction. |
-| 26 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Utils/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Model.Utils` — utilities for traversing the node tree. |
-| 27 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Utils/ISrcNodeStack.cs` | Contract for a stack that tracks source nodes during tree traversal. |
-| 28 | [ ] | `src/Sylvercode.StructDocExtractor/Model/Utils/SrcNodeStack.cs` | Stack implementation that maintains source-node context during document traversal. |
+| 1 | [x] | `src/Sylvercode.StructDocExtractor/Metadatas/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Metadatas` — key/value metadata attached to nodes. |
+| 2 | [x] | `src/Sylvercode.StructDocExtractor/Metadatas/Metadata.cs` | Immutable key/value pair representing a single metadata entry. |
+| 3 | [x] | `src/Sylvercode.StructDocExtractor/Metadatas/MetadataDictionary.cs` | Dictionary of `Metadata` entries keyed by name, attached to structural nodes. |
+| 4 | [x] | `src/Sylvercode.StructDocExtractor/Metadatas/StdMetadata.cs` | Constants for well-known metadata key names used across the extractor pipeline. |
+| 5 | [x] | `src/Sylvercode.StructDocExtractor/Model/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Model` — core structural document node contracts. |
+| 6 | [x] | `src/Sylvercode.StructDocExtractor/Model/IStructDocNode.cs` | Base contract for every node in the structured document tree. |
+| 7 | [x] | `src/Sylvercode.StructDocExtractor/Model/IStructDocBlock.cs` | Marker contract identifying block-level structural document nodes. |
+| 8 | [x] | `src/Sylvercode.StructDocExtractor/Model/IStructDocNodeHolder.cs` | Contract for nodes that hold an ordered collection of child `IStructDocNode`s. |
+| 9 | [x] | `src/Sylvercode.StructDocExtractor/Model/IStructDocReferencer.cs` | Contract for nodes that carry a URI reference (links, images, etc.). |
+| 10 | [x] | `src/Sylvercode.StructDocExtractor/Model/StructDocRootBlock.cs` | Concrete root block node that is the top-level container of a structured document. |
+| 11 | [x] | `src/Sylvercode.StructDocExtractor/Model/Base/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Model.Base` — abstract base classes for node types. |
+| 12 | [x] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocNode.cs` | Abstract base providing identity and metadata storage for all structural nodes. |
+| 13 | [x] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocBlock.cs` | Abstract base for block-level nodes, implementing `IStructDocBlock`. |
+| 14 | [x] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocBlockWithAnyContent.cs` | Abstract base for block nodes that accept any content type as children. |
+| 15 | [x] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocBlockWithAnyParent.cs` | Abstract base for block nodes that can live under any parent node. |
+| 16 | [x] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocBlockWithAnyParentAndContent.cs` | Abstract base for block nodes with unrestricted parent and content constraints. |
+| 17 | [x] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocRootBlock.cs` | Abstract base for root-level container block nodes. |
+| 18 | [x] | `src/Sylvercode.StructDocExtractor/Model/Base/BaseStructDocRootBlockWithAnyContent.cs` | Abstract base for root blocks that accept any child content type. |
+| 19 | [x] | `src/Sylvercode.StructDocExtractor/Model/Init/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Model.Init` — initializers that link parent/child relationships. |
+| 20 | [x] | `src/Sylvercode.StructDocExtractor/Model/Init/IStructDocNodeInitializer.cs` | Contract for initializing a single structural node after construction. |
+| 21 | [x] | `src/Sylvercode.StructDocExtractor/Model/Init/IStructDocNodeInitializerExtensions.cs` | Extension helpers that apply `IStructDocNodeInitializer` to collections. |
+| 22 | [x] | `src/Sylvercode.StructDocExtractor/Model/Init/IStructDocNodeHolderInitializer.cs` | Contract for initializing a node holder and wiring its children. |
+| 23 | [x] | `src/Sylvercode.StructDocExtractor/Model/Init/IStructDocNodeHolderInitializerExtetnion.cs` | Extension helpers for `IStructDocNodeHolderInitializer` bulk initialization. |
+| 24 | [x] | `src/Sylvercode.StructDocExtractor/Model/Init/IParentChildLinkInitializer.cs` | Contract for setting up bi-directional parent/child links between nodes. |
+| 25 | [x] | `src/Sylvercode.StructDocExtractor/Model/Init/ParentChildLinkInitializer.cs` | Default implementation that establishes parent/child links during tree construction. |
+| 26 | [x] | `src/Sylvercode.StructDocExtractor/Model/Utils/Namespace.cs` **[NEW FILE]** | Namespace doc for `Sylvercode.StructDocExtractor.Model.Utils` — utilities for traversing the node tree. |
+| 27 | [x] | `src/Sylvercode.StructDocExtractor/Model/Utils/ISrcNodeStack.cs` | Contract for a stack that tracks source nodes during tree traversal. |
+| 28 | [x] | `src/Sylvercode.StructDocExtractor/Model/Utils/SrcNodeStack.cs` | Stack implementation that maintains source-node context during document traversal. |
 
 ---
 
