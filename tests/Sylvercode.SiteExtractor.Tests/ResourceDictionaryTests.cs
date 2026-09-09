@@ -2,8 +2,10 @@
 
 namespace Sylvercode.SiteExtractor.Tests;
 
+/// <summary>Tests for <see cref="ResourceRepository.Add"/> deduplication and indexing logic.</summary>
 public class ResourceDictionaryTests_Add
 {
+    /// <summary>Verifies that fragment URIs sharing the same base are collapsed into a single repository entry.</summary>
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
@@ -20,6 +22,7 @@ public class ResourceDictionaryTests_Add
         Resource resource = Assert.Single(resourceDictionary);
     }
 
+    /// <summary>Verifies that adding the same base URI with conflicting pullability throws an <see cref="InvalidOperationException"/>.</summary>
     [Fact]
     public void TwoFragmentWithDifferentPullType_Invalid()
     {
@@ -35,8 +38,10 @@ public class ResourceDictionaryTests_Add
     }
 }
 
+/// <summary>Tests for <see cref="ResourceRepository"/> index lookup by URI.</summary>
 public class ResourceDictionaryTests_Index
 {
+    /// <summary>Verifies that indexing a URI not in the repository throws a <see cref="KeyNotFoundException"/>.</summary>
     [Fact]
     public void ResourceDoesNotExist_Invalid()
     {
@@ -50,6 +55,7 @@ public class ResourceDictionaryTests_Index
         Assert.Throws<KeyNotFoundException>(action);
     }
 
+    /// <summary>Verifies that a plain URI resolves to its stored resource.</summary>
     [Fact]
     public void ResourceExists_Valid()
     {
@@ -64,6 +70,7 @@ public class ResourceDictionaryTests_Index
         Assert.Equal("https://example.com/", resource.Uri.AbsoluteUri);
     }
 
+    /// <summary>Verifies that a fragment URI resolves to the base resource entry.</summary>
     [Fact]
     public void ResourceExistsWithFragment_Valid()
     {
@@ -78,6 +85,7 @@ public class ResourceDictionaryTests_Index
         Assert.Equal("https://example.com/", resource.Uri.AbsoluteUri);
     }
 
+    /// <summary>Verifies that any fragment of a registered base URI resolves to the same resource entry.</summary>
     [Fact]
     public void ResourceExistsWithOtherFragment_Valid()
     {
@@ -93,8 +101,10 @@ public class ResourceDictionaryTests_Index
     }
 }
 
+/// <summary>Tests for <see cref="ResourceRepository.ContainsResourceForUri"/> membership checks.</summary>
 public class ResourceDictionaryTests_Contains
 {
+    /// <summary>Verifies that querying a URI not in the repository returns <see langword="false"/>.</summary>
     [Fact]
     public void ResourceDoesNotExist_Invalid()
     {
@@ -108,6 +118,7 @@ public class ResourceDictionaryTests_Contains
         Assert.False(contains);
     }
 
+    /// <summary>Verifies that querying a registered URI returns <see langword="true"/>.</summary>
     [Fact]
     public void ResourceExists_Valid()
     {
@@ -122,6 +133,7 @@ public class ResourceDictionaryTests_Contains
         Assert.True(contains);
     }
 
+    /// <summary>Verifies that querying with a fragment of a registered URI returns <see langword="true"/>.</summary>
     [Fact]
     public void ResourceExistsWithFragment_Valid()
     {
@@ -136,6 +148,7 @@ public class ResourceDictionaryTests_Contains
         Assert.True(contains);
     }
 
+    /// <summary>Verifies that querying with a different fragment of the same base URI returns <see langword="true"/>.</summary>
     [Fact]
     public void ResourceExistsWithOtherFragment_Valid()
     {

@@ -6,10 +6,18 @@ using Sylvercode.StructDocExtractor.Model.Init;
 
 namespace Sylvercode.StructDocExtractor.Extraction.Factory;
 
+/// <summary>Default implementation of <see cref="IChildrenTaskInfoFactory"/> that selects the appropriate <see cref="IChildrenTaskInfo"/> variant based on the task's result node type and parent context.</summary>
+/// <param name="loggerFactory">Optional logger factory for logging task-info creation decisions; falls back to a null factory when omitted.</param>
+/// <remarks>
+/// Uses <see cref="NodeHolderChildrenTaskInfo"/> when the result implements <see cref="IStructDocNodeHolderInitializer"/>,
+/// <see cref="ProxyChildrenTaskInfo"/> when the result is null but an ancestor holds a node holder, and
+/// <see cref="ChildrenTaskInfo"/> otherwise.
+/// </remarks>
 public partial class ChildrenTaskInfoFactory(
     ILoggerFactory? loggerFactory = null) : IChildrenTaskInfoFactory
 {
 
+    /// <summary>Gets a shared singleton instance with no logging.</summary>
     public static ChildrenTaskInfoFactory Default { get; } = new();
 
     private readonly ILogger _logger = loggerFactory?.CreateLogger<ChildrenTaskInfoFactory>()
@@ -27,6 +35,7 @@ public partial class ChildrenTaskInfoFactory(
         loggerFactory?.CreateLogger<ChildrenTaskInfo>()
         ?? NullLogger<ChildrenTaskInfo>.Instance;
 
+    /// <inheritdoc/>
     public IChildrenTaskInfo NewChildrenTaskInfo(
         ExtractionTask task,
         IEnumerable<object>? childrenData)

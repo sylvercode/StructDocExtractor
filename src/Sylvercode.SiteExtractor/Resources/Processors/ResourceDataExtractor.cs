@@ -9,6 +9,15 @@ using Sylvercode.StructDocExtractor.Serialization;
 
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
+/// <summary>Implementation of <see cref="IResourceDataExtractor{TExtractionData}"/> that fetches a resource from a site source, runs the structural extraction pipeline, and serializes the result to the data store in a two-phase process.</summary>
+/// <remarks>
+/// Processing is split into two phases: <see cref="Extract"/> fetches and extracts the document, returning a
+/// <see cref="DataExtractedProcessorResult{TExtractionData}"/> (unfinished); <see cref="ContinueExtraction"/>
+/// then updates URI references via <see cref="IReferencerUpdater"/> and serializes the node tree.
+/// An optional <see cref="IResourceDependancyFilter"/> controls which discovered referencer nodes are tracked as
+/// dependencies, and an optional <see cref="IUriRedirector"/> rewrites reference URIs before they are recorded.
+/// </remarks>
+/// <typeparam name="TExtractionData">The raw data type fetched from the site source and passed to the extractor.</typeparam>
 public partial class ResourceDataExtractor<TExtractionData>(
     ISiteSource<TExtractionData> siteSource,
     IExtractor<TExtractionData> extractor,
@@ -48,6 +57,7 @@ public partial class ResourceDataExtractor<TExtractionData>(
     private IResourceUriTranslater UriTransler { get; } =
         uriTranslater ?? ResourceUriTranslater.NewBaseTranslater(siteSource.BaseUri, dataStore.BaseUri);
 
+    /// <inheritdoc/>
     public IResourceProcessorResult Extract(Resource resource, IReadOnlyResourceRepository resourceRepository)
     {
         using var scope = _logger.BeginScope((ResourceUri: resource.Uri, SiteUri: siteSource.BaseUri));
@@ -92,6 +102,9 @@ public partial class ResourceDataExtractor<TExtractionData>(
             result.Metadatas);
     }
 
+    /// <summary>Performs the second processing phase: updates URI references and serializes the extracted document tree to the data store.</summary>
+    /// <param name="lastResult">The unfinished result from the first <see cref="Extract"/> call.</param>
+    /// <returns>A finished <see cref="FinishedProcessResult"/> once serialization is complete.</returns>
     public IResourceProcessorResult ContinueExtraction(DataExtractedProcessorResult<TExtractionData> lastResult)
     {
         referencerUpdater?.UpdateReferencers(
@@ -139,6 +152,7 @@ public partial class ResourceDataExtractor<TExtractionData>(
     private partial void LogReferencer(string referencer);
 
     #region IResourceProcessor
+    /// <inheritdoc/>
     public IResourceProcessorResult Process(Resource resource, IReadOnlyResourceRepository resourceRepository) => Extract(resource, resourceRepository);
     #endregion
 }

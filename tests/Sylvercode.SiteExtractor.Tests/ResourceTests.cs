@@ -2,8 +2,10 @@ using Sylvercode.SiteExtractor.Resources;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
+/// <summary>Tests for <see cref="Resource.TranslateUri"/> producing correct output URIs.</summary>
 public class ResourceTests_TranslateUri
 {
+    /// <summary>Verifies that translating a URI with no fragment changes only the base to the configured output base.</summary>
     [Fact]
     public void NoFragmentUrl_ResultOnlyBaseChange()
     {
@@ -21,6 +23,7 @@ public class ResourceTests_TranslateUri
         Assert.Equal(new Uri("https://test.com/resource"), result);
     }
 
+    /// <summary>Verifies that translating a URI with a fragment changes the base and preserves the fragment.</summary>
     [Fact]
     public void WithFragmentUrl_ResultBaseChangePlusFragment()
     {
@@ -38,6 +41,7 @@ public class ResourceTests_TranslateUri
         Assert.Equal(new Uri("https://test.com/resource#fragment"), result);
     }
 
+    /// <summary>Verifies that translating a URI whose base does not match the resource URI throws an <see cref="ArgumentException"/>.</summary>
     [Fact]
     public void WrongBase_Throw()
     {

@@ -4,6 +4,15 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.StructDocExtractor.Serialization;
 
+/// <summary>Executes a queue of <see cref="SerializerTask"/> objects, driving the depth-first serialization of an entire document tree.</summary>
+/// <remarks>
+/// Transforms the recursive document tree into a flat, ordered stream of serialization calls.
+/// For each task, it resolves a serializer via <see cref="ISerializerProvider"/>, calls
+/// <see cref="SerializerTask.OnToProcess"/>, invokes the serializer, and — unless the serializer set
+/// <see cref="NodeSerializationResult.ContentSerialized"/> — prepends child tasks to the linked list in
+/// reverse order to maintain correct depth-first traversal while wiring sibling links for
+/// before/between/after notifications.
+/// </remarks>
 public partial class StructDocSerializerExecutor
 {
     private readonly LinkedList<SerializerTask> _pendingTasks;
@@ -16,6 +25,11 @@ public partial class StructDocSerializerExecutor
     private readonly ILogger<StructDocSerializerExecutor> _logger;
     private readonly ILogger<SerializerTask> _loggerForTask;
 
+    /// <summary>Initializes a new <see cref="StructDocSerializerExecutor"/> and seeds the task queue with a root task for <paramref name="rootData"/>.</summary>
+    /// <param name="stream">The writer to which all serialized output is written.</param>
+    /// <param name="rootData">The root node of the document tree to serialize.</param>
+    /// <param name="serializerProvider">The provider used to resolve each node's serializer.</param>
+    /// <param name="loggerFactory">An optional factory for creating loggers; uses a null logger if <see langword="null"/>.</param>
     public StructDocSerializerExecutor(
         TextWriter stream,
         IStructDocNode rootData,
@@ -32,6 +46,7 @@ public partial class StructDocSerializerExecutor
                                                 logger: _loggerForTask)]);
     }
 
+    /// <summary>Processes all pending tasks in the queue until the entire document tree has been serialized.</summary>
     public void ExecuteTasks()
     {
         LogTasksExecutionStarted(_logger);

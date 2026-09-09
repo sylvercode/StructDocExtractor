@@ -5,6 +5,13 @@ using Sylvercode.SiteExtractor.Resources.Processors;
 
 namespace Sylvercode.SiteExtractor;
 
+/// <summary>Main <see cref="ISiteExtractor"/> implementation that orchestrates site extraction through a two-phase resource processing pipeline.</summary>
+/// <remarks>
+/// Accepts a seed URI, resolves an <see cref="IResourceProcessor"/> for it via <see cref="IResourceProcessorProvider"/>,
+/// then drives a queue-based loop: each dequeued resource is processed, its dependencies enqueued, and any metadata or
+/// URI translaters returned by the processor are applied. Resources that report <c>IsUnfinished</c> are collected and
+/// retried in subsequent batches until all resources are fully extracted.
+/// </remarks>
 public partial class SiteExtractor(
     IResourceProcessorProvider processorProvider,
     ILogger<SiteExtractor>? logger = null) : ISiteExtractor
@@ -13,6 +20,11 @@ public partial class SiteExtractor(
 
     private readonly ILogger<SiteExtractor> _logger = logger ?? NullLogger<SiteExtractor>.Instance;
 
+    /// <inheritdoc/>
+    /// <exception cref="InvalidOperationException">
+    /// No <see cref="IResourceProcessor"/> is registered for <paramref name="uri"/>, or a continuation
+    /// pass attempts to introduce new resource dependencies.
+    /// </exception>
     public void Extract(Uri uri)
     {
         _resourcesTracker.AddResource(uri, out bool hasResourceProcessor);

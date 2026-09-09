@@ -6,16 +6,19 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
+/// <summary>Serializer that emits <see cref="HtmlAnchor"/> nodes as Markdown inline links or wiki-links, using <see cref="MarkdownLinkFormater"/> for formatting.</summary>
 public class AnchorSerializer(ILogger<AnchorSerializer>? logger = null)
     : BaseMarkdownSerializer<HtmlAnchor>(
         handler: new LinkHandler(),
         logger: logger)
 {
+    /// <summary>Handler that formats anchor content as a Markdown link, writing the full link when content is text-only or just the href otherwise.</summary>
     public sealed class LinkHandler() : IndentedSerializerHandler<HtmlAnchor, MarkdownStreamWriter>(
             new Options(IndentedStreamWriter.SpaceOperationType.None))
     {
         private static readonly MarkdownLinkFormater _linkFormater = new(useWikilink: true);
 
+        /// <inheritdoc/>
         public override void Serialize(HtmlAnchor obj, MarkdownStreamWriter stream, NodeSerializationResult result)
         {
             if (!obj.HasContent)

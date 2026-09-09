@@ -9,8 +9,12 @@ using Sylvercode.SiteExtractor.Store;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
+/// <summary>Tests for <see cref="ResourceCopier.Download"/> copying bytes to the data store.</summary>
 public class ResourceCopierTests_Download
 {
+    /// <summary>Creates a default DI host configured with an in-memory source, memory data store, and <see cref="ResourceCopier"/>.</summary>
+    /// <param name="isOutputPathAbsolute">When <see langword="true"/>, the output path is treated as an absolute path segment.</param>
+    /// <returns>A built <see cref="IHost"/> ready for test use.</returns>
     public static IHost GetDefaultHost(bool isOutputPathAbsolute)
     {
         IHostBuilder builder = Host.CreateDefaultBuilder();
@@ -42,6 +46,7 @@ public class ResourceCopierTests_Download
         return builder.Build();
     }
 
+    /// <summary>Verifies that an existing resource is copied to the absolute output path in the data store.</summary>
     [Fact]
     public void ExistingToAbsolutePath_Copied()
     {
@@ -64,6 +69,7 @@ public class ResourceCopierTests_Download
         Assert.Equal(data, result.ToArray());
     }
 
+    /// <summary>Verifies that an existing resource is copied to the relative output path in the data store.</summary>
     [Fact]
     public void ExistingToRelativePath_Copied()
     {
@@ -86,6 +92,7 @@ public class ResourceCopierTests_Download
         Assert.Equal([1, 2, 3], result.ToArray());
     }
 
+    /// <summary>Verifies that attempting to download a non-existent resource throws an <see cref="InvalidOperationException"/>.</summary>
     [Fact]
     public void NotExisting_Throws()
     {
@@ -101,8 +108,10 @@ public class ResourceCopierTests_Download
     }
 }
 
+/// <summary>Tests for <see cref="ResourceCopier.Process"/> returning a finished result after a successful download.</summary>
 public class ResourceCopierTests_Process
 {
+    /// <summary>Verifies that a successful copy produces a finished, non-continuing processor result with a URI translater set.</summary>
     [Fact]
     public void Success_FinishedProcess()
     {

@@ -6,6 +6,7 @@ using Sylvercode.StructDocExtractor.Tests.Stubs;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
+/// <summary>Tests for <see cref="ResourcesTracker.AddResource"/> discovery and deduplication.</summary>
 public class ResourcesTrackerTests_AddResource
 {
     private static ExtractionTask AsTask(UriNode uri)
@@ -15,6 +16,7 @@ public class ResourcesTrackerTests_AddResource
         return result;
     }
 
+    /// <summary>Verifies that adding a new URI registers it in the resource tracker with the correct pullability.</summary>
     [Fact]
     public void NewUriResult_UriAdded()
     {
@@ -31,6 +33,7 @@ public class ResourcesTrackerTests_AddResource
         Assert.False(entry.State.IsPullable);
     }
 
+    /// <summary>Verifies that adding an already-tracked URI is silently ignored without creating a duplicate entry.</summary>
     [Fact]
     public void ExistingUriResult_UriIgnored()
     {

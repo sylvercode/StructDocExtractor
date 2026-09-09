@@ -3,8 +3,10 @@ using Sylvercode.SiteExtractor.Sources;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
+/// <summary>Tests for <see cref="MemorySiteSource{TData}"/> document retrieval and missing-key behaviour.</summary>
 public class MemorySiteSourceTests
 {
+    /// <summary>Verifies that an existing entry is reachable and returns its stored value.</summary>
     [Fact]
     public void ExistingData_IsPresent()
     {
@@ -24,6 +26,7 @@ public class MemorySiteSourceTests
         Assert.Equal(data, source.GetData(uri));
     }
 
+    /// <summary>Verifies that a URI not present in the source is correctly reported as absent.</summary>
     [Fact]
     public void NonExistingData_IsNotPresent()
     {
@@ -42,6 +45,7 @@ public class MemorySiteSourceTests
         Assert.Throws<InvalidOperationException>(() => source.GetData(uri));
     }
 
+    /// <summary>Verifies that the configured default data is returned when a URI is not explicitly stored.</summary>
     [Fact]
     public void DefaultData_IsReturned()
     {

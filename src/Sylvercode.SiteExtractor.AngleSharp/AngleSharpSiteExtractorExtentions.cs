@@ -16,10 +16,21 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 namespace Microsoft.Extensions.DependencyInjection;
 #pragma warning restore IDE0130 // Namespace does not match folder structure
 
+/// <summary>
+/// Provides extension methods for <see cref="IServiceCollection"/> to register the AngleSharp-backed
+/// site source and full extraction pipeline into a DI container.
+/// </summary>
 public static class AngleSharpSiteExtractorExtentions
 {
     private const string AngleSharpCookieColKey = nameof(AngleSharpCookieColKey);
 
+    /// <summary>
+    /// Registers <see cref="AngleSharpWebSource"/> as the <see cref="ISiteSource{TData}"/> singleton
+    /// for live HTTP fetching, along with its shared <see cref="MemoryCookieProvider"/> and
+    /// <see cref="IBrowsingContext"/> dependencies.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+    /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
     public static IServiceCollection AddAngleSharpWebSource(this IServiceCollection services)
     {
         services.AddMemoryCookieProvider();
@@ -46,6 +57,14 @@ public static class AngleSharpSiteExtractorExtentions
         return services;
     }
 
+    /// <summary>
+    /// Configures the AngleSharp cookie collection used by <see cref="AngleSharpWebSource"/> by
+    /// applying a delegate that populates the collection from a resolved dependency.
+    /// </summary>
+    /// <typeparam name="TDep">The dependency type resolved from the DI container to assist cookie configuration.</typeparam>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add options to.</param>
+    /// <param name="configure">Delegate that receives the <see cref="CookieCollection"/> and <typeparamref name="TDep"/> to configure.</param>
+    /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
     public static IServiceCollection ConfigreAngleSharpCookies<TDep>(this IServiceCollection services, Action<CookieCollection, TDep> configure)
         where TDep : class
     {
@@ -53,6 +72,21 @@ public static class AngleSharpSiteExtractorExtentions
         return services;
     }
 
+    /// <summary>
+    /// Registers the complete AngleSharp-backed site extractor pipeline, including the resource
+    /// processor provider, HTML dependency filter, optional live web source, and optional image copier.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+    /// <param name="withDefaultSource">
+    /// When <see langword="true"/> (default), also registers <see cref="AngleSharpWebSource"/> as the
+    /// live <see cref="ISiteSource{TData}"/>. Must be <see langword="true"/> when using
+    /// <paramref name="withImageCopier"/> so the cookie container is shared.
+    /// </param>
+    /// <param name="withImageCopier">
+    /// When <see langword="true"/> (default), registers the image copier processor and HTTP downloader
+    /// alongside the extractor.
+    /// </param>
+    /// <returns>The same <paramref name="services"/> instance for chaining.</returns>
     public static IServiceCollection AddAngleSharpSiteExtractor(this IServiceCollection services, bool withDefaultSource = true, bool withImageCopier = true)
     {
         services.AddSiteExtractor()

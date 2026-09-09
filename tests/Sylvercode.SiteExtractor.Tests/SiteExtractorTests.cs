@@ -6,8 +6,12 @@ using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
+/// <summary>End-to-end tests for <see cref="SiteExtractor.Extract"/> orchestrating the full pipeline.</summary>
 public class SiteExtractorTests_Extract
 {
+    /// <summary>Creates a default DI host with the given resource processor bound to the example.com base URI.</summary>
+    /// <param name="resourceProcessor">The processor to register for example.com resources.</param>
+    /// <returns>A built <see cref="IHost"/> ready for test use.</returns>
     public static IHost GetDefaultHost(IResourceProcessor resourceProcessor)
     {
         return Host.CreateDefaultBuilder()
@@ -22,6 +26,7 @@ public class SiteExtractorTests_Extract
             .Build();
     }
 
+    /// <summary>Verifies that a single resource with no dependencies is processed and all queued results are consumed.</summary>
     [Fact]
     public void SingleStepNoDependancy_ReturnFinish()
     {
@@ -39,6 +44,7 @@ public class SiteExtractorTests_Extract
         Assert.False(resourceProcessor.HasResults);
     }
 
+    /// <summary>Verifies that discovered dependencies are also processed until no queued results remain.</summary>
     [Fact]
     public void SingleStepWithDependancy_ReturnFinish()
     {
@@ -61,6 +67,7 @@ public class SiteExtractorTests_Extract
         Assert.False(resourceProcessor.HasResults);
     }
 
+    /// <summary>Verifies that a multi-step result triggers <see cref="IResourceProcessorResult.ContinueProcess"/> exactly once.</summary>
     [Fact]
     public void MultiStepWithNoDependancy_CallContinue()
     {
@@ -83,6 +90,7 @@ public class SiteExtractorTests_Extract
             call => Assert.Equal(nameof(IResourceProcessorResult.ContinueProcess), call.MethodName));
     }
 
+    /// <summary>Verifies that multi-step results for both the root resource and its dependencies each trigger a continue call.</summary>
     [Fact]
     public void MultiStepWithDependancy_CallContinue()
     {

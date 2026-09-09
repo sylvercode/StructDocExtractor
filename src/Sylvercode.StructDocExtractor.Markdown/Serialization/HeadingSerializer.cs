@@ -7,6 +7,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
+/// <summary>Serializer that outputs <see cref="HtmlHeading"/> nodes as ATX Markdown headings, prepending the appropriate number of <c>#</c> characters and appending an optional block ID.</summary>
 public class HeadingSerializer(ILogger<HeadingSerializer>? logger = null)
     : BaseMarkdownSerializer<HtmlHeading>(
         holderHandler: new HeadingHolderHandler(),

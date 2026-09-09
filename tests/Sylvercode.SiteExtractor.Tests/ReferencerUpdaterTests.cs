@@ -4,8 +4,10 @@ using Sylvercode.StructDocExtractor.Model;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
+/// <summary>Tests for <see cref="ReferencerUpdater.UpdateReferencers"/> rewriting embedded URIs.</summary>
 public class ReferencerUpdaterTests_UpdateReferencers
 {
+    /// <summary>Verifies that referencers whose target URIs are in the tracked resource repository are updated to translated URIs.</summary>
     [Fact]
     public void WithReferencersFoundInTrackedResources_ReferencersUpdated()
     {
@@ -30,6 +32,7 @@ public class ReferencerUpdaterTests_UpdateReferencers
         Assert.Equal("https://test.com/ref2#frag", referencers[1].GetReference());
     }
 
+    /// <summary>Verifies that referencers whose target URIs are not in the repository are left unchanged.</summary>
     [Fact]
     public void WithReferencersNotFoundInTrackedResources_ReferencersUntouch()
     {

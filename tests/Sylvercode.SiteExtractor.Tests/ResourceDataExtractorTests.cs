@@ -11,8 +11,14 @@ using Sylvercode.StructDocExtractor.Serialization;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
+/// <summary>Tests for <see cref="ResourceDataExtractor{TData}.Extract"/> producing structured nodes from documents.</summary>
 public class ResourceDataExtractorTests_Extract
 {
+    /// <summary>Creates a default DI host with mock source, store, extractor, and serializer.</summary>
+    /// <param name="calTracker">The tracker used to capture mock call order.</param>
+    /// <param name="dataReturnsNull">When <see langword="true"/>, the mock source returns <see langword="null"/> for all URIs.</param>
+    /// <param name="extractNothing">When <see langword="true"/>, the mock extractor produces no nodes.</param>
+    /// <returns>A built <see cref="IHost"/> ready for test use.</returns>
     public static IHost GetDefaultHost(MockCallTracker calTracker, bool dataReturnsNull = false, bool extractNothing = false)
     {
         IHostBuilder builder = Host.CreateDefaultBuilder();
@@ -40,6 +46,7 @@ public class ResourceDataExtractorTests_Extract
         return builder.Build();
     }
 
+    /// <summary>Verifies that extracting an existing resource with no referenced URIs returns an unfinished result with a single node.</summary>
     [Fact]
     public void ExtractExistingWithNoReference_Unfinish()
     {
@@ -73,6 +80,7 @@ public class ResourceDataExtractorTests_Extract
             });
     }
 
+    /// <summary>Verifies that when the source returns no data the result is immediately finished with no URI translater.</summary>
     [Fact]
     public void ExtractNotFound_Finished()
     {
@@ -97,6 +105,7 @@ public class ResourceDataExtractorTests_Extract
             });
     }
 
+    /// <summary>Verifies that when the extractor produces no nodes the result is immediately finished with no URI translater.</summary>
     [Fact]
     public void ExtractNothing_Finished()
     {
@@ -126,6 +135,7 @@ public class ResourceDataExtractorTests_Extract
             });
     }
 
+    /// <summary>Verifies that extracted reference URIs from query parameters appear as referencers in the unfinished result.</summary>
     [Fact]
     public void ExtractExistingWithReferences_Unfinish()
     {
@@ -161,6 +171,7 @@ public class ResourceDataExtractorTests_Extract
             });
     }
 
+    /// <summary>Verifies that metadata encoded in the source URI query string is propagated to the result.</summary>
     [Fact]
     public void ExtractWithMetadata_MetatdaFilled()
     {
@@ -190,8 +201,10 @@ public class ResourceDataExtractorTests_Extract
     }
 }
 
+/// <summary>Tests for <see cref="ResourceDataExtractor{TData}.ContinueProcess"/> serialising extracted nodes to the data store.</summary>
 public class ResourceDataExtractorTests_ContinueProcess
 {
+    /// <summary>Verifies that continuing after a standard extraction writes the root node to the store and returns a finished result.</summary>
     [Fact]
     public void StadardNode_Finished()
     {

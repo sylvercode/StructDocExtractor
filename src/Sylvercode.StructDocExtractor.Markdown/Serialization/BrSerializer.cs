@@ -5,6 +5,7 @@ using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 
+/// <summary>Serializer that emits <see cref="HtmlBr"/> nodes as an HTML <c>&lt;br&gt;</c> inline element, preserving explicit line breaks in Markdown output.</summary>
 public class BrSerializer(ILogger<ImageSerializer>? logger = null)
     : BaseStructDocNodeSerializer<HtmlBr, MarkdownStreamWriter>(
         handler: new ImageHandler(),

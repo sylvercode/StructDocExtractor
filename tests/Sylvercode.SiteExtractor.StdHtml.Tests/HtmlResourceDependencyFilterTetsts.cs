@@ -5,6 +5,7 @@ using Sylvercode.SiteExtractor.StdHtml.Tests.Stubs;
 
 namespace Sylvercode.SiteExtractor.StdHtml.Tests;
 
+/// <summary>Tests for <see cref="HtmlResourceDependencyFilter.IsAccepted"/> against various HTML link types.</summary>
 public class HtmlResourceDependencyFilterTetsts_Accepted
 {
     private const string SourceAuthority = "https://example.com";
@@ -34,6 +35,7 @@ public class HtmlResourceDependencyFilterTetsts_Accepted
             .Build();
     }
 
+    /// <summary>Verifies that a URI within the configured source base is accepted in <see cref="HtmlResourceDependencyFilterMode.InSourceBase"/> mode.</summary>
     [Theory]
     [InlineData("test")]
     [InlineData("test.jpg")]
@@ -51,6 +53,7 @@ public class HtmlResourceDependencyFilterTetsts_Accepted
         Assert.True(result);
     }
 
+    /// <summary>Verifies that a URI outside the configured source base is rejected in <see cref="HtmlResourceDependencyFilterMode.InSourceBase"/> mode.</summary>
     [Theory]
     [InlineData("test")]
     [InlineData("test.jpg")]
@@ -68,6 +71,7 @@ public class HtmlResourceDependencyFilterTetsts_Accepted
         Assert.False(result);
     }
 
+    /// <summary>Verifies that image URIs are accepted in <see cref="HtmlResourceDependencyFilterMode.IsImage"/> mode regardless of host.</summary>
     [Theory]
     [InlineData(SourceBaseUri, "test.jpg")]
     [InlineData(SourceBaseUri, "test.png")]
@@ -87,6 +91,7 @@ public class HtmlResourceDependencyFilterTetsts_Accepted
         Assert.True(result);
     }
 
+    /// <summary>Verifies that non-image URIs are rejected in <see cref="HtmlResourceDependencyFilterMode.IsImage"/> mode.</summary>
     [Theory]
     [InlineData(SourceBaseUri, "test")]
     [InlineData(OtherSourceBaseUri, "test")]
@@ -106,6 +111,7 @@ public class HtmlResourceDependencyFilterTetsts_Accepted
         Assert.False(result);
     }
 
+    /// <summary>Verifies that image URIs are rejected in <see cref="HtmlResourceDependencyFilterMode.IsNotImage"/> mode.</summary>
     [Theory]
     [InlineData(SourceBaseUri, "test.jpg")]
     [InlineData(SourceBaseUri, "test.png")]
@@ -125,6 +131,7 @@ public class HtmlResourceDependencyFilterTetsts_Accepted
         Assert.False(result);
     }
 
+    /// <summary>Verifies that non-image URIs are accepted in <see cref="HtmlResourceDependencyFilterMode.IsNotImage"/> mode.</summary>
     [Theory]
     [InlineData(SourceBaseUri, "test")]
     [InlineData(OtherSourceBaseUri, "test")]
@@ -144,6 +151,7 @@ public class HtmlResourceDependencyFilterTetsts_Accepted
         Assert.True(result);
     }
 
+    /// <summary>Verifies that no URI is accepted in <see cref="HtmlResourceDependencyFilterMode.None"/> mode.</summary>
     [Theory]
     [InlineData(SourceBaseUri, "test")]
     [InlineData(OtherSourceBaseUri, "test")]
@@ -167,6 +175,7 @@ public class HtmlResourceDependencyFilterTetsts_Accepted
         Assert.False(result);
     }
 
+    /// <summary>Verifies that an in-source-base image URI is accepted when both <see cref="HtmlResourceDependencyFilterMode.InSourceBase"/> and <see cref="HtmlResourceDependencyFilterMode.IsImage"/> are combined.</summary>
     [Theory]
     [InlineData(SourceBaseUri, "test.jpg")]
     [InlineData(SourceBaseUri, "test.png")]
@@ -184,6 +193,7 @@ public class HtmlResourceDependencyFilterTetsts_Accepted
         Assert.True(result);
     }
 
+    /// <summary>Verifies that URIs outside the source base or that are not images are rejected when both <see cref="HtmlResourceDependencyFilterMode.InSourceBase"/> and <see cref="HtmlResourceDependencyFilterMode.IsImage"/> are combined.</summary>
     [Theory]
     [InlineData(OtherSourceBaseUri, "test.jpg")]
     [InlineData(OtherSourceBaseUri, "test.png")]
@@ -203,6 +213,7 @@ public class HtmlResourceDependencyFilterTetsts_Accepted
         Assert.False(result);
     }
 
+    /// <summary>Verifies that a non-image URI within the source base is accepted when both <see cref="HtmlResourceDependencyFilterMode.InSourceBase"/> and <see cref="HtmlResourceDependencyFilterMode.IsNotImage"/> are combined.</summary>
     [Theory]
     [InlineData(SourceBaseUri, "test")]
     [InlineData(SourceBaseUri, "test.txt")]
@@ -220,6 +231,7 @@ public class HtmlResourceDependencyFilterTetsts_Accepted
         Assert.True(result);
     }
 
+    /// <summary>Verifies that URIs outside the source base or that are images are rejected when both <see cref="HtmlResourceDependencyFilterMode.InSourceBase"/> and <see cref="HtmlResourceDependencyFilterMode.IsNotImage"/> are combined.</summary>
     [Theory]
     [InlineData(OtherSourceBaseUri, "test.txt")]
     [InlineData(OtherSourceBaseUri, "test")]

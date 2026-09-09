@@ -2,8 +2,10 @@ using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
+/// <summary>Tests for <see cref="StaticDirUriTranslater.Translate"/> mapping URIs to local paths.</summary>
 public class StaticDirUriTranslaterTests_Translate
 {
+    /// <summary>Verifies that a valid URI is translated to the configured output directory regardless of its path depth.</summary>
     [Theory]
     [InlineData("https://www.example.com/test.html", "output", "output/test.html")]
     [InlineData("https://www.example.com/dir/test.html", "output", "output/test.html")]
