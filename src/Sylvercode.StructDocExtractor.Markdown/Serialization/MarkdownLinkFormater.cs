@@ -46,14 +46,14 @@ public class MarkdownLinkFormater(bool useWikilink = true)
     /// <summary>Formats <paramref name="href"/> and <paramref name="text"/> as an Obsidian-style wiki-link.</summary>
     /// <param name="href">The wiki reference path.</param>
     /// <param name="text">The display text; if equal to <paramref name="href"/>, a simple <c>[[ref]]</c> form is used.</param>
-    /// <returns>A <c>[[ref]]</c> or <c>[[ref\|text]]</c> wiki-link string.</returns>
+    /// <returns>A <c>[[ref]]</c> or <c>[[ref|text]]</c> wiki-link string.</returns>
     public static string FormatWikiLink(string href, string text)
     {
         string unescapeHref = Uri.UnescapeDataString(href);
         if (unescapeHref == text)
             return $"[[{unescapeHref}]]";
         else
-            return $"[[{unescapeHref}\\|{text}]]";
+            return $"[[{unescapeHref}|{text}]]";
     }
 
     private static string WikiPath(Uri uri)
