@@ -31,17 +31,18 @@ public partial class SiteExtractor(
         if (!hasResourceProcessor)
             throw new InvalidOperationException("No resource processor found for the given URI.");
 
-        List<IResourceProcessorResult> UnfinishProcess = [];
+        List<IResourceProcessorResult> unfinishedProcesses = [];
 
         while (_resourcesTracker.ResourceQueue.HasQueuedResources)
         {
             var (resource, processor) = _resourcesTracker.ResourceQueue.Dequeue();
 
-            using var logScope = _logger.BeginScope(new List<KeyValuePair<string, object>>
-                {
-                    new ("Uri", resource.Uri),
-                    new ("Processor", processor.GetType().Name),
-                });
+            KeyValuePair<string, object?>[] pullScopeState =
+            [
+                new("Uri", resource.Uri),
+                new("Processor", processor.GetType().Name),
+            ];
+            using var logScope = _logger.BeginScope(pullScopeState);
 
             LogPullingResource();
             resource.MarkAsPulling();
@@ -59,7 +60,10 @@ public partial class SiteExtractor(
                 if (_logger.IsEnabled(LogLevel.Trace))
                 {
                     foreach (var (name, metadata) in result.NewMetadata)
-                        LogNewMetadata(name, metadata.GetStrValue());
+                    {
+                        string? metadataValue = metadata.GetStrValue();
+                        LogNewMetadata(name, metadataValue);
+                    }
                 }
 
                 resource.Metadata.CopyMetadataFrom(result.NewMetadata);
@@ -67,14 +71,19 @@ public partial class SiteExtractor(
 
             if (result.ResourceUriTranslaterToSet != null)
             {
-                LogUriTranslaterToSet(result.ResourceUriTranslaterToSet.GetType().Name);
+                if (_logger.IsEnabled(LogLevel.Debug))
+                {
+                    string uriTranslaterType = result.ResourceUriTranslaterToSet.GetType().Name;
+                    LogUriTranslaterToSet(uriTranslaterType);
+                }
+
                 resource.UriTranslater = result.ResourceUriTranslaterToSet;
             }
 
             if (result.IsUnfinished)
             {
                 LogUnfinishedProcess();
-                UnfinishProcess.Add(result);
+                unfinishedProcesses.Add(result);
             }
             else
             {
@@ -83,18 +92,19 @@ public partial class SiteExtractor(
             }
         }
 
-        while (UnfinishProcess.Count != 0)
+        while (unfinishedProcesses.Count != 0)
         {
             LogBeggingUnfinishProcessBatch();
-            List<IResourceProcessorResult> UnfinishProcessNext = [];
+            List<IResourceProcessorResult> unfinishedProcessesNext = [];
 
-            foreach (IResourceProcessorResult result in UnfinishProcess)
+            foreach (IResourceProcessorResult result in unfinishedProcesses)
             {
-                using var logScope = _logger.BeginScope(new List<KeyValuePair<string, object>>
-                    {
-                        new ("Uri", result.Resource.Uri),
-                        new ("Processor", result.Processor.GetType().Name),
-                    });
+                KeyValuePair<string, object?>[] continueScopeState =
+                [
+                    new("Uri", result.Resource.Uri),
+                    new("Processor", result.Processor.GetType().Name),
+                ];
+                using var logScope = _logger.BeginScope(continueScopeState);
 
                 LogContinueProcess();
 
@@ -106,7 +116,7 @@ public partial class SiteExtractor(
                 if (nextResult.IsUnfinished)
                 {
                     LogUnfinishedProcess();
-                    UnfinishProcessNext.Add(nextResult);
+                    unfinishedProcessesNext.Add(nextResult);
                 }
                 else
                 {
@@ -115,7 +125,7 @@ public partial class SiteExtractor(
                 }
             }
 
-            UnfinishProcess = UnfinishProcessNext;
+            unfinishedProcesses = unfinishedProcessesNext;
         }
     }
 

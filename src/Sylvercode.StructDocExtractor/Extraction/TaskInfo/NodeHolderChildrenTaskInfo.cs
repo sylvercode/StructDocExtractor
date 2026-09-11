@@ -44,14 +44,23 @@ public partial class NodeHolderChildrenTaskInfo : ChildrenTaskInfo
             && !srcInit.IsRoot)
         {
             if (Logger.IsEnabled(LogLevel.Trace))
-                LogNodeAdded(Logger, Task.TaskResult!.SrcNode!.NodeSnippet(), node.NodeSnippet());
+            {
+                string nodeSnippet = Task.TaskResult!.SrcNode!.NodeSnippet();
+                string childSnippet = node.NodeSnippet();
+                LogNodeAdded(Logger, nodeSnippet, childSnippet);
+            }
+
             ChildLinker.AddChild(srcInit);
         }
 
         if (!HasPendingSubTaskIndex)
         {
             if (Logger.IsEnabled(LogLevel.Trace))
-                LogPendingTasksCompleted(Logger, Task.TaskResult!.SrcNode!.NodeSnippet());
+            {
+                string nodeSnippet = Task.TaskResult!.SrcNode!.NodeSnippet();
+                LogPendingTasksCompleted(Logger, nodeSnippet);
+            }
+
             ChildLinker.InitializeParentChildLink();
         }
     }

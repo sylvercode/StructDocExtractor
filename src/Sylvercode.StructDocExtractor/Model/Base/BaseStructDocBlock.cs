@@ -15,7 +15,7 @@ public abstract class BaseStructDocBlock<TParent, TChild>(string id) :
     where TParent : class, IStructDocNodeHolder
     where TChild : class, IStructDocNode
 {
-    private IReadOnlyList<TChild>? _content;
+    private ImmutableList<TChild>? _content;
 
     /// <summary>Gets the immutable list of child nodes; returns an empty list if the content has not yet been initialized.</summary>
     public IReadOnlyList<TChild> Content

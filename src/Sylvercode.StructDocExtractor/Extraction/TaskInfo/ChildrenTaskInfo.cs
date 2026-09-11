@@ -79,7 +79,10 @@ public partial class ChildrenTaskInfo : IChildrenTaskInfo
             throw new InvalidOperationException($"Duplicated subtask: {taskIndex}");
 
         if (_logger.IsEnabled(LogLevel.Trace))
-            LogTaskAdded(Task.TaskSnippet(), taskIndex);
+        {
+            string taskSnippet = Task.TaskSnippet();
+            LogTaskAdded(taskSnippet, taskIndex);
+        }
     }
 
     /// <inheritdoc/>
@@ -90,7 +93,10 @@ public partial class ChildrenTaskInfo : IChildrenTaskInfo
             throw new InvalidOperationException($"Unknown subtask: {taskIndex}");
 
         if (_logger.IsEnabled(LogLevel.Trace))
-            LogTaskRemoved(Task.TaskSnippet(), taskIndex);
+        {
+            string taskSnippet = Task.TaskSnippet();
+            LogTaskRemoved(taskSnippet, taskIndex);
+        }
     }
 
     /// <summary>Handles the <c>ResultSet</c> event of a child task by forwarding to <see cref="OnSubTaskResultSet"/>.</summary>

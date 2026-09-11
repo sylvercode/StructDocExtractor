@@ -41,7 +41,10 @@ public partial class ExtractionTask(
         IProcessTaskResult processTaskResult)
     {
         if (Logger.IsEnabled(LogLevel.Trace))
-            LogSetResult(Logger, TaskSnippet(true)); ;
+        {
+            string taskSnippet = TaskSnippet(withParentSnippet: true);
+            LogSetResult(Logger, taskSnippet);
+        }
 
         TaskResult = new ExtractionTaskResult(processTaskResult);
 

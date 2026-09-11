@@ -27,7 +27,7 @@ High-level architecture
   - Factory/Provider/Extractor interfaces (I*): open for DI and extension (IStructDocNodeFactory, IResourceProcessor, IExtractor, ISerializerProvider).
   - Serialization pipeline implemented via serializer tasks/executors.
   - Scoring/Stack: StructDataStack contains stack-score calculators and matchers used to choose structural data nodes.
-- Target framework: net8.0. Projects enable ImplicitUsings and Nullable.
+- Target framework: net10.0 with C# 14. Projects enable ImplicitUsings and Nullable.
 
 Key conventions
 

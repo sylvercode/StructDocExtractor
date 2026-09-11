@@ -45,7 +45,10 @@ public partial class ChildrenTaskInfoFactory(
         if (resultNode is IStructDocNodeHolderInitializer)
         {
             if (_logger.IsEnabled(LogLevel.Trace))
-                LogNewChildrenTaskInfo(_logger, nameof(NodeHolderChildrenTaskInfo), task.TaskSnippet());
+            {
+                string taskSnippet = task.TaskSnippet();
+                LogNewChildrenTaskInfo(_logger, nameof(NodeHolderChildrenTaskInfo), taskSnippet);
+            }
 
             return new NodeHolderChildrenTaskInfo(task, childrenData, _nodeHolderChildrenTaskInfoLogger);
         }
@@ -54,13 +57,19 @@ public partial class ChildrenTaskInfoFactory(
             && HasParentNodeHolder(task))
         {
             if (_logger.IsEnabled(LogLevel.Trace))
-                LogNewChildrenTaskInfo(_logger, nameof(ProxyChildrenTaskInfo), task.TaskSnippet());
+            {
+                string taskSnippet = task.TaskSnippet();
+                LogNewChildrenTaskInfo(_logger, nameof(ProxyChildrenTaskInfo), taskSnippet);
+            }
 
             return new ProxyChildrenTaskInfo(task, childrenData, _proxyChildrenTaskInfoLogger);
         }
 
         if (_logger.IsEnabled(LogLevel.Trace))
-            LogNewChildrenTaskInfo(_logger, nameof(ChildrenTaskInfo), task.TaskSnippet());
+        {
+            string taskSnippet = task.TaskSnippet();
+            LogNewChildrenTaskInfo(_logger, nameof(ChildrenTaskInfo), taskSnippet);
+        }
 
         return new ChildrenTaskInfo(task, childrenData, _childrenTaskInfoLogger);
     }

@@ -76,7 +76,10 @@ public partial class ResourceDataExtractor<TExtractionData>(
             if (_logger.IsEnabled(LogLevel.Trace))
             {
                 foreach (var metadata in result.Metadatas)
-                    LogMetadatas(metadata.Key, metadata.Value.GetStrValue());
+                {
+                    string? metadataValue = metadata.Value.GetStrValue();
+                    LogMetadatas(metadata.Key, metadataValue);
+                }
             }
         }
 
@@ -89,7 +92,10 @@ public partial class ResourceDataExtractor<TExtractionData>(
         if (_logger.IsEnabled(LogLevel.Debug))
         {
             foreach (IStructDocReferencer referencer in observer.Referencers)
-                LogReferencer(referencer.GetReference());
+            {
+                string reference = referencer.GetReference();
+                LogReferencer(reference);
+            }
         }
 
         return new DataExtractedProcessorResult<TExtractionData>(

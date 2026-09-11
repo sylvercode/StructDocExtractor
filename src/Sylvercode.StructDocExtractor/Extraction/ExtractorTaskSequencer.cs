@@ -47,7 +47,13 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
                     result.StructDocNodes.Add(taskResult.SrcNode);
                 }
                 else if (taskResult.ResultType is TaskResultType.Success or TaskResultType.Warning)
-                    LogRootTaskWithNoNodeResultOnSuccessOrWarning(handler.GetDataPreview((TExtractionData)task.ExtractionData));
+                {
+                    if (_logger.IsEnabled(LogLevel.Warning))
+                    {
+                        string dataPreview = handler.GetDataPreview((TExtractionData)task.ExtractionData);
+                        LogRootTaskWithNoNodeResultOnSuccessOrWarning(dataPreview);
+                    }
+                }
             }
         }
 
@@ -70,21 +76,26 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
         IProcessTaskResult<TExtractionData, TDataDiscriminator>? result = null;
         TaskContext<TExtractionData, TDataDiscriminator> taskContext = new(task, handler.DefaultNodeFactoryProvider);
 
-        using var scope = _logger.BeginScope(new List<KeyValuePair<string, object?>>()
-            {
-                new("TaskIndex", taskContext.TaskIndex),
-                new("DataDiscriminatorStack", taskContext.GetStructDataStack().ToString())
-            });
+        KeyValuePair<string, object?>[] scopeState =
+        [
+            new("TaskIndex", taskContext.TaskIndex),
+            new("DataDiscriminatorStack", taskContext.GetStructDataStack().ToString())
+        ];
+        using var scope = _logger.BeginScope(scopeState);
 
         try
         {
             result = handler.OnProcessTask(taskContext);
 
-            LogProcessTaskResult(
-                result.ResultType,
-                result.DataDiscriminator?.ToString(),
-                result.SrcNode?.DebugName,
-                result.NodeFactoryProvider?.DebugName);
+            if (_logger.IsEnabled(LogLevel.Trace))
+            {
+                string? dataDiscriminator = result.DataDiscriminator?.ToString();
+                LogProcessTaskResult(
+                    result.ResultType,
+                    dataDiscriminator,
+                    result.SrcNode?.DebugName,
+                    result.NodeFactoryProvider?.DebugName);
+            }
 
             task.SetResult(result);
 
@@ -136,8 +147,12 @@ public partial class ExtractorTaskSequencer<TExtractionData, TDataDiscriminator>
     {
         task.ResultSet += OnTaskResult;
 
-        LogTaskAdded(handler.GetDataPreview((TExtractionData)task.ExtractionData),
-                         asNext ? "Next" : "Last");
+        if (_logger.IsEnabled(LogLevel.Trace))
+        {
+            string dataPreview = handler.GetDataPreview((TExtractionData)task.ExtractionData);
+            LogTaskAdded(dataPreview, asNext ? "Next" : "Last");
+        }
+
         if (asNext)
             _pendingTacks.AddFirst(task);
         else
