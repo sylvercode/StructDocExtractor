@@ -22,7 +22,7 @@ public class SiteExtractorOptions
     {
         get => field;
         set => field = value.AsDirPath();
-    }
+    } = string.Empty;
 
     /// <summary>Gets or sets the local output directory where extracted resources are written.</summary>
     /// <remarks>The value is normalised to a directory path on assignment.</remarks>
@@ -30,7 +30,7 @@ public class SiteExtractorOptions
     {
         get => field;
         set => field = value.AsDirPath();
-    }
+    } = string.Empty;
 
     /// <summary>Returns the absolute source base <see cref="Uri"/> combining <see cref="SourceAuthority"/> and <see cref="SourceBasePath"/>.</summary>
     /// <exception cref="InvalidOperationException"><see cref="SourceAuthority"/> has not been set.</exception>

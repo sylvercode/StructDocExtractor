@@ -53,8 +53,6 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
 
     private byte[] indentBuffer = BuildIndentBuffer(indentSpec, encoding);
 
-    private int _indentLevel;
-
     private bool _atLineStart = true;
 
     private bool _PreviousLineIsEmpty = true;
