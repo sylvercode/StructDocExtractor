@@ -11,6 +11,8 @@ namespace Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
 /// Non-whitespace text nodes are mapped to the <see cref="HtmlNodeDiscriminator.PlainTextTagName"/>
 /// virtual tag. Non-element nodes that are not text nodes return an empty discriminator.
 /// Element nodes are discriminated by their lower-cased tag name, id, and CSS class list.
+/// In the default AngleSharp provider, empty discriminators are consumed by
+/// <see cref="NoOpNodeFactory"/> and therefore intentionally skipped.
 /// </remarks>
 public class HtmlNodeDiscriminatorFactory : IDataDiscriminatorFactory<INode, HtmlNodeDiscriminator>
 {
