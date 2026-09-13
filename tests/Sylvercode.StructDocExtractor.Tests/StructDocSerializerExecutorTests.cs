@@ -25,15 +25,16 @@ public class StructDocSerializerExecutorTests
         public ISpySerializer NodeSerializer { get; }
         public SerializerProvider SerializerProvider { get; }
 
-        public ExtractionContext(bool SkipBlockConetntSerialization = false)
+        public ExtractionContext(bool skipBlockContentSerialization = false)
         {
             RootSerializer = new SpyStructDocNodeHolderSerializer<BasicSrcRootBlock, IStructDocNode>(EntriesLog);
-            BlockSerializer = new SpyStructDocNodeHolderSerializer<BasicSrcBloc, IStructDocNode>(EntriesLog, SkipBlockConetntSerialization);
+            BlockSerializer = new SpyStructDocNodeHolderSerializer<BasicSrcBloc, IStructDocNode>(EntriesLog, skipBlockContentSerialization);
             NodeSerializer = new SpyStructDocNodeSerializer<BasicSrcNode>(EntriesLog);
-            SerializerProvider = new SerializerProvider(){
-                {typeof(BasicSrcRootBlock), RootSerializer},
-                {typeof(BasicSrcBloc), BlockSerializer},
-                {typeof(BasicSrcNode), NodeSerializer},
+            SerializerProvider = new SerializerProvider
+            {
+                { typeof(BasicSrcRootBlock), RootSerializer },
+                { typeof(BasicSrcBloc), BlockSerializer },
+                { typeof(BasicSrcNode), NodeSerializer },
             };
         }
 
@@ -254,7 +255,7 @@ public class StructDocSerializerExecutorTests
     public void TwoBlockHavingTwoNodeInRoot_WithSkipBlockContentSerialization()
     {
         // Given
-        ExtractionContext context = new(SkipBlockConetntSerialization: true);
+        ExtractionContext context = new(skipBlockContentSerialization: true);
         BasicSrcRootBlock root = new(nameof(root));
         var rootInit = root.NewParentChildLinkInitializer();
         BasicSrcBloc blockA = new(nameof(blockA));

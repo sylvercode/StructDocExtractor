@@ -16,22 +16,20 @@ public class SiteExtractorOptions
     /// <summary>Gets or sets the authority (scheme + host + optional port) of the source site.</summary>
     public string SourceAuthority { get; set; } = string.Empty;
 
-    private string _sourceBasePath = string.Empty;
-    private string _outputDirectory = string.Empty;
-
     /// <summary>Gets or sets the base path on the source site from which extraction starts.</summary>
     /// <remarks>The value is normalised to a directory path on assignment.</remarks>
     public string SourceBasePath
     {
-        get => _sourceBasePath; set => _sourceBasePath = value.AsDirPath();
+        get => field;
+        set => field = value.AsDirPath();
     }
 
     /// <summary>Gets or sets the local output directory where extracted resources are written.</summary>
     /// <remarks>The value is normalised to a directory path on assignment.</remarks>
     public string OutputDirectory
     {
-        get => _outputDirectory;
-        set => _outputDirectory = value.AsDirPath();
+        get => field;
+        set => field = value.AsDirPath();
     }
 
     /// <summary>Returns the absolute source base <see cref="Uri"/> combining <see cref="SourceAuthority"/> and <see cref="SourceBasePath"/>.</summary>

@@ -29,7 +29,7 @@ public class CalloutSerializerTests
     public void SerializeText()
     {
         // Given
-        IHost host = GetHost(new Dictionary<Type, CalloutSerializer.CalloutType>()
+        IHost host = GetHost(new Dictionary<Type, CalloutSerializer.CalloutType>
         {
             { typeof(HtmlParagraph), CalloutSerializer.CalloutType.info }
         });

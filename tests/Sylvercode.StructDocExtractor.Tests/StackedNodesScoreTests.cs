@@ -26,22 +26,22 @@ public class StackedNodesScoreTests_CompareTo
     public static IEnumerable<object?[]> LeftStackPrioritizedData()
     {
         yield return [
-            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 2) } },
-            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 1) } },
+            new Dictionary<int, NodeScore> { { 1, NewNodeScore(1, 2) } },
+            new Dictionary<int, NodeScore> { { 1, NewNodeScore(1, 1) } },
         ];
 
         yield return [
-            new Dictionary<int, NodeScore>() { { 2, NewNodeScore(1, 2) } },
-            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 1) } },
+            new Dictionary<int, NodeScore> { { 2, NewNodeScore(1, 2) } },
+            new Dictionary<int, NodeScore> { { 1, NewNodeScore(1, 1) } },
         ];
 
         yield return [
-            new Dictionary<int, NodeScore>() {
+            new Dictionary<int, NodeScore> {
                 { 1, NewNodeScore(1, 2) },
                 { 2, NewNodeScore(1, 2) },
                 { 4, NewNodeScore(1, 2) },
             },
-            new Dictionary<int, NodeScore>() {
+            new Dictionary<int, NodeScore> {
                 { 1, NewNodeScore(1, 2) },
                 { 2, NewNodeScore(1, 2) },
                 { 3, NewNodeScore(1, 2) },
@@ -49,15 +49,15 @@ public class StackedNodesScoreTests_CompareTo
         ];
 
         yield return [
-            new Dictionary<int, NodeScore>() {
+            new Dictionary<int, NodeScore> {
                 { 1, NewNodeScore(1, 2) }
             },
-            new Dictionary<int, NodeScore>() {
+            new Dictionary<int, NodeScore> {
             }
         ];
 
         yield return [
-            new Dictionary<int, NodeScore>() {
+            new Dictionary<int, NodeScore> {
                 { 1, NewNodeScore(1, 2) }
             },
             null
@@ -81,22 +81,22 @@ public class StackedNodesScoreTests_CompareTo
     public static IEnumerable<object[]> RightStackPrioritizedData()
     {
         yield return [
-            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 1) } },
-            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 2) } },
+            new Dictionary<int, NodeScore> { { 1, NewNodeScore(1, 1) } },
+            new Dictionary<int, NodeScore> { { 1, NewNodeScore(1, 2) } },
         ];
 
         yield return [
-            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 1) } },
-            new Dictionary<int, NodeScore>() { { 2, NewNodeScore(1, 2) } },
+            new Dictionary<int, NodeScore> { { 1, NewNodeScore(1, 1) } },
+            new Dictionary<int, NodeScore> { { 2, NewNodeScore(1, 2) } },
         ];
 
         yield return [
-            new Dictionary<int, NodeScore>() {
+            new Dictionary<int, NodeScore> {
                 { 1, NewNodeScore(1, 2) },
                 { 2, NewNodeScore(1, 2) },
                 { 3, NewNodeScore(1, 2) }
             },
-            new Dictionary<int, NodeScore>() {
+            new Dictionary<int, NodeScore> {
                 { 1, NewNodeScore(1, 2) },
                 { 2, NewNodeScore(1, 2) },
                 { 4, NewNodeScore(1, 2) },
@@ -104,9 +104,9 @@ public class StackedNodesScoreTests_CompareTo
         ];
 
         yield return [
-            new Dictionary<int, NodeScore>() {
+            new Dictionary<int, NodeScore> {
             },
-            new Dictionary<int, NodeScore>() {
+            new Dictionary<int, NodeScore> {
                 { 1, NewNodeScore(1, 2) }
             }
         ];
@@ -129,17 +129,17 @@ public class StackedNodesScoreTests_CompareTo
     public static IEnumerable<object?[]> BothStackPrioritizedData()
     {
         yield return [
-            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 2) } },
-            new Dictionary<int, NodeScore>() { { 1, NewNodeScore(1, 2) } }
+            new Dictionary<int, NodeScore> { { 1, NewNodeScore(1, 2) } },
+            new Dictionary<int, NodeScore> { { 1, NewNodeScore(1, 2) } }
         ];
 
         yield return [
-            new Dictionary<int, NodeScore>() {
+            new Dictionary<int, NodeScore> {
                 { 1, NewNodeScore(1, 2) },
                 { 2, NewNodeScore(1, 2) },
                 { 3, NewNodeScore(1, 2) }
             },
-            new Dictionary<int, NodeScore>() {
+            new Dictionary<int, NodeScore> {
                 { 1, NewNodeScore(1, 2) },
                 { 2, NewNodeScore(1, 2) },
                 { 3, NewNodeScore(1, 2) }

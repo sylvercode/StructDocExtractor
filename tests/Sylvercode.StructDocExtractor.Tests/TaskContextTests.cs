@@ -228,4 +228,34 @@ public class TaskContextTests_GetStructDataStack
                           e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(1, childDiscriminator), e),
                           e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(0, parentDiscriminator), e));
     }
+
+    [Fact]
+    public void WithTwoNodesAndIEnumerableExtra_ReturnsFourNodes()
+    {
+        // Given
+        BasicSrcBloc parentNode = new();
+        BasicNodeDiscriminator parentDiscriminator = new(BasicSrcNode.DefaultId);
+        ExtractionTask taskNode = NewTask(NewTaskResult(parentNode, parentDiscriminator, [DefaultTaskValue1]));
+
+        BasicSrcNode childNode = new(DefaultTaskValue1);
+        ExtractionTask childTask = taskNode.ChildrenTaskInfo!.ChildrenTasks[0];
+        BasicNodeDiscriminator childDiscriminator = new(DefaultDiscriminatorValue1);
+        childTask.SetResult(NewTaskResult(childNode, childDiscriminator));
+
+        TaskContext<string, BasicNodeDiscriminator> context = new(childTask, DefaultNodeFactoryProvider);
+
+        BasicNodeDiscriminator extra1 = new(DefaultDiscriminatorValue2);
+        BasicNodeDiscriminator extra2 = new(DefaultDiscriminatorValue3);
+        IEnumerable<BasicNodeDiscriminator> extras = [extra1, extra2];
+
+        // When
+        IStructDataStack<BasicNodeDiscriminator> result = context.GetStructDataStack(extras);
+
+        // Then
+        Assert.Collection(result,
+                          e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(3, extra2), e),
+                          e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(2, extra1), e),
+                          e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(1, childDiscriminator), e),
+                          e => Assert.Equal(new IStructDataStack<BasicNodeDiscriminator>.Entry(0, parentDiscriminator), e));
+    }
 }

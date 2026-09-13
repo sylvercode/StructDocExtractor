@@ -38,7 +38,7 @@ public class TaskContext<TExtractionData, TDataDiscriminator>(
     /// <summary>Builds and returns the data-discriminator stack for the current task chain, with optional extra entries prepended.</summary>
     /// <param name="extraDiscriminatorStack">Additional discriminator values to prepend to the top of the stack (e.g., the current task's own discriminator).</param>
     /// <returns>A <see cref="IStructDataStack{TDataDiscriminator}"/> ordered from root to current task.</returns>
-    public IStructDataStack<TDataDiscriminator> GetStructDataStack(params TDataDiscriminator[] extraDiscriminatorStack)
+    public IStructDataStack<TDataDiscriminator> GetStructDataStack(params IEnumerable<TDataDiscriminator> extraDiscriminatorStack)
     {
         ICollection<TDataDiscriminator> result = [];
 

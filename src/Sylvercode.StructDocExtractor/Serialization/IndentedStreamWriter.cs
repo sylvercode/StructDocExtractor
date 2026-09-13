@@ -183,12 +183,12 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the value is negative.</exception>
     public int IndentLevel
     {
-        get => _indentLevel;
+        get => field;
         set
         {
             if (value < 0)
                 throw new ArgumentOutOfRangeException(nameof(value), "Indent level must be non-negative.");
-            _indentLevel = value;
+            field = value;
             indentBuffer = BuildIndentBuffer(indentSpec, encoding);
         }
     }

@@ -23,7 +23,7 @@ public class StackScoreCalculatorTests_Calculate
 
         // Then
         StackedNodesScore Expected = new(
-            new Dictionary<int, NodeScore>() {
+            new Dictionary<int, NodeScore> {
                 { 0, new NodeScore(new NodeScore.SubScore(BasicNodeScoreIdSubCriterion.ByDefaultParentId.Priority, 1)) },
                 { 1, new NodeScore(new NodeScore.SubScore(BasicNodeScoreIdSubCriterion.ByDefaultId.Priority, 1)) }
             }
