@@ -14,24 +14,24 @@ namespace Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
 /// The concrete <see cref="IStructDocNode"/> type to create; must have a public parameterless constructor.
 /// </typeparam>
 /// <remarks>
-/// Configures the <see cref="BaseAngleNodeFactory.DefaultSelector"/> from the supplied tag name and
+/// Configures the <see cref="BaseAngleNodeFactory.DefaultSelector"/> from the supplied tag names and
 /// preserves the HTML element's <c>id</c> attribute by calling <see cref="NewNodeWithId"/> when
 /// present. Child elements are always scheduled as sub-tasks for recursive extraction.
 /// Subclasses may override <see cref="NewNodeWithId"/> to customise node instantiation when an id
 /// is present.
 /// </remarks>
-public class BaseParagraphFactory<TParaNode>(string tagName = "") : BaseAngleNodeFactory
+public class BaseParagraphFactory<TParaNode>(params string[] tagNames) : BaseAngleNodeFactory
     where TParaNode : IStructDocNode, new()
 {
     /// <summary>
-    /// Gets the default selector criteria targeting elements with the configured tag name,
-    /// or <see langword="null"/> if no tag name was specified.
+    /// Gets the default selector criteria targeting elements with the configured tag names,
+    /// or <see langword="null"/> if no tag names were specified.
     /// </summary>
     public override List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>>? DefaultSelector { get; } =
-        string.IsNullOrWhiteSpace(tagName)
+        tagNames is null || tagNames.Length == 0
             ? null
             : new HtmlScoreCriteriaSetsBuilder()
-                .WithTagName(tagName)
+                .WithAnyTagName(tagNames)
                 .BuildSets();
 
     /// <inheritdoc/>

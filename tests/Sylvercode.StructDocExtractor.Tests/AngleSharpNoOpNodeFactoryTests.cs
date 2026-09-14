@@ -65,4 +65,23 @@ public class AngleSharpNoOpNodeFactoryTests
         Assert.Equal(0, result.Summery.SkippedTaskCount);
         Assert.Empty(result.StructDocNodes);
     }
+
+    [Fact]
+    public void BlockquoteElementNode_IsExtractedAsHtmlAside()
+    {
+        // Given
+        INode node = ParseFirstNode("<blockquote>hello</blockquote>");
+        Extractor<INode, HtmlNodeDiscriminator> extractor = NewExtractor();
+
+        // When
+        ExtractionResult result = extractor.Extract(node);
+
+        // Then
+        Assert.Equal(2, result.Summery.ProcessedTaskCount);
+        Assert.Equal(0, result.Summery.ErrorTaskCount);
+        Assert.Equal(0, result.Summery.SkippedTaskCount);
+        HtmlAside aside = Assert.IsType<HtmlAside>(Assert.Single(result.StructDocNodes));
+        Assert.Single(aside.Content);
+        Assert.IsType<PlainTextNode>(aside.Content[0]);
+    }
 }

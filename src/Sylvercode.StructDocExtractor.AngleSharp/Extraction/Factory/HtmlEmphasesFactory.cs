@@ -10,10 +10,10 @@ namespace Sylvercode.StructDocExtractor.AngleSharp.Extraction.Factory;
 /// </summary>
 public class HtmlEmphasesFactory : BaseAngleNodeFactory
 {
-    /// <summary>Gets the default selector criteria targeting <c>&lt;em&gt;</c> elements.</summary>
+    /// <summary>Gets the default selector criteria targeting <c>&lt;em&gt;</c> and <c>&lt;i&gt;</c> elements.</summary>
     public override List<NodeScoreCriteriaSet<HtmlNodeDiscriminator>>? DefaultSelector { get; } =
         new HtmlScoreCriteriaSetsBuilder()
-            .WithTagName(TagNames.Em)
+            .WithAnyTagName([TagNames.Em, TagNames.I])
             .BuildSets();
 
     /// <inheritdoc/>
