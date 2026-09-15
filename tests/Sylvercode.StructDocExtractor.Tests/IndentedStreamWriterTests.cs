@@ -381,11 +381,11 @@ public class IndentedStreamWriterTests_LineHeadTokens
             !string.IsNullOrEmpty(token2) ? token1 : "";
 
 
-        string separator1 = $"\n{head1}";
+        string separator1 = $"\n{head2}";
         if (text1.EndsWith("\n\n"))
             separator1 = "";
 
-        string separator2 = $"\n{head1}";
+        string separator2 = $"\n{head2}";
         if (text1.EndsWith('\n'))
             separator2 = "";
 

@@ -164,7 +164,8 @@ public class IndentedStreamWriter(Stream stream, IndentSpec indentSpec, Encoding
     {
         if (_LineHeadTokens.Count == 0)
             throw new InvalidOperationException("No line head token to pop.");
-        CheckPendingOperation();
+
+        // Pop first so any deferred newline/paragraph spacing is applied outside this line-head scope.
         _LineHeadTokens.RemoveLast();
     }
 
