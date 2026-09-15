@@ -20,6 +20,6 @@ public class HtmlNodeDiscriminator(string id = "", string[]? styleClass = null, 
     /// <returns>A string combining tag name, id, and class names for diagnostic and matching purposes.</returns>
     public override string ToString()
     {
-        return $"{TagName}#{Id}.{string.Join(".", StyleClass)}";
+        return $"{TagName} #{Id} .{string.Join(".", StyleClass)}";
     }
 }

@@ -13,7 +13,6 @@ public static class MarkdownSerializerExtentions
     public static IServiceCollection AddMarkdownSerializers(this IServiceCollection services)
     {
         services.AddSerializer<BrSerializer>();
-        services.AddSerializer<ParagraphSerializer>();
         services.AddSerializer<EmphasesSerializer>();
         services.AddSerializer<FigCaptionSerializer>();
         services.AddSerializer<HeadingSerializer>();

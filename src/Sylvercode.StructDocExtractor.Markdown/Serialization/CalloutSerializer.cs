@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Sylvercode.StructDocExtractor.Markdown.Serialization.Base;
@@ -62,7 +63,13 @@ public class CalloutSerializer(
 
             CalloutType calloutType = calloutTypeMap?.GetValueOrDefault(parent.GetType(), defaultCalloutType) ?? defaultCalloutType;
             string calloutText = Enum.GetName(calloutType)!;
-            stream.WriteLine($"> [!{calloutText}]");
+            stream.Write($"> [!{calloutText}]");
+            if (!string.IsNullOrEmpty(parent.Id))
+            {
+                string CapitaliseCallout = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(calloutText);
+                stream.WriteLine($" {CapitaliseCallout} ^{parent.Id}");
+            }
+            stream.WriteLine();
         }
 
         /// <inheritdoc/>
