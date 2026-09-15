@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Sylvercode.StructDocExtractor.Markdown\Sylvercode.StructDocExtractor.Markdown.csproj" />
+    <ProjectReference Include="..\..\src\Sylvercode.StructDocExtractor.AngleSharp\Sylvercode.StructDocExtractor.AngleSharp.csproj" />
   </ItemGroup>
+
 
 </Project>
