@@ -26,6 +26,37 @@ public class EmphasesSerializerTests
     }
 
     [Theory]
+    [InlineData(", after.", ", after.")]
+    [InlineData(".", ".")]
+    [InlineData("!", "!")]
+    [InlineData("?", "?")]
+    [InlineData("; after.", "; after.")]
+    [InlineData(": after.", ": after.")]
+    [InlineData(")", ")")]
+    [InlineData(" after.", " after.")]
+    [InlineData("after.", " after.")]
+    public void Emphasis_PreservesFollowingPunctuationAndWhitespace(string followingText, string expectedSuffix)
+    {
+        using IHost host = GetHost();
+        IStructDocSerializer serializer = host.Services.GetRequiredService<IStructDocSerializer>();
+        StringTextWriter<MarkdownStreamWriter> textWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
+        HtmlParagraph paragraph = new();
+        paragraph.MakeARoot();
+        paragraph.InitWithContent(content =>
+        {
+            content.Add(new HtmlEmphases()).InitWithContent(emphasis =>
+            {
+                emphasis.Add(new PlainTextNode("World"));
+            });
+            content.Add(new PlainTextNode(followingText));
+        });
+
+        serializer.Serialize(textWriter.Writer, paragraph);
+
+        Assert.Equal($"*World*{expectedSuffix}", textWriter.GetResult());
+    }
+
+    [Theory]
     [InlineData("Hello,")]
     [InlineData("Hello, ")]
     public void StandaloneStyle(string source)

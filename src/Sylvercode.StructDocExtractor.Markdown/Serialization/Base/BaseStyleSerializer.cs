@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Sylvercode.StructDocExtractor.Markdown.Serialization.Writer;
 using Sylvercode.StructDocExtractor.Model;
+using Sylvercode.StructDocExtractor.StdHtml.Model;
 
 namespace Sylvercode.StructDocExtractor.Markdown.Serialization.Base;
 
@@ -28,7 +29,9 @@ public abstract class BaseStyleSerializer<THtmlNode>(
         public override void OnAfterAsChildSerialize(THtmlNode node, IStructDocNode? nextNode, MarkdownStreamWriter stream)
         {
             if (node.HasContent
-                && !node.IsMultiStyleDelimiter(nextNode))
+                && !node.IsMultiStyleDelimiter(nextNode)
+                && !(nextNode is PlainTextNode { Text.Length: > 0 } text
+                    && (char.IsPunctuation(text.Text[0]) || char.IsWhiteSpace(text.Text[0]))))
                 stream.EnsureEndWordNext();
         }
     }

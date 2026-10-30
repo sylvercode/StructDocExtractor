@@ -20,6 +20,7 @@ public class HtmlEmphasesFactory : BaseAngleNodeFactory
     protected override bool BuildFromElement(AngleProcessTaskResultBuilder resultBuilder, IElement node)
     {
         resultBuilder.WithNode<HtmlEmphases>();
+        resultBuilder.WithChildNodesAsSubTasks();
         return true;
     }
 }

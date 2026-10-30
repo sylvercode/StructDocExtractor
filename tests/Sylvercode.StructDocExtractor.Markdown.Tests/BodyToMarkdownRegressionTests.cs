@@ -60,6 +60,32 @@ public class BodyToMarkdownRegressionTests
         return document.Body ?? throw new InvalidOperationException("Fixture does not contain a body element.");
     }
 
+    [Theory]
+    [InlineData("em")]
+    [InlineData("i")]
+    public void EmphasizedLink_IsExtractedAndSerialized_WithSurroundingParagraph(string emphasisTag)
+    {
+        string html = $"""
+            <p>If you read <{emphasisTag}><a title="The Glass City" href="https://example.com/books/glass-city">The Glass City</a></{emphasisTag}>, the next chapter awaits.</p>
+            """;
+        HtmlParser parser = new();
+        using var document = parser.ParseDocument(html);
+        IElement paragraph = document.QuerySelector("p")!;
+        Extractor<INode, HtmlNodeDiscriminator> extractor = new(
+            new AngleSharpNodeFactoryProvider(selector: null),
+            dataDiscriminatorFactory: new HtmlNodeDiscriminatorFactory());
+        using IHost host = GetSerializerHost();
+        IStructDocSerializer serializer = host.Services.GetRequiredService<IStructDocSerializer>();
+        StringTextWriter<MarkdownStreamWriter> textWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
+
+        ExtractionResult extraction = extractor.Extract(paragraph);
+        serializer.Serialize(textWriter.Writer, Assert.Single(extraction.StructDocNodes));
+
+        Assert.Equal(
+            "If you read *[The Glass City](https://example.com/books/glass-city)*, the next chapter awaits.",
+            textWriter.GetResult());
+    }
+
     [Fact]
     public void BodyFixture_SerializesMarkdown_HeadingIsNotInsideBlockquote()
     {
