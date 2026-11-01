@@ -25,8 +25,12 @@ public class ListSerializerTests
             }).Build();
     }
 
-    [Fact]
-    public void SerializeSingleList()
+    [Theory]
+    [InlineData("", "", "")]
+    [InlineData("37066f", "", "\n\n^37066f")]
+    [InlineData("", "37006f", "")]
+    [InlineData("37066f", "37006f", "\n\n^37066f")]
+    public void SerializeSingleList(string listId, string itemId, string expectedListId)
     {
         // Given
         IHost host = GetHost();
@@ -34,18 +38,17 @@ public class ListSerializerTests
         StringTextWriter<MarkdownStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
         stringTextWriter.Writer.Write("It's a");
 
+        HtmlList list = new() { Id = listId };
+        HtmlListItem firstItem = new() { Id = itemId };
+        firstItem.InitWithContent(c => c.Add(new PlainTextNode("bird?")));
         HtmlDiv div = new();
         div.MakeARoot();
         div.InitWithContent(c =>
         {
-            c.Add<HtmlList>()
-                .InitWithContent(c =>
+            c.Add(list);
+            list.InitWithContent(c =>
                 {
-                    c.Add<HtmlListItem>()
-                       .InitWithContent(c =>
-                        {
-                            c.Add(new PlainTextNode("bird?"));
-                        });
+                    c.Add(firstItem);
                     c.Add<HtmlListItem>()
                        .InitWithContent(c =>
                         {
@@ -63,8 +66,10 @@ public class ListSerializerTests
         serializer.Serialize(stringTextWriter.Writer, div);
 
         // Then
-        Assert.Equal("It's a\n\n- bird?\n- plane?\n- Superman!", stringTextWriter.GetResult());
         Assert.Equal(IndentedStreamWriter.SpaceOperationType.Paragraph, stringTextWriter.Writer.PendingOperation);
+        stringTextWriter.Writer.Write("Following paragraph.");
+        string expectedItemId = string.IsNullOrEmpty(itemId) ? "" : $"\n  ^{itemId}";
+        Assert.Equal($"It's a\n\n- bird?{expectedItemId}\n- plane?\n- Superman!{expectedListId}\n\nFollowing paragraph.", stringTextWriter.GetResult());
     }
 
     [Fact]

@@ -10,9 +10,23 @@ namespace Sylvercode.StructDocExtractor.Markdown.Serialization;
 /// <summary>Serializer that outputs <see cref="HtmlList"/> nodes as Markdown bulleted or numbered lists, managing list nesting depth and spacing via the <see cref="MarkdownStreamWriter"/> list counter.</summary>
 public class ListSerializer(ILogger<ListSerializer>? logger = null)
     : BaseMarkdownSerializer<HtmlList>(
+        holderHandler: new ListHolderHandler(),
         handler: new ListHandler(),
         logger: logger)
 {
+    private sealed class ListHolderHandler : HolderHandler
+    {
+        public override void OnAfterLastChildSerialize(HtmlList parent, IStructDocNode lastChild, MarkdownStreamWriter stream)
+        {
+            if (string.IsNullOrEmpty(parent.Id))
+                return;
+
+            stream.StartParagraph();
+            stream.Write($"^{parent.Id}");
+            stream.EnsureEndParagraphNext();
+        }
+    }
+
     private sealed class ListHandler : Handler
     {
         public override void OnBeforeAsChildSerialize(HtmlList node, IStructDocNode? previousNode, MarkdownStreamWriter stream)

@@ -25,8 +25,10 @@ public class CalloutSerializerTests
             }).Build();
     }
 
-    [Fact]
-    public void SerializeText()
+    [Theory]
+    [InlineData("", "> [!info]\n> Hello\n> \n> World")]
+    [InlineData("37066f", "> [!info] Info\n> Hello\n> \n> World\n\n^37066f")]
+    public void SerializeText(string id, string expectedCallout)
     {
         // Given
         IHost host = GetHost(new Dictionary<Type, CalloutSerializer.CalloutType>
@@ -38,7 +40,7 @@ public class CalloutSerializerTests
         string aLongTimeAgo = "A long time ago...";
         stringTextWriter.Writer.Write(aLongTimeAgo);
 
-        HtmlParagraph paragraph = new();
+        HtmlParagraph paragraph = new() { Id = id };
         paragraph.InitWithContent(c =>
         {
             c.Add(new PlainTextNode("Hello\n\nWorld"));
@@ -54,7 +56,8 @@ public class CalloutSerializerTests
         serializer.Serialize(stringTextWriter.Writer, mainDiv);
 
         // Then
-        Assert.Equal($"{aLongTimeAgo}\n\n> [!info]\n> Hello\n> \n> World", stringTextWriter.GetResult());
         Assert.Equal(IndentedStreamWriter.SpaceOperationType.Paragraph, stringTextWriter.Writer.PendingOperation);
+        stringTextWriter.Writer.Write("Following paragraph.");
+        Assert.Equal($"{aLongTimeAgo}\n\n{expectedCallout}\n\nFollowing paragraph.", stringTextWriter.GetResult());
     }
 }

@@ -67,7 +67,7 @@ public class CalloutSerializer(
             if (!string.IsNullOrEmpty(parent.Id))
             {
                 string CapitaliseCallout = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(calloutText);
-                stream.WriteLine($" {CapitaliseCallout} ^{parent.Id}");
+                stream.Write($" {CapitaliseCallout}");
             }
             stream.WriteLine();
         }
@@ -76,6 +76,12 @@ public class CalloutSerializer(
         public override void OnAfterLastChildSerialize(IStructDocNodeHolder<IStructDocNode> parent, IStructDocNode lastChild, MarkdownStreamWriter stream)
         {
             stream.PopLineHeadToken();
+            if (!string.IsNullOrEmpty(parent.Id))
+            {
+                stream.StartParagraph();
+                stream.Write($"^{parent.Id}");
+                stream.EnsureEndParagraphNext();
+            }
         }
     }
 

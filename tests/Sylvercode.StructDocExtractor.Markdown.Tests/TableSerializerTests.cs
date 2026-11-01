@@ -30,8 +30,10 @@ public class TableSerializerTests
             }).Build();
     }
 
-    [Fact]
-    public void SerializeTableHeadBodyFooter()
+    [Theory]
+    [InlineData("", "")]
+    [InlineData("37066f", "\n\n^37066f")]
+    public void SerializeTableHeadBodyFooter(string id, string expectedId)
     {
         // Given
         IHost host = GetHost();
@@ -39,12 +41,13 @@ public class TableSerializerTests
         StringTextWriter<MarkdownStreamWriter> stringTextWriter = host.Services.GetRequiredService<StringTextWriter<MarkdownStreamWriter>>();
         stringTextWriter.Writer.Write("It's a");
 
+        HtmlTable table = new() { Id = id };
         HtmlDiv div = new();
         div.MakeARoot();
         div.InitWithContent(c =>
         {
-            c.Add<HtmlTable>()
-                .InitWithContent(c =>
+            c.Add(table);
+            table.InitWithContent(c =>
                 {
                     c.Add<HtmlTableHeader>()
                         .InitWithContent(c =>
@@ -107,10 +110,11 @@ public class TableSerializerTests
         serializer.Serialize(stringTextWriter.Writer, div);
 
         // Then
-        Assert.Equal(
-            "It's a\n\n| Header1 | Header2 |\n|-|-|\n| Data1 | Data2 |\n| Footer1 | Footer2 |",
-            stringTextWriter.GetResult());
         Assert.Equal(IndentedStreamWriter.SpaceOperationType.Paragraph, stringTextWriter.Writer.PendingOperation);
+        stringTextWriter.Writer.Write("Following paragraph.");
+        Assert.Equal(
+            $"It's a\n\n| Header1 | Header2 |\n|-|-|\n| Data1 | Data2 |\n| Footer1 | Footer2 |{expectedId}\n\nFollowing paragraph.",
+            stringTextWriter.GetResult());
     }
 
     [Fact]

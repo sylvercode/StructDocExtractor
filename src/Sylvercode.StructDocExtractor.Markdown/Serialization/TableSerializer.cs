@@ -16,6 +16,16 @@ public class TableSerializer(ILogger<TableSerializer>? logger = null)
 {
     private sealed class TableHolderHandler : HolderHandler
     {
+        public override void OnAfterLastChildSerialize(HtmlTable parent, IStructDocNode lastChild, MarkdownStreamWriter stream)
+        {
+            if (string.IsNullOrEmpty(parent.Id))
+                return;
+
+            stream.StartParagraph();
+            stream.Write($"^{parent.Id}");
+            stream.EnsureEndParagraphNext();
+        }
+
         public override void OnBeforeFirstChildSerialize(HtmlTable parent, IStructDocNode nextChild, MarkdownStreamWriter stream)
         {
             if (nextChild is HtmlTableHeader)
