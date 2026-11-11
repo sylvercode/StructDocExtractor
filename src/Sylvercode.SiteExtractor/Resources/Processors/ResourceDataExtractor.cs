@@ -15,7 +15,7 @@ namespace Sylvercode.SiteExtractor.Resources.Processors;
 /// <see cref="DataExtractedProcessorResult{TExtractionData}"/> (unfinished); <see cref="ContinueExtraction"/>
 /// then updates URI references via <see cref="IReferencerUpdater"/> and serializes the node tree.
 /// An optional <see cref="IResourceDependancyFilter"/> controls which discovered referencer nodes are tracked as
-/// dependencies, and an optional <see cref="IUriRedirector"/> rewrites reference URIs before they are recorded.
+/// dependencies, and an optional <see cref="IUriRedirector"/> resolves server redirects before references are recorded.
 /// </remarks>
 /// <typeparam name="TExtractionData">The raw data type fetched from the site source and passed to the extractor.</typeparam>
 public partial class ResourceDataExtractor<TExtractionData>(

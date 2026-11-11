@@ -311,7 +311,7 @@ extension points and their registration helpers:
 | Resource processors | `IResourceProcessor`, `IResourceProcessorProvider` | `AddResourceProcessorProvider()`, `AddResourceDataExtractorProcessor<T>()`, `AddImageCopierProcessor()` |
 | Dependency filtering | `IResourceDependancyFilter` | `AddHtmlResourceDependencyFilter()` |
 | Storage | `IDataStore` | `AddDirectoryDataStore()`, `AddMemoryDataStore()` |
-| URI redirects | `IUriRedirector` | `AddUriRedirector(regex, replace)` |
+| URI redirects | `IUriRedirector`, `HttpUriRedirector` | `AddHttpUriRedirector()` |
 | Downloading | `HttpDownloader` | `AddHttpDownloader()` |
 
 Configuration is bound through the options pattern. `SiteExtractorOptions` (bound from the
@@ -382,7 +382,7 @@ order described above.
 
 | Namespace | Key types | Purpose |
 |---|---|---|
-| `.UriUtils` | `IUriMatcher`, `IUriTranslater`, `IUriRedirector`, `ImageUriMatcher`, `UriMatcherByBase`, `UriBaseTranslater`, `RelativeUriTranslater`, `StaticDirUriTranslater`, `UriRelativeFromBaseTranslater`, `NoopUriTranslater`, `UriRedirector(Extentions)`, `UriExtentions` | URI matching, translation, and redirection helpers. |
+| `.UriUtils` | `IUriMatcher`, `IUriTranslater`, `IUriRedirector`, `HttpUriRedirector`, `ImageUriMatcher`, `UriMatcherByBase`, `UriBaseTranslater`, `RelativeUriTranslater`, `StaticDirUriTranslater`, `UriRelativeFromBaseTranslater`, `NoopUriTranslater`, `HttpUriRedirector(Extentions)`, `UriExtentions` | URI matching, translation, and server redirect resolution helpers. |
 | `.Sources` | `ISiteSource`, `ISiteSourceProvider`, `MemorySiteSource(Extensions)` | Fetch raw document content by URI; in‑memory source for tests. |
 | `.Store` | `IDataStore`, `BaseDataStore`, `MemoryDataStore`, `DirectoryDataStore` (+ their `*Extensions`) | Persist extracted output to memory or disk. |
 | `.Resources` | `Resource`, `ResourceState`, `ResourcePullState`, `ResourceQueue`, `ResourceRepository`, `IReadOnlyResourceRepository`, `ResourcesTracker`, `IReferencerUpdater`/`ReferencerUpdater`, `IResourceUriTranslater`/`ResourceUriTranslater` | Resource model, tracking/dedup, and reference/URI updating. |

@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Sylvercode.SiteExtractor.Resources;
 using Sylvercode.SiteExtractor.Resources.Processors;
 using Sylvercode.SiteExtractor.Sources;
 using Sylvercode.SiteExtractor.Store;
+using Sylvercode.SiteExtractor.UriUtils;
 using Sylvercode.SiteExtractor.Tests.Mocks;
 using Sylvercode.SiteExtractor.Tests.Stubs;
 using Sylvercode.StructDocExtractor.Extraction;
@@ -19,7 +21,11 @@ public class ResourceDataExtractorTests_Extract
     /// <param name="dataReturnsNull">When <see langword="true"/>, the mock source returns <see langword="null"/> for all URIs.</param>
     /// <param name="extractNothing">When <see langword="true"/>, the mock extractor produces no nodes.</param>
     /// <returns>A built <see cref="IHost"/> ready for test use.</returns>
-    public static IHost GetDefaultHost(MockCallTracker calTracker, bool dataReturnsNull = false, bool extractNothing = false)
+    public static IHost GetDefaultHost(
+        MockCallTracker calTracker,
+        bool dataReturnsNull = false,
+        bool extractNothing = false,
+        IUriRedirector? uriRedirector = null)
     {
         IHostBuilder builder = Host.CreateDefaultBuilder();
 
@@ -39,6 +45,9 @@ public class ResourceDataExtractorTests_Extract
                 return new ExtractorMock(tracker, extractNothing);
             });
             services.AddSingleton<IStructDocSerializer, StructDocSerializerMock>();
+
+            if (uriRedirector is not null)
+                services.AddSingleton(uriRedirector);
 
             services.AddSingleton<IResourceDataExtractor<Uri>, ResourceDataExtractor<Uri>>();
         });
@@ -169,6 +178,41 @@ public class ResourceDataExtractorTests_Extract
                 Assert.Equal(nameof(IExtractor<Uri>.Extract), call.MethodName);
                 Assert.Equal(input, call.Arguments[0]);
             });
+    }
+
+    /// <summary>Verifies that each extracted reference is checked and server redirects are applied before dependency tracking.</summary>
+    [Fact]
+    public void ExtractExistingWithReferences_UsesServerRedirects()
+    {
+        MockCallTracker callTracker = new();
+        MappedUriRedirector uriRedirector = new(new Dictionary<string, string>
+        {
+            ["https://example.test/old"] = "https://cdn.example.test/new"
+        });
+        using IHost host = GetDefaultHost(callTracker, uriRedirector: uriRedirector);
+        var extractor = host.Services.GetRequiredService<IResourceDataExtractor<Uri>>();
+        Uri input = new("https://example.test/page?referencer1=old&referencer2=unchanged");
+
+        IResourceProcessorResult result = extractor.Extract(new Resource(input), new ResourceRepository());
+
+        var dataResult = Assert.IsType<DataExtractedProcessorResult<Uri>>(result);
+        Assert.Collection(dataResult.Referencers,
+            referencer => Assert.Equal("https://cdn.example.test/new", referencer.GetReference()),
+            referencer => Assert.Equal("https://example.test/unchanged", referencer.GetReference()));
+        Assert.Equal(
+            ["https://example.test/old", "https://example.test/unchanged"],
+            uriRedirector.RequestedUris);
+    }
+
+    private sealed class MappedUriRedirector(Dictionary<string, string> redirects) : IUriRedirector
+    {
+        public List<string> RequestedUris { get; } = [];
+
+        public bool RedirectUri(string uri, [NotNullWhen(true)] out string? redirectedUri)
+        {
+            RequestedUris.Add(uri);
+            return redirects.TryGetValue(uri, out redirectedUri);
+        }
     }
 
     /// <summary>Verifies that metadata encoded in the source URI query string is propagated to the result.</summary>

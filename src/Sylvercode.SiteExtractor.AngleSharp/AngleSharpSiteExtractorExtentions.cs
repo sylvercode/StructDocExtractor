@@ -2,6 +2,7 @@ using System.Net;
 using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Io;
+using AngleSharp.Io.Network;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Sylvercode.SiteExtractor.AngleSharp;
@@ -34,10 +35,17 @@ public static class AngleSharpSiteExtractorExtentions
     public static IServiceCollection AddAngleSharpWebSource(this IServiceCollection services)
     {
         services.AddMemoryCookieProvider();
+        services.AddHttpClient<HttpClientRequester>()
+            .ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+            {
+                UseCookies = false,
+                AllowAutoRedirect = false
+            })
+            .RemoveAllLoggers();
         services.TryAddSingleton((sp) =>
             AngleSharp.Configuration.Default
                 .With(sp.GetRequiredService<MemoryCookieProvider>())
-                .WithRequesters()
+                .With(sp.GetRequiredService<HttpClientRequester>())
                 .WithDefaultLoader());
         services.TryAddSingleton<IBrowsingContext, BrowsingContext>();
         services.TryAddSingleton<ISiteSource<INode>, AngleSharpWebSource>();
@@ -47,19 +55,19 @@ public static class AngleSharpSiteExtractorExtentions
 
     private static IServiceCollection AddMemoryCookieProvider(this IServiceCollection services)
     {
+        services.TryAddSingleton<CookieContainer>();
         services.TryAddSingleton((sp) =>
         {
-            MemoryCookieProvider provider = new();
+            MemoryCookieProvider provider = new(sp.GetRequiredService<CookieContainer>());
             provider.Container.Add(sp.GetRequiredService<IOptionsMonitor<CookieCollection>>().Get(AngleSharpCookieColKey));
             return provider;
         });
-        services.TryAddSingleton((sp) => sp.GetRequiredService<MemoryCookieProvider>().Container);
         return services;
     }
 
     /// <summary>
-    /// Configures the AngleSharp cookie collection used by <see cref="AngleSharpWebSource"/> by
-    /// applying a delegate that populates the collection from a resolved dependency.
+    /// Configures the initial cookies added to the shared <see cref="CookieContainer"/> when
+    /// the AngleSharp cookie provider is created, using a resolved dependency.
     /// </summary>
     /// <typeparam name="TDep">The dependency type resolved from the DI container to assist cookie configuration.</typeparam>
     /// <param name="services">The <see cref="IServiceCollection"/> to add options to.</param>

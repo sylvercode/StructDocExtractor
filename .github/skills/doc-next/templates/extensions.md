@@ -16,7 +16,7 @@ Applies to `static class` files whose purpose is to provide extension methods
 - Pattern: *"Provides extension methods for `TypeName` to [do X]."*
 - Or: *"Extension helpers for [registering / composing / building] [Y] in [context]."*
 - Examples:
-  - `"Provides extension methods for <see cref=\"IUriRedirector\"/> to register and compose redirect rules."`
+  - `"Provides extension methods for <see cref=\"IUriRedirector\"/> to register HTTP redirect resolution."`
   - `"Extension helpers for registering <see cref=\"MarkdownStreamWriterProvider\"/> in a DI container."`
 
 > Use `<see cref="…"/>` to cross-reference the extended type.
