@@ -132,10 +132,10 @@ public class ResourceCopierTests_Process
 
         // Then
         Assert.Same(copier, result.Processor);
-        Assert.Same(resource, result.Resource);
+        Assert.Equal(ResourceExtractionState.OutputProduced, result.ExtractionState);
         Assert.NotNull(result.ResourceUriTranslaterToSet);
         Assert.False(result.IsUnfinished);
         Assert.Empty(result.GetResourceDependencies());
-        Assert.Throws<InvalidOperationException>(() => result.ContinueProcess());
+        Assert.Throws<InvalidOperationException>(() => result.ContinueProcess(resource));
     }
 }

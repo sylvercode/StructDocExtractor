@@ -73,7 +73,10 @@ public partial class ResourceCopier : IResourceCopiler
     public IResourceProcessorResult Process(Resource resource, IReadOnlyResourceRepository resourceRepository)
     {
         Download(resource.Uri);
-        return new FinishedProcessResult(this, resource, _resourceUriTranslater);
+        return new FinishedProcessResult(
+            this,
+            _resourceUriTranslater,
+            ResourceExtractionState.OutputProduced);
     }
     #endregion
 }

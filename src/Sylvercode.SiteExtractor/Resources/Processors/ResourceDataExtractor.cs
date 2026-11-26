@@ -65,7 +65,9 @@ public partial class ResourceDataExtractor<TExtractionData>(
         if (extractionData is null)
         {
             LogNoDataFromSource();
-            return new FinishedProcessResult(this, resource);
+            return new FinishedProcessResult(
+                this,
+                extractionState: ResourceExtractionState.NoSourceData);
         }
 
         ExtractionTaskObserver observer = new(resourceDependancyFilter, uriRedirector);
@@ -86,7 +88,9 @@ public partial class ResourceDataExtractor<TExtractionData>(
         if (result.StructDocNodes.Count == 0)
         {
             LogNoNodeFromSource();
-            return new FinishedProcessResult(this, resource);
+            return new FinishedProcessResult(
+                this,
+                extractionState: ResourceExtractionState.NoOutput);
         }
 
         if (_logger.IsEnabled(LogLevel.Debug))
@@ -100,7 +104,6 @@ public partial class ResourceDataExtractor<TExtractionData>(
 
         return new DataExtractedProcessorResult<TExtractionData>(
             this,
-            resource,
             resourceRepository,
             result,
             UriTransler,
@@ -111,20 +114,24 @@ public partial class ResourceDataExtractor<TExtractionData>(
     /// <summary>Performs the second processing phase: updates URI references and serializes the extracted document tree to the data store.</summary>
     /// <param name="lastResult">The unfinished result from the first <see cref="Extract"/> call.</param>
     /// <returns>A finished <see cref="FinishedProcessResult"/> once serialization is complete.</returns>
-    public IResourceProcessorResult ContinueExtraction(DataExtractedProcessorResult<TExtractionData> lastResult)
+    public IResourceProcessorResult ContinueExtraction(
+        DataExtractedProcessorResult<TExtractionData> lastResult,
+        Resource resource)
     {
         referencerUpdater?.UpdateReferencers(
-            lastResult.Resource,
+            resource,
             lastResult.Referencers,
             lastResult.ResourceRepository);
 
         using TextWriter writer = GetTextWriter(
-            lastResult.Resource.TranslateUri(),
+            resource.TranslateUri(),
             serisalizer.TextWriterProvider);
 
         serisalizer.Serialize(writer, lastResult.Result.StructDocNodes[0]);
 
-        return new FinishedProcessResult(this, lastResult.Resource);
+        return new FinishedProcessResult(
+            this,
+            extractionState: ResourceExtractionState.OutputProduced);
     }
 
     private TextWriter GetTextWriter(Uri uri, ITextWriterProvider? textWriterProvider)

@@ -27,10 +27,15 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         public void UpdateReference(string newReference) => Reference = newReference;
     }
 
-    private static void AssingUriTranlater(ResourceRepository resources)
+    private static void CompleteResourcesWithOutput(ResourceRepository resources)
     {
         foreach (var resource in resources)
+        {
             resource.UriTranslater = BaseTranslater;
+            resource.MarkAsPulling();
+            resource.MarkExtractionState(ResourceExtractionState.OutputProduced);
+            resource.MarkAsPulled();
+        }
     }
 
     /// <summary>Verifies that a fragment-only reference is converted to the Obsidian wiki-link format.</summary>
@@ -41,7 +46,7 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         ReferencerNode referencer = new("#fragment");
         ResourceRepository resources = [];
         Resource referencerResource = resources.Add(new Uri("http://example.com/")).resource;
-        AssingUriTranlater(resources);
+        CompleteResourcesWithOutput(resources);
         MarkdownReferencerUpdater referencerUpdater = new();
 
         // When
@@ -59,7 +64,7 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         ReferencerNode referencer = new("http://example.com/ref");
         ResourceRepository resources = new(["http://example.com/otherref"]);
         Resource referencerResource = resources.Add(new Uri("http://example.com/referer")).resource;
-        AssingUriTranlater(resources);
+        CompleteResourcesWithOutput(resources);
         MarkdownReferencerUpdater referencerUpdater = new();
 
         // When
@@ -77,7 +82,7 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         ReferencerNode referencer = new("http://example.com/referer#frag");
         ResourceRepository resources = new(["http://example.com/referer#frag"]);
         Resource referencerResource = resources.Add(new Uri("http://example.com/referer")).resource;
-        AssingUriTranlater(resources);
+        CompleteResourcesWithOutput(resources);
         MarkdownReferencerUpdater referencerUpdater = new();
 
         // When
@@ -103,7 +108,7 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
             resources.Add(new Uri(reference + i));
 
         Resource referencerResource = resources.Add(new Uri("http://example.com/referer")).resource;
-        AssingUriTranlater(resources);
+        CompleteResourcesWithOutput(resources);
         MarkdownReferencerUpdater referencerUpdater = new();
 
         // When
@@ -121,7 +126,7 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         ReferencerNode referencer = new("http://example.com/ref");
         ResourceRepository resources = new(["http://example.com/ref", "http://example.com/folder/ref"]);
         Resource referencerResource = resources.Add(new Uri("http://example.com/referer")).resource;
-        AssingUriTranlater(resources);
+        CompleteResourcesWithOutput(resources);
         MarkdownReferencerUpdater referencerUpdater = new();
 
         // When

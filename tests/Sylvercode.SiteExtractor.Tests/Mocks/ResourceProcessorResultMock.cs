@@ -14,13 +14,13 @@ public class ResourceProcessorResultMock(
     Resource resource,
     IEnumerable<Uri>? dependencies = null,
     IResourceProcessorResult? continuProcessResult = null,
-    MockCallTracker? callTracker = null) : IResourceProcessorResult
+    MockCallTracker? callTracker = null,
+    Action? beforeContinue = null) : IResourceProcessorResult
 {
-    /// <inheritdoc/>
-    public IResourceProcessor Processor => processor;
+    private readonly Resource _expectedResource = resource;
 
     /// <inheritdoc/>
-    public Resource Resource => resource;
+    public IResourceProcessor Processor => processor;
 
     /// <inheritdoc/>
     public MetadataDictionary NewMetadata { get; } = [];
@@ -28,14 +28,22 @@ public class ResourceProcessorResultMock(
     /// <inheritdoc/>
     public IResourceUriTranslater? ResourceUriTranslaterToSet { get; set; }
 
+    /// <inheritdoc/>
+    public ResourceExtractionState ExtractionState { get; set; } =
+        ResourceExtractionState.NoOutput;
+
     /// <summary>Gets a value indicating whether this result requires a continuation step before it is considered finished.</summary>
     public bool IsUnfinished { get; } = continuProcessResult != null;
 
     /// <summary>Invokes the next processing step and returns its result, recording the call when a tracker is provided.</summary>
     /// <returns>The configured continuation <see cref="IResourceProcessorResult"/>.</returns>
     /// <exception cref="InvalidOperationException">Thrown when no continuation result has been configured.</exception>
-    public IResourceProcessorResult ContinueProcess()
+    public IResourceProcessorResult ContinueProcess(Resource resource)
     {
+        if (!ReferenceEquals(resource, _expectedResource))
+            throw new InvalidOperationException("The continuation resource does not match the initial resource.");
+
+        beforeContinue?.Invoke();
         callTracker?.TrackCall(this, nameof(ContinueProcess), []);
 
         var result = continuProcessResult ?? throw new InvalidOperationException("No continue process result.");

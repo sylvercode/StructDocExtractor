@@ -13,21 +13,22 @@ public interface IResourceProcessorResult
     /// <summary>Gets the processor that produced this result.</summary>
     IResourceProcessor Processor { get; }
 
-    /// <summary>Gets the resource that was processed.</summary>
-    Resource Resource { get; }
-
     /// <summary>Gets the metadata entries discovered or computed during processing.</summary>
     MetadataDictionary NewMetadata { get; }
 
     /// <summary>Gets the <see cref="IResourceUriTranslater"/> to assign to the resource after processing, or <see langword="null"/> if no change is needed.</summary>
     IResourceUriTranslater? ResourceUriTranslaterToSet { get; }
 
+    /// <summary>Gets the extraction outcome produced by this processing step.</summary>
+    ResourceExtractionState ExtractionState { get; }
+
     /// <summary>Gets a value indicating whether further post-processing is required via <see cref="ContinueProcess"/>.</summary>
     bool IsUnfinished { get; }
 
     /// <summary>Performs the next post-processing step and returns the updated result.</summary>
+    /// <param name="resource">The resource whose processing is being continued.</param>
     /// <returns>An <see cref="IResourceProcessorResult"/> reflecting the state after this continuation step.</returns>
-    IResourceProcessorResult ContinueProcess();
+    IResourceProcessorResult ContinueProcess(Resource resource);
 
     /// <summary>Returns the URIs of any dependent resources discovered during processing.</summary>
     /// <returns>An enumerable of dependency URIs to enqueue for further processing, or an empty sequence if none.</returns>

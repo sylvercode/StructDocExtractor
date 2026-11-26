@@ -22,10 +22,19 @@ public partial class ReferencerUpdater(ILogger<ReferencerUpdater>? logger = null
         foreach (var referencer in referencers)
         {
             Uri refUri = new(referencer.GetReference());
-            if (resourceRepository.TryGetResourceForUri(refUri, out var resource))
-                referencer.UpdateReference(resource.TranslateUri(refUri).ToString());
-            else
+            if (!resourceRepository.TryGetResourceForUri(refUri, out var resource))
+            {
                 LogNotFoundReference(refUri);
+                continue;
+            }
+
+            if (resource.State.ExtractionState != ResourceExtractionState.OutputProduced)
+            {
+                LogReferenceWithoutOutput(refUri, resource.State.ExtractionState);
+                continue;
+            }
+
+            referencer.UpdateReference(resource.TranslateUri(refUri).ToString());
         }
     }
 
@@ -33,4 +42,9 @@ public partial class ReferencerUpdater(ILogger<ReferencerUpdater>? logger = null
         Level = LogLevel.Debug,
         Message = "Referenced Uri not found in tracked resources: {RefUri}")]
     private partial void LogNotFoundReference(Uri refUri);
+
+    [LoggerMessage(
+        Level = LogLevel.Debug,
+        Message = "Referenced resource produced no current output: {RefUri} ({ExtractionState})")]
+    private partial void LogReferenceWithoutOutput(Uri refUri, ResourceExtractionState extractionState);
 }

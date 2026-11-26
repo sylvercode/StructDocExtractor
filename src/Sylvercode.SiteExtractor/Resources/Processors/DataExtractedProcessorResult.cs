@@ -15,7 +15,6 @@ namespace Sylvercode.SiteExtractor.Resources.Processors;
 /// <typeparam name="TExtractionData">The raw data type provided by the site source during extraction.</typeparam>
 public class DataExtractedProcessorResult<TExtractionData>(
     ResourceDataExtractor<TExtractionData> processor,
-    Resource resource,
     IReadOnlyResourceRepository resourceRepository,
     ExtractionResult result,
     IResourceUriTranslater? resourceUriTranslaterToSet,
@@ -23,9 +22,9 @@ public class DataExtractedProcessorResult<TExtractionData>(
     MetadataDictionary newMetadatas)
     : BaseResourceProcessorResult(
         processor,
-        resource,
         resourceUriTranslaterToSet,
         isUnfinished: true,
+        ResourceExtractionState.NotProcessed,
         newMetadatas)
 {
     /// <summary>Gets the read-only resource repository used to resolve reference URIs during post-processing.</summary>
@@ -38,8 +37,8 @@ public class DataExtractedProcessorResult<TExtractionData>(
     public List<IStructDocReferencer> Referencers { get; } = referencers;
 
     /// <inheritdoc/>
-    public override IResourceProcessorResult ContinueProcess() 
-        => processor.ContinueExtraction(this);
+    public override IResourceProcessorResult ContinueProcess(Resource resource)
+        => processor.ContinueExtraction(this, resource);
 
     /// <inheritdoc/>
     public override IEnumerable<Uri> GetResourceDependencies() 

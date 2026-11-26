@@ -11,8 +11,8 @@ namespace Sylvercode.SiteExtractor.Markdown;
 /// <remarks>
 /// Processes each reference node by resolving it against the resource repository and converting URIs to
 /// Markdown-compatible wiki-link format. Handles fragment-only references, same-resource self-links, unique
-/// file name substitution, and relative-path calculation for translated resources. References for unpullable
-/// resources are left unchanged. Depends on <see cref="IReadOnlyResourceRepository"/> to locate resources
+/// file name substitution, and relative-path calculation for translated resources. References for resources
+/// that did not produce output are left unchanged. Depends on <see cref="IReadOnlyResourceRepository"/> to locate resources
 /// and their translated URIs.
 /// </remarks>
 public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater>? logger = null) : IReferencerUpdater
@@ -61,7 +61,7 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
             return;
         }
 
-        if (!reference.State.IsPullable)
+        if (reference.State.ExtractionState != ResourceExtractionState.OutputProduced)
         {
             LogNotPullableReference(refUri);
             return;
@@ -117,7 +117,7 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
         Dictionary<string, (int count, Resource resource)> fileNameMap = [];
         foreach (Resource resource in resourceRepository)
         {
-            if (!resource.State.IsPullable)
+            if (resource.State.ExtractionState != ResourceExtractionState.OutputProduced)
                 continue;
 
             Uri fakeAbsoluteUri = new(_tempBaseUri, resource.TranslatedResourceUri);

@@ -56,5 +56,16 @@ public class Resource(Uri sourceUri, bool isPullable = false)
 
     /// <summary>Transitions the resource state to <see cref="ResourcePullState.Pulled"/>.</summary>
     public void MarkAsPulled()
-        => State = State.AsPulled();
+        => State = State.AsPulled(State.ExtractionState);
+
+    /// <summary>Records the extraction outcome determined after processing this resource.</summary>
+    public void MarkExtractionState(ResourceExtractionState extractionState)
+        => State = State.WithExtractionState(extractionState);
+
+    /// <summary>Marks the current processing attempt as failed.</summary>
+    public void MarkAsFailed()
+        => State = State.AsFailed();
+
+    internal void SetUriTranslater(IResourceUriTranslater translater)
+        => UriTranslater = translater;
 }

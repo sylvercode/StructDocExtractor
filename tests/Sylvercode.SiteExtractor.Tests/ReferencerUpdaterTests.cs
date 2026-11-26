@@ -20,7 +20,12 @@ public class ReferencerUpdaterTests_UpdateReferencers
         ResourceRepository resourceRepository = new(["https://example.com/ref1", "https://example.com/ref2"]);
         ResourceUriTranslater uriTranslater = ResourceUriTranslater.NewBaseTranslater(new Uri("https://example.com/"), new Uri("https://test.com/"));
         foreach (var resource in resourceRepository)
+        {
             resource.UriTranslater = uriTranslater;
+            resource.MarkAsPulling();
+            resource.MarkExtractionState(ResourceExtractionState.OutputProduced);
+            resource.MarkAsPulled();
+        }
 
         ReferencerUpdater referencerUpdater = new();
 

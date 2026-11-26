@@ -116,7 +116,8 @@ builder.ConfigureServices((ctx, services) =>
             .AddAngleExtractorFor<ArticleProvider>()  // scope + all built-in HTML factories
             .AddMarkdownSerializers()        // built-in Markdown serializers for every StdHtml node
             .AddMarkdownSerialization()      // post-extraction link rewriting
-            .AddDirectoryDataStore();        // write .md files to disk
+            .AddDirectoryDataStore()         // write .md files to disk
+            .AddDirectoryExtractionManifestStore();
 });
 
 IHost host = builder.Build();
@@ -153,7 +154,10 @@ public class Worker(
   "SiteExtractor": {
     "SourceAuthority": "https://example.com",
     "SourceBasePath": "/articles",
-    "OutputDirectory": "./output"
+    "OutputDirectory": "./output",
+    "LinkedExtractions": [
+      { "OutputDirectory": "./reference-output" }
+    ]
   }
 }
 ```
@@ -165,6 +169,49 @@ dotnet run -- -sitePath /articles -output ./output
 ```
 
 That is the complete setup. No custom nodes, no custom factories, no custom serializers.
+
+## Extraction manifests
+
+Manifest stores are only needed when an installation uses linked extractions. Register
+`AddDirectoryExtractionManifestStore()` (or `AddMemoryExtractionManifestStore()` for tests)
+separately from `AddDirectoryDataStore()` / `AddMemoryDataStore()`. Hosts that do not configure
+linked extractions can omit the manifest-store registration entirely and keep the historical
+extraction behavior.
+
+With a manifest store registered, every successful extraction writes
+`extraction-manifest.json` directly below its configured `OutputDirectory`. The file records the
+exact source URI that produced each output file:
+
+```json
+{
+  "schemaVersion": 1,
+  "sourceBaseUri": "https://example.com/articles/",
+  "entries": [
+    {
+      "sourceUri": "https://example.com/articles/getting-started",
+      "outputFile": "Getting Started.md"
+    }
+  ]
+}
+```
+
+Source URIs are absolute and fragment-free; query strings are retained because they identify
+different source resources. Output paths are normalized relative paths below the output root
+and always use `/` separators. Absolute paths, empty paths, traversal through `.` or `..`, and
+the reserved root-level `extraction-manifest.json` path are rejected.
+
+Manifest JSON is strict and versioned. Missing or unknown fields, malformed JSON or URIs,
+duplicate mappings, unsupported schema versions, and paths that escape their root stop the
+extraction with an error identifying the affected root and field. The manifest is replaced
+atomically only after all resource continuations and file writes finish successfully.
+
+Configure every required related output root through `LinkedExtractions`. At startup each entry
+must identify a root containing a valid manifest; roots are never inferred or scanned. Duplicate
+or nested output roots and overlapping source bases are rejected before crawling starts.
+
+For an output tree created by an older version, rerun the extraction once against that same
+output directory. A successful ordinary extraction writes the manifest and completes migration;
+there is no separate migration command, manual mapping, or legacy-directory scan.
 
 ---
 
@@ -383,7 +430,8 @@ services.AddHostedService<Worker>()
         .AddAcmeExtractor()          // replaces AddAngleExtractorFor<ArticleProvider>()
         .AddMarkdownSerialization()
         .AddAcmeSerializer()         // replaces AddMarkdownSerializers()
-        .AddDirectoryDataStore();
+        .AddDirectoryDataStore()
+        .AddDirectoryExtractionManifestStore();
 ```
 
 ---

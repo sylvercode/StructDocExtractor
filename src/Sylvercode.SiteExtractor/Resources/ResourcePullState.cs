@@ -9,6 +9,6 @@ public enum ResourcePullState
     /// <summary>The resource download is currently in progress.</summary>
     Pulling,
 
-    /// <summary>The resource has been successfully downloaded and stored.</summary>
+    /// <summary>The resource processing cycle has completed.</summary>
     Pulled
 }

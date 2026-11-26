@@ -19,6 +19,7 @@ public class ResourceStateTests_IsPullable
         Assert.True(resourceState.IsPullNeeded);
         Assert.False(resourceState.IsPulling);
         Assert.False(resourceState.IsPulled);
+        Assert.Equal(ResourceExtractionState.NotProcessed, resourceState.ExtractionState);
     }
     /// <summary>Verifies that a non-pullable resource is already considered pulled from the start.</summary>
     [Fact]
@@ -34,6 +35,7 @@ public class ResourceStateTests_IsPullable
         Assert.False(resourceState.IsPullNeeded);
         Assert.False(resourceState.IsPulling);
         Assert.True(resourceState.IsPulled);
+        Assert.Equal(ResourceExtractionState.Skipped, resourceState.ExtractionState);
     }
 }
 
@@ -83,6 +85,7 @@ public class ResourceStateTests_AsPulled
         Assert.True(result.IsPullable);
         Assert.False(result.IsPullNeeded);
         Assert.False(result.IsPulling);
+        Assert.Equal(ResourceExtractionState.NoOutput, result.ExtractionState);
     }
 
     /// <summary>Verifies that a currently-pulling resource transitions correctly to the pulled state.</summary>
@@ -100,6 +103,35 @@ public class ResourceStateTests_AsPulled
         Assert.True(result.IsPullable);
         Assert.False(result.IsPullNeeded);
         Assert.False(result.IsPulling);
+        Assert.Equal(ResourceExtractionState.NoOutput, result.ExtractionState);
+    }
+}
+
+/// <summary>Tests for completed resource extraction outcomes.</summary>
+public class ResourceStateTests_ExtractionOutcome
+{
+    /// <summary>Verifies that a completed resource retains its explicit extraction outcome.</summary>
+    [Fact]
+    public void OutputProduced_IsRetained()
+    {
+        ResourceState result = new ResourceState(true)
+            .AsPulling()
+            .AsPulled(ResourceExtractionState.OutputProduced);
+
+        Assert.True(result.IsPulled);
+        Assert.Equal(ResourceExtractionState.OutputProduced, result.ExtractionState);
+    }
+
+    /// <summary>Verifies that failure is distinct from a completed pull.</summary>
+    [Fact]
+    public void Failure_IsRetained()
+    {
+        ResourceState result = new ResourceState(true)
+            .AsPulling()
+            .AsFailed();
+
+        Assert.False(result.IsPulled);
+        Assert.Equal(ResourceExtractionState.Failed, result.ExtractionState);
     }
 }
 
