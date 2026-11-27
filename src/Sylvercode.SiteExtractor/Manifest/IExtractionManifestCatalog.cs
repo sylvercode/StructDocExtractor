@@ -1,16 +1,11 @@
-using Sylvercode.SiteExtractor.Resources;
-
 namespace Sylvercode.SiteExtractor.Manifest;
 
-/// <summary>Coordinates manifest validation, retention, and persistence for an extraction.</summary>
+/// <summary>Retains validated manifests for linked extraction roots.</summary>
 public interface IExtractionManifestCatalog
 {
     /// <summary>Gets loaded linked manifests by canonical output root.</summary>
     IReadOnlyDictionary<string, ExtractionManifest> LinkedManifests { get; }
 
-    /// <summary>Validates the configured roots and loads linked manifests before crawling starts.</summary>
-    void BeginExtraction(Uri seedUri);
-
-    /// <summary>Builds and persists the current manifest after every resource has completed.</summary>
-    void CompleteExtraction(IReadOnlyResourceRepository resources);
+    /// <summary>Replaces the retained linked manifests with a validated set.</summary>
+    void SetLinkedManifests(IReadOnlyDictionary<string, ExtractionManifest> manifests);
 }

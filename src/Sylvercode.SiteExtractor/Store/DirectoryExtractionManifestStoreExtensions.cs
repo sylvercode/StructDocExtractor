@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Sylvercode.SiteExtractor.Manifest;
+using Sylvercode.SiteExtractor.Observation;
 using Sylvercode.SiteExtractor.Store;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
@@ -20,6 +21,8 @@ public static class DirectoryExtractionManifestStoreExtensions
         services.TryAddSingleton<IExtractionManifestStore>(
             provider => provider.GetRequiredService<DirectoryExtractionManifestStore>());
         services.TryAddSingleton<IExtractionManifestCatalog, ExtractionManifestCatalog>();
+        services.TryAddEnumerable(
+            ServiceDescriptor.Singleton<IExtractionObserver, ExtractionManifestHandler>());
         return services;
     }
 }

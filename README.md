@@ -178,6 +178,12 @@ separately from `AddDirectoryDataStore()` / `AddMemoryDataStore()`. Hosts that d
 linked extractions can omit the manifest-store registration entirely and keep the historical
 extraction behavior.
 
+Site extraction also exposes a synchronous `IExtractionObserver` event stream. The default
+`ExtractionMetadataHandler` and `ExtractionUriTranslaterHandler` apply resource metadata and URI
+translation. When manifest support is enabled, `ExtractionManifestHandler` validates linked
+catalogs at `ExtractionStarted` and writes the current manifest only at `ExtractionCompleted`.
+Consumers can register additional observers without modifying `SiteExtractor`.
+
 With a manifest store registered, every successful extraction writes
 `extraction-manifest.json` directly below its configured `OutputDirectory`. The file records the
 exact source URI that produced each output file:

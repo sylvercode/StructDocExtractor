@@ -221,6 +221,36 @@ public class SiteExtractorManifestTests
             pair => pair.Key == Root).Value.Entries);
     }
 
+    /// <summary>Verifies that consecutive extractions do not retain a previous run context.</summary>
+    [Fact]
+    public void Extract_RepeatedRunsBuildIndependentManifests()
+    {
+        ResourceProcessorMock processor = new(returnsFinishedResultByDefault: false);
+        processor.AddResult((processor, resource) =>
+            new ResourceProcessorResultMock(processor, resource)
+            {
+                ResourceUriTranslaterToSet = new FixedTranslater("first.md"),
+                ExtractionState = ResourceExtractionState.OutputProduced,
+            });
+        processor.AddResult((processor, resource) =>
+            new ResourceProcessorResultMock(processor, resource)
+            {
+                ResourceUriTranslaterToSet = new FixedTranslater("second.md"),
+                ExtractionState = ResourceExtractionState.OutputProduced,
+            });
+        IHost host = CreateHost(processor);
+        SiteExtractor extractor = host.Services.GetRequiredService<SiteExtractor>();
+
+        extractor.Extract(new Uri("https://example.com/docs/first"));
+        extractor.Extract(new Uri("https://example.com/docs/second"));
+
+        ExtractionManifest manifest = Assert.Single(
+            host.Services.GetRequiredService<MemoryExtractionManifestStore>().Manifests).Value;
+        ExtractionManifestEntry entry = Assert.Single(manifest.Entries);
+        Assert.Equal("https://example.com/docs/second", entry.SourceUri.AbsoluteUri);
+        Assert.Equal("second.md", entry.OutputFile);
+    }
+
     private const string Root = "/output";
 
     private static IHost CreateHost(
@@ -244,7 +274,7 @@ public class SiteExtractorManifestTests
                 services.AddResourceProcessorProvider();
                 services.AddMemoryDataStore();
                 services.AddMemoryExtractionManifestStore();
-                services.AddSingleton<SiteExtractor>();
+                services.AddSiteExtractor();
             })
             .Build();
     }

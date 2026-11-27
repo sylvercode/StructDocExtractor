@@ -33,8 +33,7 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         {
             resource.UriTranslater = BaseTranslater;
             resource.MarkAsPulling();
-            resource.MarkExtractionState(ResourceExtractionState.OutputProduced);
-            resource.MarkAsPulled();
+            resource.MarkAsPulled(ResourceExtractionState.OutputProduced);
         }
     }
 

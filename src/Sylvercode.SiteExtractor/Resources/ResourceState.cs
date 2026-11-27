@@ -69,10 +69,6 @@ public struct ResourceState(bool isPullable)
         return new(isPullable, ResourcePullState.Pulled, extractionState);
     }
 
-    /// <summary>Records the outcome determined by the resource processor.</summary>
-    public readonly ResourceState WithExtractionState(ResourceExtractionState extractionState)
-        => new(isPullable, _state, extractionState);
-
     /// <summary>Marks the current processing attempt as failed.</summary>
     public readonly ResourceState AsFailed()
         => new(isPullable, _state, ResourceExtractionState.Failed);

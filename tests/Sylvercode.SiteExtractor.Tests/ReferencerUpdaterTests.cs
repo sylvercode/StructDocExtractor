@@ -23,8 +23,7 @@ public class ReferencerUpdaterTests_UpdateReferencers
         {
             resource.UriTranslater = uriTranslater;
             resource.MarkAsPulling();
-            resource.MarkExtractionState(ResourceExtractionState.OutputProduced);
-            resource.MarkAsPulled();
+            resource.MarkAsPulled(ResourceExtractionState.OutputProduced);
         }
 
         ReferencerUpdater referencerUpdater = new();
