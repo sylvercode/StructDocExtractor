@@ -23,4 +23,19 @@ public class UriQueryIdentityFilterTests_Filter
 
         Assert.Equal(source, result);
     }
+
+    [Theory]
+    [InlineData("page?mode=1", "page")]
+    [InlineData("page?mode=1#section", "page#section")]
+    [InlineData("page#section?mode=1", "page#section?mode=1")]
+    [InlineData("page#section", "page#section")]
+    public void RemoveAll_RelativeUriPreservesFragment(
+        string input,
+        string expected)
+    {
+        Uri result = new RemoveAllUriQueryIdentityFilter().Filter(
+            new Uri(input, UriKind.Relative));
+
+        Assert.Equal(expected, result.OriginalString);
+    }
 }

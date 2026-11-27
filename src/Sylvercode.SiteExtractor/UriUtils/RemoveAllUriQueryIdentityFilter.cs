@@ -11,10 +11,10 @@ public sealed class RemoveAllUriQueryIdentityFilter : IUriQueryIdentityFilter
 
         string text = uri.OriginalString;
         int queryIndex = text.IndexOf('?');
-        if (queryIndex < 0)
+        int fragmentIndex = text.IndexOf('#');
+        if (queryIndex < 0 || (fragmentIndex >= 0 && queryIndex > fragmentIndex))
             return uri;
 
-        int fragmentIndex = text.IndexOf('#', queryIndex);
         string filtered = fragmentIndex >= 0
             ? text[..queryIndex] + text[fragmentIndex..]
             : text[..queryIndex];
