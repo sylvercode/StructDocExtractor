@@ -31,6 +31,7 @@ public class SiteExtractorManifestTests
                     Assert.Empty(store.Manifests))
             {
                 ResourceUriTranslaterToSet = new HeadingTranslater(),
+                ExtractionState = ResourceExtractionState.ExtractionPrepared,
             };
             initial.NewMetadata.AddMetadata("title", "Final Heading");
             return initial;

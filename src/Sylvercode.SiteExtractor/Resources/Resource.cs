@@ -61,6 +61,10 @@ public class Resource(Uri sourceUri, bool isPullable = false)
     public void MarkAsPulled(ResourceExtractionState extractionState)
         => State = State.AsPulled(extractionState);
 
+    /// <summary>Records that initial extraction has prepared a usable output destination.</summary>
+    public void MarkAsExtractionPrepared()
+        => State = State.WithExtractionPrepared();
+
     /// <summary>Marks the current processing attempt as failed.</summary>
     public void MarkAsFailed()
         => State = State.AsFailed();

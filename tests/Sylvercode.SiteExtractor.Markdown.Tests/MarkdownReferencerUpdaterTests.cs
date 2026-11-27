@@ -27,13 +27,12 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         public void UpdateReference(string newReference) => Reference = newReference;
     }
 
-    private static void CompleteResourcesWithOutput(ResourceRepository resources)
+    private static void PrepareOutputDestinations(ResourceRepository resources)
     {
-        foreach (var resource in resources)
+        foreach (Resource resource in resources)
         {
             resource.UriTranslater = BaseTranslater;
-            resource.MarkAsPulling();
-            resource.MarkAsPulled(ResourceExtractionState.OutputProduced);
+            resource.MarkAsExtractionPrepared();
         }
     }
 
@@ -45,7 +44,7 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         ReferencerNode referencer = new("#fragment");
         ResourceRepository resources = [];
         Resource referencerResource = resources.Add(new Uri("http://example.com/")).resource;
-        CompleteResourcesWithOutput(resources);
+        PrepareOutputDestinations(resources);
         MarkdownReferencerUpdater referencerUpdater = new();
 
         // When
@@ -63,7 +62,7 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         ReferencerNode referencer = new("http://example.com/ref");
         ResourceRepository resources = new(["http://example.com/otherref"]);
         Resource referencerResource = resources.Add(new Uri("http://example.com/referer")).resource;
-        CompleteResourcesWithOutput(resources);
+        PrepareOutputDestinations(resources);
         MarkdownReferencerUpdater referencerUpdater = new();
 
         // When
@@ -81,7 +80,7 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         ReferencerNode referencer = new("http://example.com/referer#frag");
         ResourceRepository resources = new(["http://example.com/referer#frag"]);
         Resource referencerResource = resources.Add(new Uri("http://example.com/referer")).resource;
-        CompleteResourcesWithOutput(resources);
+        PrepareOutputDestinations(resources);
         MarkdownReferencerUpdater referencerUpdater = new();
 
         // When
@@ -107,7 +106,7 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
             resources.Add(new Uri(reference + i));
 
         Resource referencerResource = resources.Add(new Uri("http://example.com/referer")).resource;
-        CompleteResourcesWithOutput(resources);
+        PrepareOutputDestinations(resources);
         MarkdownReferencerUpdater referencerUpdater = new();
 
         // When
@@ -115,6 +114,11 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
 
         // Then
         Assert.Equal(expected, referencer.Reference);
+        Assert.All(
+            resources,
+            resource => Assert.Equal(
+                ResourceExtractionState.ExtractionPrepared,
+                resource.State.ExtractionState));
     }
 
     /// <summary>Verifies that when a file name is not unique across the repository the reference is set to the translated relative URI.</summary>
@@ -125,7 +129,7 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
         ReferencerNode referencer = new("http://example.com/ref");
         ResourceRepository resources = new(["http://example.com/ref", "http://example.com/folder/ref"]);
         Resource referencerResource = resources.Add(new Uri("http://example.com/referer")).resource;
-        CompleteResourcesWithOutput(resources);
+        PrepareOutputDestinations(resources);
         MarkdownReferencerUpdater referencerUpdater = new();
 
         // When
@@ -133,5 +137,10 @@ public class MarkdownReferencerUpdaterTests_UpdateReferencers
 
         // Then
         Assert.Equal("ref", referencer.Reference);
+        Assert.All(
+            resources,
+            resource => Assert.Equal(
+                ResourceExtractionState.ExtractionPrepared,
+                resource.State.ExtractionState));
     }
 }

@@ -61,9 +61,11 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
             return;
         }
 
-        if (reference.State.ExtractionState != ResourceExtractionState.OutputProduced)
+        if (reference.State.ExtractionState is not
+            ResourceExtractionState.ExtractionPrepared and not
+            ResourceExtractionState.OutputProduced)
         {
-            LogNotPullableReference(refUri);
+            LogReferenceWithoutKnownDestination(refUri, reference.State.ExtractionState);
             return;
         }
 
@@ -117,7 +119,9 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
         Dictionary<string, (int count, Resource resource)> fileNameMap = [];
         foreach (Resource resource in resourceRepository)
         {
-            if (resource.State.ExtractionState != ResourceExtractionState.OutputProduced)
+            if (resource.State.ExtractionState is not
+                ResourceExtractionState.ExtractionPrepared and not
+                ResourceExtractionState.OutputProduced)
                 continue;
 
             Uri fakeAbsoluteUri = new(_tempBaseUri, resource.TranslatedResourceUri);
@@ -150,8 +154,10 @@ public partial class MarkdownReferencerUpdater(ILogger<MarkdownReferencerUpdater
 
     [LoggerMessage(
         Level = LogLevel.Debug,
-        Message = "Referenced Uri not pullable: {RefUri}")]
-    private partial void LogNotPullableReference(Uri refUri);
+        Message = "Referenced resource has no known output destination: {RefUri} ({ExtractionState})")]
+    private partial void LogReferenceWithoutKnownDestination(
+        Uri refUri,
+        ResourceExtractionState extractionState);
 
     [LoggerMessage(
         Level = LogLevel.Debug,

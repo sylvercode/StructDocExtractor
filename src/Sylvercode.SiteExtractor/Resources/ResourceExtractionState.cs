@@ -9,6 +9,9 @@ public enum ResourceExtractionState
     /// <summary>The resource was tracked but skipped because no processing was requested.</summary>
     Skipped,
 
+    /// <summary>Initial extraction prepared metadata and a usable output destination, but output is not yet confirmed.</summary>
+    ExtractionPrepared,
+
     /// <summary>The source returned no data to extract.</summary>
     NoSourceData,
 

@@ -22,8 +22,7 @@ public class ReferencerUpdaterTests_UpdateReferencers
         foreach (var resource in resourceRepository)
         {
             resource.UriTranslater = uriTranslater;
-            resource.MarkAsPulling();
-            resource.MarkAsPulled(ResourceExtractionState.OutputProduced);
+            resource.MarkAsExtractionPrepared();
         }
 
         ReferencerUpdater referencerUpdater = new();
@@ -34,6 +33,11 @@ public class ReferencerUpdaterTests_UpdateReferencers
         // Then
         Assert.Equal("https://test.com/ref1", referencers[0].GetReference());
         Assert.Equal("https://test.com/ref2#frag", referencers[1].GetReference());
+        Assert.All(
+            resourceRepository,
+            resource => Assert.Equal(
+                ResourceExtractionState.ExtractionPrepared,
+                resource.State.ExtractionState));
     }
 
     /// <summary>Verifies that referencers whose target URIs are not in the repository are left unchanged.</summary>

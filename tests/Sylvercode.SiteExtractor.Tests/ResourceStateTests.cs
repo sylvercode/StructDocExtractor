@@ -110,6 +110,19 @@ public class ResourceStateTests_AsPulled
 /// <summary>Tests for completed resource extraction outcomes.</summary>
 public class ResourceStateTests_ExtractionOutcome
 {
+    /// <summary>Verifies that prepared extraction is independent from output production.</summary>
+    [Fact]
+    public void ExtractionPrepared_DoesNotMeanOutputProduced()
+    {
+        ResourceState result = new ResourceState(true)
+            .AsPulling()
+            .WithExtractionPrepared();
+
+        Assert.Equal(
+            ResourceExtractionState.ExtractionPrepared,
+            result.ExtractionState);
+    }
+
     /// <summary>Verifies that a completed resource retains its explicit extraction outcome.</summary>
     [Fact]
     public void OutputProduced_IsRetained()

@@ -170,6 +170,9 @@ public partial class SiteExtractor(
 
         Notify(new ResourceProcessed(resource, result));
 
+        if (result.ExtractionState == ResourceExtractionState.ExtractionPrepared)
+            resource.MarkAsExtractionPrepared();
+
         if (result.IsUnfinished)
         {
             LogUnfinishedProcess();

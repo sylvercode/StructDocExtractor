@@ -52,7 +52,12 @@ public struct ResourceState(bool isPullable)
         if (IsPulled)
             throw new InvalidOperationException("Cannot mark as pulling if it has already been pulled.");
 
-        return new(isPullable, ResourcePullState.Pulling, ResourceExtractionState.NotProcessed);
+        return new(
+            isPullable,
+            ResourcePullState.Pulling,
+            _extractionState == ResourceExtractionState.ExtractionPrepared
+                ? ResourceExtractionState.ExtractionPrepared
+                : ResourceExtractionState.NotProcessed);
     }
 
     /// <summary>Returns a new <see cref="ResourceState"/> in the <see cref="ResourcePullState.Pulled"/> state.</summary>
@@ -68,11 +73,22 @@ public struct ResourceState(bool isPullable)
         if (IsPulled)
             throw new InvalidOperationException("Cannot mark as pulled if it has already been pulled.");
 
-        return new(isPullable, ResourcePullState.Pulled, extractionState);
+        return new(
+            isPullable,
+            ResourcePullState.Pulled,
+            extractionState);
     }
+
+    /// <summary>Returns a new state recording that initial extraction has prepared a usable output destination.</summary>
+    /// <returns>A new <see cref="ResourceState"/> in <see cref="ResourceExtractionState.ExtractionPrepared"/>.</returns>
+    public readonly ResourceState WithExtractionPrepared()
+        => new(isPullable, _state, ResourceExtractionState.ExtractionPrepared);
 
     /// <summary>Marks the current processing attempt as failed.</summary>
     /// <returns>A new <see cref="ResourceState"/> retaining pull progress and marked as failed.</returns>
     public readonly ResourceState AsFailed()
-        => new(isPullable, _state, ResourceExtractionState.Failed);
+        => new(
+            isPullable,
+            _state,
+            ResourceExtractionState.Failed);
 }

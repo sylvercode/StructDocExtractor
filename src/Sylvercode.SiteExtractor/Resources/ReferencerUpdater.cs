@@ -28,9 +28,11 @@ public partial class ReferencerUpdater(ILogger<ReferencerUpdater>? logger = null
                 continue;
             }
 
-            if (resource.State.ExtractionState != ResourceExtractionState.OutputProduced)
+            if (resource.State.ExtractionState is not
+                ResourceExtractionState.ExtractionPrepared and not
+                ResourceExtractionState.OutputProduced)
             {
-                LogReferenceWithoutOutput(refUri, resource.State.ExtractionState);
+                LogReferenceWithoutKnownDestination(refUri, resource.State.ExtractionState);
                 continue;
             }
 
@@ -45,6 +47,8 @@ public partial class ReferencerUpdater(ILogger<ReferencerUpdater>? logger = null
 
     [LoggerMessage(
         Level = LogLevel.Debug,
-        Message = "Referenced resource produced no current output: {RefUri} ({ExtractionState})")]
-    private partial void LogReferenceWithoutOutput(Uri refUri, ResourceExtractionState extractionState);
+        Message = "Referenced resource has no known output destination: {RefUri} ({ExtractionState})")]
+    private partial void LogReferenceWithoutKnownDestination(
+        Uri refUri,
+        ResourceExtractionState extractionState);
 }

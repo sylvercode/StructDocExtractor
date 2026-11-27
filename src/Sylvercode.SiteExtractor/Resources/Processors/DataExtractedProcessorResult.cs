@@ -30,7 +30,7 @@ public class DataExtractedProcessorResult<TExtractionData>(
         processor,
         resourceUriTranslaterToSet,
         isUnfinished: true,
-        ResourceExtractionState.NotProcessed,
+        ResourceExtractionState.ExtractionPrepared,
         newMetadatas)
 {
     /// <summary>Gets the read-only resource repository used to resolve reference URIs during post-processing.</summary>

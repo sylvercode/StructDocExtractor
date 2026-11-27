@@ -164,7 +164,7 @@ public class ResourceDataExtractorTests_Extract
         var resultNode = Assert.IsType<UriNode>(Assert.Single(dataResult.Result.StructDocNodes));
         Assert.Equal(input.ToString(), resultNode.Uri.ToString());
         Assert.NotNull(dataResult.ResourceUriTranslaterToSet);
-        Assert.Equal(ResourceExtractionState.NotProcessed, dataResult.ExtractionState);
+        Assert.Equal(ResourceExtractionState.ExtractionPrepared, dataResult.ExtractionState);
         Assert.Collection(dataResult.Referencers,
             referencer => Assert.Equal("test://mock-input/foo", referencer.GetReference()),
             referencer => Assert.Equal("test://mock-input/bar", referencer.GetReference()));
