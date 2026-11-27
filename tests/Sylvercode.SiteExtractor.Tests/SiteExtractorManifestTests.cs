@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Sylvercode.SiteExtractor.Manifest;
+using Sylvercode.SiteExtractor.Observation;
 using Sylvercode.SiteExtractor.Resources;
 using Sylvercode.SiteExtractor.Store;
 using Sylvercode.SiteExtractor.Tests.Mocks;
@@ -105,6 +106,52 @@ public class SiteExtractorManifestTests
         Assert.Throws<InvalidOperationException>(
             () => host.Services.GetRequiredService<SiteExtractor>().Extract(
                 new Uri("https://example.com/docs/page")));
+
+        Assert.Equal("legacy.md", Assert.Single(store.Load(Root).Entries).OutputFile);
+    }
+
+    [Fact]
+    public void Extract_CompletionObserverFailureLeavesExistingManifestUntouched()
+    {
+        ResourceProcessorMock processor = new();
+        processor.AddResult((processor, resource) =>
+            new ResourceProcessorResultMock(processor, resource)
+            {
+                ResourceUriTranslaterToSet = new FixedTranslater("new.md"),
+                ExtractionState = ResourceExtractionState.OutputProduced,
+            });
+        IHost host = Host.CreateDefaultBuilder()
+            .ConfigureServices(services =>
+            {
+                services.Configure<SiteExtractorOptions>(options =>
+                {
+                    options.SourceAuthority = "https://example.com";
+                    options.SourceBasePath = "/docs";
+                    options.OutputDirectory = Root;
+                });
+                services.AddResourceProcessor(
+                    processor,
+                    new UriMatcherByBase(new Uri("https://example.com/docs/")));
+                services.AddResourceProcessorProvider();
+                services.AddMemoryDataStore();
+                services.AddMemoryExtractionManifestStore();
+                services.AddSingleton<IExtractionObserver>(
+                    new FailingCompletionObserver());
+                services.AddSiteExtractor();
+            })
+            .Build();
+        MemoryExtractionManifestStore store =
+            host.Services.GetRequiredService<MemoryExtractionManifestStore>();
+        store.Write(
+            Root,
+            new ExtractionManifest(
+                1,
+                new Uri("https://example.com/docs/"),
+                [new(new Uri("https://example.com/docs/legacy"), "legacy.md")]));
+
+        Assert.Throws<InvalidOperationException>(
+            () => host.Services.GetRequiredService<SiteExtractor>().Extract(
+                new Uri("https://example.com/docs/new")));
 
         Assert.Equal("legacy.md", Assert.Single(store.Load(Root).Entries).OutputFile);
     }
@@ -289,6 +336,15 @@ public class SiteExtractorManifestTests
     {
         public Uri Translate(Resource resource, Uri uri)
             => new(resource.Metadata.GetStrValue("title") + ".md", UriKind.Relative);
+    }
+
+    private sealed class FailingCompletionObserver : IExtractionObserver
+    {
+        public void OnNext(ExtractionEvent value)
+        {
+            if (value is ExtractionCompleted)
+                throw new InvalidOperationException("Completion observer failed.");
+        }
     }
 
 }

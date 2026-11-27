@@ -27,7 +27,7 @@ public sealed class ExtractionManifestHandler(
                 BeginExtraction(started.SeedUri);
                 break;
             case ExtractionCompleted completed:
-                CompleteExtraction(completed.Resources);
+                CompleteExtraction(completed);
                 break;
         }
     }
@@ -71,11 +71,11 @@ public sealed class ExtractionManifestHandler(
         catalog.SetLinkedManifests(linkedManifests);
     }
 
-    private void CompleteExtraction(IReadOnlyResourceRepository resources)
+    private void CompleteExtraction(ExtractionCompleted completed)
     {
         (string outputRoot, Uri sourceBaseUri) = GetConfiguredRoots();
         List<ExtractionManifestEntry> entries = [];
-        foreach (Resource resource in resources)
+        foreach (Resource resource in completed.Resources)
         {
             if (resource.State.ExtractionState != ResourceExtractionState.OutputProduced)
                 continue;
@@ -101,7 +101,7 @@ public sealed class ExtractionManifestHandler(
                 entries),
             outputRoot);
         ValidateCrossManifestMappings(catalog.LinkedManifests, outputRoot, manifest);
-        manifestStore.Write(outputRoot, manifest);
+        completed.AddCommitAction(() => manifestStore.Write(outputRoot, manifest));
     }
 
     private (string OutputRoot, Uri SourceBaseUri) GetConfiguredRoots()

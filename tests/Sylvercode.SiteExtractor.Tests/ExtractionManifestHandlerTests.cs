@@ -50,7 +50,9 @@ public class ExtractionManifestHandlerTests_OnNext
         output.MarkAsPulled(ResourceExtractionState.OutputProduced);
         resources.Add(new Uri("https://example.com/docs/no-output"));
 
-        handler.OnNext(new ExtractionCompleted(resources));
+        ExtractionCompleted completed = new(resources);
+        handler.OnNext(completed);
+        completed.Commit();
 
         ExtractionManifest manifest = Assert.Single(store.Manifests).Value;
         ExtractionManifestEntry entry = Assert.Single(manifest.Entries);

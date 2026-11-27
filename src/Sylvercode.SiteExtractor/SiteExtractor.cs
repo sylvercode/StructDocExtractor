@@ -104,7 +104,9 @@ public partial class SiteExtractor(
 
             activeResource = null;
             operation = nameof(ExtractionCompleted);
-            Notify(new ExtractionCompleted(resourcesTracker.Resources));
+            ExtractionCompleted completed = new(resourcesTracker.Resources);
+            Notify(completed);
+            completed.Commit();
         }
         catch (Exception exception)
         {
