@@ -215,6 +215,20 @@ Configure every required related output root through `LinkedExtractions`. At sta
 must identify a root containing a valid manifest; roots are never inferred or scanned. Duplicate
 or nested output roots and overlapping source bases are rejected before crawling starts.
 
+The framework distinguishes three URI forms:
+
+1. the URI used by the source/download pipeline;
+2. the canonical `SourceUri` persisted in the manifest;
+3. the physical `outputFile` path written by the data store.
+
+By default `RemoveAllUriQueryIdentityFilter` removes query parameters before document URI
+translation and manifest source canonicalization. Register a custom `IUriQueryIdentityFilter`
+or `PreserveAllUriQueryIdentityFilter` when query parameters carry source identity. Fragments are
+preserved for reference translation but never stored as part of a manifest source or output file.
+The final output path always ignores query and fragment because the datastore writes by path.
+Distinct canonical sources that still resolve to the same output file are rejected as duplicate
+mappings.
+
 For an output tree created by an older version, rerun the extraction once against that same
 output directory. A successful ordinary extraction writes the manifest and completes migration;
 there is no separate migration command, manual mapping, or legacy-directory scan.

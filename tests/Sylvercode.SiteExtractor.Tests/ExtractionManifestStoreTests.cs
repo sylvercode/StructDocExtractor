@@ -171,6 +171,18 @@ public class ExtractionManifestStoreTests
         Assert.Single(normalized.Entries);
     }
 
+    [Theory]
+    [InlineData("page.md?lang=en")]
+    [InlineData("page.md#section")]
+    public void GetOutputFile_RemovesQueryAndFragment(string translatedPath)
+    {
+        string result = ExtractionManifestValidator.GetRelativeOutputPath(
+            "/output",
+            new Uri(translatedPath, UriKind.Relative));
+
+        Assert.Equal("page.md", result);
+    }
+
     [Fact]
     public void Load_MalformedOrMissingJson_ThrowsRootSpecificError()
     {

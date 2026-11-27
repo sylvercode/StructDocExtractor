@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Sylvercode.SiteExtractor;
 using Sylvercode.SiteExtractor.Observation;
+using Sylvercode.SiteExtractor.UriUtils;
 
 #pragma warning disable IDE0130 // Namespace does not match folder structure
 namespace Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,7 @@ public static class SiteExtractorExtensions
     public static IServiceCollection AddSiteExtractor(this IServiceCollection services)
     {
         services.AddOptions<SiteExtractorOptions>().BindConfiguration(SiteExtractorOptions.SiteExtractor);
+        services.TryAddSingleton<IUriQueryIdentityFilter, RemoveAllUriQueryIdentityFilter>();
         services.TryAddEnumerable(
             ServiceDescriptor.Singleton<IExtractionObserver, ExtractionMetadataHandler>());
         services.TryAddEnumerable(

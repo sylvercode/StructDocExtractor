@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using Sylvercode.SiteExtractor.Observation;
 using Sylvercode.SiteExtractor.Resources;
 using Sylvercode.SiteExtractor.Store;
+using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Manifest;
 
@@ -9,6 +10,7 @@ namespace Sylvercode.SiteExtractor.Manifest;
 /// <param name="options">The configured current extraction roots.</param>
 /// <param name="manifestStore">The store used for linked and current manifests.</param>
 /// <param name="catalog">The linked-manifest catalog retained for later resolution.</param>
+/// <param name="queryIdentityFilter">The policy used to canonicalize persisted source identity.</param>
 /// <remarks>
 /// This observer is stateless between extraction calls. It derives both current roots from
 /// <see cref="IOptions{TOptions}.Value"/> for every lifecycle event.
@@ -16,7 +18,8 @@ namespace Sylvercode.SiteExtractor.Manifest;
 public sealed class ExtractionManifestHandler(
     IOptions<SiteExtractorOptions> options,
     IExtractionManifestStore manifestStore,
-    IExtractionManifestCatalog catalog) : IExtractionObserver
+    IExtractionManifestCatalog catalog,
+    IUriQueryIdentityFilter queryIdentityFilter) : IExtractionObserver
 {
     /// <inheritdoc/>
     public void OnNext(ExtractionEvent value)
@@ -81,7 +84,7 @@ public sealed class ExtractionManifestHandler(
                 continue;
 
             Uri sourceUri = ExtractionManifestValidator.NormalizeSourceUri(
-                resource.Uri,
+                queryIdentityFilter.Filter(resource.Uri),
                 "sourceUri",
                 outputRoot);
             if (resource.OutputKind == ResourceOutputKind.Document)
@@ -91,7 +94,7 @@ public sealed class ExtractionManifestHandler(
                     sourceUri,
                     outputRoot);
             }
-            string outputFile = ExtractionManifestValidator.GetOutputFile(
+            string outputFile = ExtractionManifestValidator.GetRelativeOutputPath(
                 outputRoot,
                 resource.TranslatedResourceUri);
             entries.Add(new ExtractionManifestEntry(sourceUri, outputFile));

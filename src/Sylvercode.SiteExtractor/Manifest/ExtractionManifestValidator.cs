@@ -171,33 +171,50 @@ public static class ExtractionManifestValidator
             && !relative.StartsWith(".." + Path.DirectorySeparatorChar, StringComparison.Ordinal));
     }
 
-    /// <summary>Builds a portable output path from a finalized translated URI.</summary>
-    public static string GetOutputFile(string outputRoot, Uri translatedUri)
+    /// <summary>Builds the portable path that the datastore resolves from an output URI.</summary>
+    /// <param name="outputRoot">The canonical root directory of the active datastore.</param>
+    /// <param name="outputUri">The output URI passed to the datastore after resource translation.</param>
+    /// <returns>A normalized path relative to <paramref name="outputRoot"/>.</returns>
+    /// <remarks>
+    /// Query and fragment never identify a physical file and are removed regardless of the
+    /// configurable source-identity policy.
+    /// </remarks>
+    public static string GetRelativeOutputPath(string outputRoot, Uri outputUri)
     {
-        bool hasQueryOrFragment = translatedUri.IsAbsoluteUri
-            ? !string.IsNullOrEmpty(translatedUri.Fragment) || !string.IsNullOrEmpty(translatedUri.Query)
-            : translatedUri.OriginalString.IndexOfAny(['?', '#']) >= 0;
-        if (hasQueryOrFragment)
+        Uri fileUri = outputUri;
+        if (fileUri.IsAbsoluteUri)
         {
-            throw ExtractionManifestErrors.InvalidManifest(
-                outputRoot,
-                "outputFile",
-                "The finalized output URI cannot contain a query or fragment.");
+            UriBuilder builder = new(fileUri)
+            {
+                Query = string.Empty,
+                Fragment = string.Empty,
+            };
+            fileUri = builder.Uri;
         }
-        if (translatedUri.IsAbsoluteUri && translatedUri.Scheme != Uri.UriSchemeFile)
-            throw ExtractionManifestErrors.InvalidManifest(outputRoot, "outputFile", $"Output URI '{translatedUri}' is not a file URI.");
+        else
+        {
+            string relative = fileUri.OriginalString;
+            int suffixIndex = relative.IndexOfAny(['?', '#']);
+            if (suffixIndex >= 0)
+                relative = relative[..suffixIndex];
+            fileUri = new Uri(relative, UriKind.Relative);
+        }
 
-        string path = translatedUri.IsAbsoluteUri
-            ? translatedUri.LocalPath
-            : Uri.UnescapeDataString(translatedUri.OriginalString.Replace('/', Path.DirectorySeparatorChar));
+        if (fileUri.IsAbsoluteUri && fileUri.Scheme != Uri.UriSchemeFile)
+            throw ExtractionManifestErrors.InvalidManifest(outputRoot, "outputFile", $"Output URI '{fileUri}' is not a file URI.");
 
-        string completePath = translatedUri.IsAbsoluteUri
+        string path = fileUri.IsAbsoluteUri
+            ? fileUri.LocalPath
+            : Uri.UnescapeDataString(fileUri.OriginalString.Replace('/', Path.DirectorySeparatorChar));
+
+        string completePath = fileUri.IsAbsoluteUri
             ? Path.GetFullPath(path)
             : Path.GetFullPath(Path.Combine(outputRoot, path));
         if (!IsOutputRootOf(outputRoot, completePath) || string.Equals(completePath, outputRoot, StringComparison.Ordinal))
-            throw ExtractionManifestErrors.InvalidManifest(outputRoot, "outputFile", $"Output URI '{translatedUri}' escapes the output root.");
+            throw ExtractionManifestErrors.InvalidManifest(outputRoot, "outputFile", $"Output URI '{fileUri}' escapes the output root.");
 
-        string relative = Path.GetRelativePath(outputRoot, completePath).Replace(Path.DirectorySeparatorChar, '/');
-        return NormalizeOutputFile(relative, "outputFile", outputRoot);
+        string outputFile = Path.GetRelativePath(outputRoot, completePath)
+            .Replace(Path.DirectorySeparatorChar, '/');
+        return NormalizeOutputFile(outputFile, "outputFile", outputRoot);
     }
 }

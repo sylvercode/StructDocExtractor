@@ -3,6 +3,7 @@ using Sylvercode.SiteExtractor.Manifest;
 using Sylvercode.SiteExtractor.Observation;
 using Sylvercode.SiteExtractor.Resources;
 using Sylvercode.SiteExtractor.Store;
+using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
@@ -59,6 +60,54 @@ public class ExtractionManifestHandlerTests_OnNext
         Assert.Equal("page.md", entry.OutputFile);
     }
 
+    [Fact]
+    public void ExtractionCompleted_DefaultFilterRemovesQueryFromSourceIdentity()
+    {
+        MemoryExtractionManifestStore store = new();
+        ExtractionManifestHandler handler = CreateHandler(
+            store,
+            new ExtractionManifestCatalog());
+        ResourceRepository resources = [];
+        Resource output = resources.Add(
+            new Uri("https://example.com/docs/page?lang=en")).resource;
+        output.UriTranslater = new FixedTranslater("page.md?lang=en");
+        output.MarkAsPulled(
+            ResourceExtractionState.OutputProduced);
+
+        ExtractionCompleted completed = new(resources);
+        handler.OnNext(completed);
+        completed.Commit();
+
+        ExtractionManifestEntry entry = Assert.Single(
+            Assert.Single(store.Manifests).Value.Entries);
+        Assert.Equal("https://example.com/docs/page", entry.SourceUri.AbsoluteUri);
+        Assert.Equal("page.md", entry.OutputFile);
+    }
+
+    [Fact]
+    public void ExtractionCompleted_PreserveAllFilterKeepsQueryInSourceIdentity()
+    {
+        MemoryExtractionManifestStore store = new();
+        ExtractionManifestHandler handler = CreateHandler(
+            store,
+            new ExtractionManifestCatalog(),
+            queryIdentityFilter: new PreserveAllUriQueryIdentityFilter());
+        ResourceRepository resources = [];
+        Resource output = resources.Add(
+            new Uri("https://example.com/docs/page?lang=en")).resource;
+        output.UriTranslater = new FixedTranslater("page.md?lang=en");
+        output.MarkAsPulled(
+            ResourceExtractionState.OutputProduced);
+
+        ExtractionCompleted completed = new(resources);
+        handler.OnNext(completed);
+        completed.Commit();
+
+        ExtractionManifestEntry entry = Assert.Single(
+            Assert.Single(store.Manifests).Value.Entries);
+        Assert.Equal("https://example.com/docs/page?lang=en", entry.SourceUri.AbsoluteUri);
+    }
+
     /// <summary>Verifies that a failure event never writes a manifest.</summary>
     [Fact]
     public void ExtractionFailed_DoesNotWriteManifest()
@@ -81,6 +130,17 @@ public class ExtractionManifestHandlerTests_OnNext
         MemoryExtractionManifestStore store,
         ExtractionManifestCatalog catalog,
         params LinkedExtractionOptions[] linkedExtractions)
+        => CreateHandler(
+            store,
+            catalog,
+            new RemoveAllUriQueryIdentityFilter(),
+            linkedExtractions);
+
+    private static ExtractionManifestHandler CreateHandler(
+        MemoryExtractionManifestStore store,
+        ExtractionManifestCatalog catalog,
+        IUriQueryIdentityFilter queryIdentityFilter,
+        params LinkedExtractionOptions[] linkedExtractions)
     {
         SiteExtractorOptions options = new()
         {
@@ -94,7 +154,8 @@ public class ExtractionManifestHandlerTests_OnNext
         return new ExtractionManifestHandler(
             Options.Create(options),
             store,
-            catalog);
+            catalog,
+            queryIdentityFilter);
     }
 
     private sealed class FixedTranslater(string outputFile) : IResourceUriTranslater
