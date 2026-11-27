@@ -32,6 +32,10 @@ public class ResourceProcessorResultMock(
     public ResourceExtractionState ExtractionState { get; set; } =
         ResourceExtractionState.NoOutput;
 
+    /// <inheritdoc/>
+    public ResourceOutputKind OutputKind { get; set; } =
+        ResourceOutputKind.None;
+
     /// <summary>Gets a value indicating whether this result requires a continuation step before it is considered finished.</summary>
     public bool IsUnfinished { get; } = continuProcessResult != null;
 

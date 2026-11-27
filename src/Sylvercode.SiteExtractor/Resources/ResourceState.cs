@@ -62,6 +62,7 @@ public struct ResourceState(bool isPullable)
 
     /// <summary>Returns a new <see cref="ResourceState"/> in the <see cref="ResourcePullState.Pulled"/> state.</summary>
     /// <param name="extractionState">The outcome produced by the completed processing step.</param>
+    /// <param name="outputKind">The kind of output produced by the completed processing step.</param>
     /// <returns>A new <see cref="ResourceState"/> marked as pulled.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the resource is not pullable or has already been pulled.</exception>
     public readonly ResourceState AsPulled(
@@ -82,7 +83,10 @@ public struct ResourceState(bool isPullable)
     /// <summary>Returns a new state recording that initial extraction has prepared a usable output destination.</summary>
     /// <returns>A new <see cref="ResourceState"/> in <see cref="ResourceExtractionState.ExtractionPrepared"/>.</returns>
     public readonly ResourceState WithExtractionPrepared()
-        => new(isPullable, _state, ResourceExtractionState.ExtractionPrepared);
+        => new(
+            isPullable,
+            _state,
+            ResourceExtractionState.ExtractionPrepared);
 
     /// <summary>Marks the current processing attempt as failed.</summary>
     /// <returns>A new <see cref="ResourceState"/> retaining pull progress and marked as failed.</returns>

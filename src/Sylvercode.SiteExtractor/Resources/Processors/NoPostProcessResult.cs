@@ -4,15 +4,18 @@ namespace Sylvercode.SiteExtractor.Resources.Processors;
 /// <param name="processor">The processor that completed the work.</param>
 /// <param name="resourceUriTranslaterToSet">The output translater to apply to the tracked resource.</param>
 /// <param name="extractionState">The completed extraction outcome.</param>
+/// <param name="outputKind">The kind of output produced.</param>
 public class FinishedProcessResult(
     IResourceProcessor processor,
     IResourceUriTranslater? resourceUriTranslaterToSet = null,
-    ResourceExtractionState extractionState = ResourceExtractionState.NoOutput)
+    ResourceExtractionState extractionState = ResourceExtractionState.NoOutput,
+    ResourceOutputKind outputKind = ResourceOutputKind.None)
     : BaseResourceProcessorResult(
         processor,
         resourceUriTranslaterToSet,
         isUnfinished: false,
-        extractionState)
+        extractionState,
+        outputKind)
 {
     /// <inheritdoc/>
     public override IResourceProcessorResult ContinueProcess(Resource resource)

@@ -20,6 +20,9 @@ public class Resource(Uri sourceUri, bool isPullable = false)
     /// <summary>Gets the current pull state of this resource.</summary>
     public ResourceState State { get; private set; } = new(isPullable);
 
+    /// <summary>Gets the kind of output associated with this resource.</summary>
+    public ResourceOutputKind OutputKind { get; private set; } = ResourceOutputKind.None;
+
     /// <summary>Gets or sets the URI translater used to compute the output path for this resource.</summary>
     public IResourceUriTranslater UriTranslater { get; set; } = ResourceUriTranslater.NoopInstance;
 
@@ -58,12 +61,17 @@ public class Resource(Uri sourceUri, bool isPullable = false)
 
     /// <summary>Transitions the resource to pulled while recording the completed extraction outcome.</summary>
     /// <param name="extractionState">The outcome produced by the completed processing.</param>
-    public void MarkAsPulled(ResourceExtractionState extractionState)
+    /// <param name="outputKind">The kind of output produced by the processing.</param>
+    public void MarkAsPulled(
+        ResourceExtractionState extractionState)
         => State = State.AsPulled(extractionState);
 
     /// <summary>Records that initial extraction has prepared a usable output destination.</summary>
     public void MarkAsExtractionPrepared()
         => State = State.WithExtractionPrepared();
+
+    internal void SetOutputKind(ResourceOutputKind outputKind)
+        => OutputKind = outputKind;
 
     /// <summary>Marks the current processing attempt as failed.</summary>
     public void MarkAsFailed()

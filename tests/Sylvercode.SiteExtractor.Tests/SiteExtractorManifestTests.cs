@@ -62,6 +62,7 @@ public class SiteExtractorManifestTests
             {
                 ResourceUriTranslaterToSet = new FixedTranslater("page.md"),
                 ExtractionState = ResourceExtractionState.OutputProduced,
+                OutputKind = ResourceOutputKind.Document,
             };
         });
         processor.AddResult((processor, resource) => new ResourceProcessorResultMock(processor, resource));
@@ -71,6 +72,7 @@ public class SiteExtractorManifestTests
             {
                 ResourceUriTranslaterToSet = new FixedTranslater("assets/image.png"),
                 ExtractionState = ResourceExtractionState.OutputProduced,
+                OutputKind = ResourceOutputKind.Asset,
             };
         });
 
@@ -173,6 +175,58 @@ public class SiteExtractorManifestTests
                 new Uri("https://example.com/docs/page")));
 
         Assert.Equal(ResourceExtractionState.Failed, failedResource!.State.ExtractionState);
+    }
+
+    [Fact]
+    public void Extract_CopiedAssetOutsideSourceBase_IsIncluded()
+    {
+        ResourceProcessorMock processor = new(returnsFinishedResultByDefault: false);
+        IHost host = Host.CreateDefaultBuilder()
+            .ConfigureServices(services =>
+            {
+                services.Configure<SiteExtractorOptions>(options =>
+                {
+                    options.SourceAuthority = "https://example.com";
+                    options.SourceBasePath = "/docs";
+                    options.OutputDirectory = Root;
+                });
+                services.AddResourceProcessor(
+                    processor,
+                    new UriMatcherByBase(new Uri("https://example.com/docs/")));
+                services.AddResourceProcessor(processor, ImageUriMatcher.Default);
+                services.AddResourceProcessorProvider();
+                services.AddMemoryDataStore();
+                services.AddMemoryExtractionManifestStore();
+                services.AddSiteExtractor();
+            })
+            .Build();
+        processor.AddResult((processor, resource) =>
+            new ResourceProcessorResultMock(
+                processor,
+                resource,
+                [new Uri("https://example.com/images/logo.png")])
+            {
+                ResourceUriTranslaterToSet = new FixedTranslater("page.md"),
+                ExtractionState = ResourceExtractionState.OutputProduced,
+                OutputKind = ResourceOutputKind.Document,
+            });
+        processor.AddResult((processor, resource) =>
+            new ResourceProcessorResultMock(processor, resource)
+            {
+                ResourceUriTranslaterToSet = new FixedTranslater("images/logo.png"),
+                ExtractionState = ResourceExtractionState.OutputProduced,
+                OutputKind = ResourceOutputKind.Asset,
+            });
+
+        host.Services.GetRequiredService<SiteExtractor>().Extract(
+            new Uri("https://example.com/docs/page"));
+
+        ExtractionManifest manifest = Assert.Single(
+            host.Services.GetRequiredService<MemoryExtractionManifestStore>().Manifests).Value;
+        Assert.Collection(
+            manifest.Entries,
+            entry => Assert.Equal("page.md", entry.OutputFile),
+            entry => Assert.Equal("images/logo.png", entry.OutputFile));
     }
 
     [Fact]

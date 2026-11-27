@@ -132,7 +132,8 @@ public partial class ResourceDataExtractor<TExtractionData>(
 
         return new FinishedProcessResult(
             this,
-            extractionState: ResourceExtractionState.OutputProduced);
+            extractionState: ResourceExtractionState.OutputProduced,
+            outputKind: ResourceOutputKind.Document);
     }
 
     private TextWriter GetTextWriter(Uri uri, ITextWriterProvider? textWriterProvider)

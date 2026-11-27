@@ -171,6 +171,7 @@ public partial class SiteExtractor(
         }
 
         Notify(new ResourceProcessed(resource, result));
+        resource.SetOutputKind(result.OutputKind);
 
         if (result.ExtractionState == ResourceExtractionState.ExtractionPrepared)
             resource.MarkAsExtractionPrepared();

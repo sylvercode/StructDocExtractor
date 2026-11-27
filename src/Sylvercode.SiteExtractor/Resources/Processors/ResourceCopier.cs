@@ -76,7 +76,8 @@ public partial class ResourceCopier : IResourceCopiler
         return new FinishedProcessResult(
             this,
             _resourceUriTranslater,
-            ResourceExtractionState.OutputProduced);
+            ResourceExtractionState.OutputProduced,
+            ResourceOutputKind.Asset);
     }
     #endregion
 }

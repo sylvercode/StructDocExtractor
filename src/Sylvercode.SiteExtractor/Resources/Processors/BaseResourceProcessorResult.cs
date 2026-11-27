@@ -8,6 +8,7 @@ namespace Sylvercode.SiteExtractor.Resources.Processors;
 /// <param name="resourceUriTranslaterToSet">The translater to apply to the tracked resource, if any.</param>
 /// <param name="isUnfinished">Whether another continuation step is required.</param>
 /// <param name="extractionState">The outcome represented by this result.</param>
+/// <param name="outputKind">The kind of output represented by this result.</param>
 /// <param name="newMetadatas">Metadata discovered by this processing step.</param>
 /// <remarks>
 /// Concrete subclasses must implement <see cref="ContinueProcess"/>; the base class provides a default empty
@@ -19,6 +20,7 @@ public abstract class BaseResourceProcessorResult(
     IResourceUriTranslater? resourceUriTranslaterToSet,
     bool isUnfinished,
     ResourceExtractionState extractionState,
+    ResourceOutputKind outputKind = ResourceOutputKind.None,
     MetadataDictionary? newMetadatas = null) : IResourceProcessorResult
 {
     /// <inheritdoc/>
@@ -32,6 +34,9 @@ public abstract class BaseResourceProcessorResult(
 
     /// <inheritdoc/>
     public ResourceExtractionState ExtractionState => extractionState;
+
+    /// <inheritdoc/>
+    public ResourceOutputKind OutputKind => outputKind;
 
     /// <inheritdoc/>
     public bool IsUnfinished => isUnfinished;

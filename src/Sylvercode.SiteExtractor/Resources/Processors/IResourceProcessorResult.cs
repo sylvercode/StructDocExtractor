@@ -21,8 +21,11 @@ public interface IResourceProcessorResult
     IResourceUriTranslater? ResourceUriTranslaterToSet { get; }
 
     /// <summary>Gets the extraction outcome produced by this completed processing step.</summary>
-    /// <remarks><see cref="ResourceExtractionState.NotProcessed"/> is used by unfinished results.</remarks>
+    /// <remarks><see cref="ResourceExtractionState.ExtractionPrepared"/> is used by unfinished document results.</remarks>
     ResourceExtractionState ExtractionState { get; }
+
+    /// <summary>Gets the kind of output associated with this result.</summary>
+    ResourceOutputKind OutputKind { get; }
 
     /// <summary>Gets a value indicating whether further post-processing is required via <see cref="ContinueProcess"/>.</summary>
     bool IsUnfinished { get; }

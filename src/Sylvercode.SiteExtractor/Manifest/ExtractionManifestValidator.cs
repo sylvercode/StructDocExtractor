@@ -111,13 +111,6 @@ public static class ExtractionManifestValidator
                 ?? throw ExtractionManifestErrors.InvalidManifest(outputRoot, $"entries[{index}]", "The entry is missing.");
             Uri sourceUri = NormalizeSourceUri(entry.SourceUri, $"entries[{index}].sourceUri", outputRoot);
             string outputFile = NormalizeOutputFile(entry.OutputFile, $"entries[{index}].outputFile", outputRoot);
-            if (!IsSourceWithinBase(sourceBase, sourceUri))
-            {
-                throw ExtractionManifestErrors.InvalidManifest(
-                    outputRoot,
-                    $"entries[{index}].sourceUri",
-                    $"The source URI is outside sourceBaseUri '{sourceBase}'.");
-            }
             if (!sourceUris.Add(sourceUri.AbsoluteUri))
                 throw ExtractionManifestErrors.InvalidManifest(outputRoot, $"entries[{index}].sourceUri", $"Duplicate source URI '{sourceUri}'.");
             if (!outputFiles.Add(outputFile))

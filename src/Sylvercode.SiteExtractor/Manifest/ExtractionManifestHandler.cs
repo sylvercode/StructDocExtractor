@@ -84,10 +84,13 @@ public sealed class ExtractionManifestHandler(
                 resource.Uri,
                 "sourceUri",
                 outputRoot);
-            ExtractionManifestValidator.EnsureSourceContained(
-                sourceBaseUri,
-                sourceUri,
-                outputRoot);
+            if (resource.OutputKind == ResourceOutputKind.Document)
+            {
+                ExtractionManifestValidator.EnsureSourceContained(
+                    sourceBaseUri,
+                    sourceUri,
+                    outputRoot);
+            }
             string outputFile = ExtractionManifestValidator.GetOutputFile(
                 outputRoot,
                 resource.TranslatedResourceUri);

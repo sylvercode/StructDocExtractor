@@ -154,6 +154,24 @@ public class ExtractionManifestStoreTests
     }
 
     [Fact]
+    public void Validate_AllowsSourceUriOutsideSourceBase()
+    {
+        ExtractionManifest manifest = new(
+            1,
+            new Uri("https://example.com/docs/"),
+            [new(
+                new Uri("https://example.com/images/logo.png"),
+                "images/logo.png")]);
+
+        ExtractionManifest normalized =
+            ExtractionManifestValidator.ValidateAndNormalize(
+                manifest,
+                "/output");
+
+        Assert.Single(normalized.Entries);
+    }
+
+    [Fact]
     public void Load_MalformedOrMissingJson_ThrowsRootSpecificError()
     {
         string root = NewTemporaryDirectory();
