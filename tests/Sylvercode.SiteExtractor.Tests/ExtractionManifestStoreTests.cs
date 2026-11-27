@@ -184,6 +184,26 @@ public class ExtractionManifestStoreTests
     }
 
     [Fact]
+    public void GetRelativeOutputPath_DecodesPhysicalFileNameOnce()
+    {
+        string result = ExtractionManifestValidator.GetRelativeOutputPath(
+            "/output",
+            new Uri("report%20final.md", UriKind.Relative));
+
+        Assert.Equal("report final.md", result);
+    }
+
+    [Fact]
+    public void GetRelativeOutputPath_DoesNotDoubleDecodeReservedName()
+    {
+        string result = ExtractionManifestValidator.GetRelativeOutputPath(
+            "/output",
+            new Uri("%2565xtraction-manifest.json", UriKind.Relative));
+
+        Assert.Equal("%65xtraction-manifest.json", result);
+    }
+
+    [Fact]
     public void Load_MalformedOrMissingJson_ThrowsRootSpecificError()
     {
         string root = NewTemporaryDirectory();

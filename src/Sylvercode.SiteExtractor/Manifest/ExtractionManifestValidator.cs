@@ -1,3 +1,5 @@
+using Sylvercode.SiteExtractor.Store;
+
 namespace Sylvercode.SiteExtractor.Manifest;
 
 /// <summary>Validates and normalizes extraction manifest values.</summary>
@@ -181,40 +183,24 @@ public static class ExtractionManifestValidator
     /// </remarks>
     public static string GetRelativeOutputPath(string outputRoot, Uri outputUri)
     {
-        Uri fileUri = outputUri;
-        if (fileUri.IsAbsoluteUri)
+        try
         {
-            UriBuilder builder = new(fileUri)
-            {
-                Query = string.Empty,
-                Fragment = string.Empty,
-            };
-            fileUri = builder.Uri;
+            Uri outputBaseUri = new(
+                Path.TrimEndingDirectorySeparator(Path.GetFullPath(outputRoot))
+                + Path.DirectorySeparatorChar);
+            return NormalizeOutputFile(
+                DataStorePathResolver.Resolve(outputBaseUri, outputUri).RelativePath,
+                "outputFile",
+                outputRoot);
         }
-        else
+        catch (ArgumentException exception)
         {
-            string relative = fileUri.OriginalString;
-            int suffixIndex = relative.IndexOfAny(['?', '#']);
-            if (suffixIndex >= 0)
-                relative = relative[..suffixIndex];
-            fileUri = new Uri(relative, UriKind.Relative);
+            throw ExtractionManifestErrors.InvalidManifest(
+                outputRoot,
+                "outputFile",
+                $"Output URI '{outputUri}' is invalid: {exception.Message}",
+                exception);
         }
-
-        if (fileUri.IsAbsoluteUri && fileUri.Scheme != Uri.UriSchemeFile)
-            throw ExtractionManifestErrors.InvalidManifest(outputRoot, "outputFile", $"Output URI '{fileUri}' is not a file URI.");
-
-        string path = fileUri.IsAbsoluteUri
-            ? fileUri.LocalPath
-            : Uri.UnescapeDataString(fileUri.OriginalString.Replace('/', Path.DirectorySeparatorChar));
-
-        string completePath = fileUri.IsAbsoluteUri
-            ? Path.GetFullPath(path)
-            : Path.GetFullPath(Path.Combine(outputRoot, path));
-        if (!IsOutputRootOf(outputRoot, completePath) || string.Equals(completePath, outputRoot, StringComparison.Ordinal))
-            throw ExtractionManifestErrors.InvalidManifest(outputRoot, "outputFile", $"Output URI '{fileUri}' escapes the output root.");
-
-        string outputFile = Path.GetRelativePath(outputRoot, completePath)
-            .Replace(Path.DirectorySeparatorChar, '/');
-        return NormalizeOutputFile(outputFile, "outputFile", outputRoot);
     }
+
 }

@@ -68,4 +68,66 @@ public class DirectoryDataStoreTests
             Directory.Delete(root, recursive: true);
         }
     }
+
+    [Fact]
+    public void GetStream_DoubleEncodedReservedManifest_IsNotRedirectedToManifest()
+    {
+        string root = NewRoot();
+        string manifestPath = Path.Combine(
+            root,
+            ExtractionManifestValidator.ManifestFileName);
+        string original = "existing manifest";
+        File.WriteAllText(manifestPath, original);
+        try
+        {
+            DirectoryDataStore store = NewStore(root);
+            using Stream stream = store.GetStream(
+                new Uri(
+                    "%2565xtraction-manifest.json",
+                    UriKind.Relative));
+
+            Assert.Equal(original, File.ReadAllText(manifestPath));
+            Assert.True(File.Exists(Path.Combine(
+                root,
+                "%65xtraction-manifest.json")));
+            Assert.True(stream.CanWrite);
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [Fact]
+    public void GetStream_EncodedSpace_WritesDecodedFileName()
+    {
+        string root = NewRoot();
+        try
+        {
+            DirectoryDataStore store = NewStore(root);
+            using Stream stream = store.GetStream(
+                new Uri("report%20final.md", UriKind.Relative));
+
+            Assert.True(File.Exists(Path.Combine(root, "report final.md")));
+            Assert.False(File.Exists(Path.Combine(root, "report%20final.md")));
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    private static string NewRoot()
+    {
+        string root = Path.Combine(
+            Path.GetTempPath(),
+            "DDBMarkdown-data-store-tests",
+            Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        return root;
+    }
+
+    private static DirectoryDataStore NewStore(string root)
+        => new(Options.Create(
+            new SiteExtractorOptions { OutputDirectory = root }));
 }

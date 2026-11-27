@@ -36,25 +36,22 @@ public abstract partial class BaseDataStore(
     /// </exception>
     protected Uri GetCompleteUri(Uri uri)
     {
-        Uri completeUri;
         if (uri.IsAbsoluteUri
             && BaseUri.IsBaseOf(uri))
         {
             LogUriAlreadyComplete(uri);
-            completeUri = uri;
         }
         else
         {
-            completeUri = new(BaseUri, uri);
+            Uri completeUri = new(BaseUri, uri);
             if (!BaseUri.IsBaseOf(completeUri))
                 throw new ArgumentException("Uri is not a child of the base uri", nameof(uri));
 
             LogUriCompleted(uri, completeUri);
         }
 
-        Uri relativeUri = BaseUri.MakeRelativeUri(completeUri);
-        string relativePath = Uri.UnescapeDataString(
-            relativeUri.OriginalString.Split('?', '#')[0]);
+        DataStorePath path = ResolvePath(uri);
+        string relativePath = path.RelativePath;
         if (ExtractionManifestValidator.IsReservedManifestFile(relativePath))
         {
             throw new ArgumentException(
@@ -62,8 +59,17 @@ public abstract partial class BaseDataStore(
                 nameof(uri));
         }
 
-        return completeUri;
+        return path.Uri;
     }
+
+    /// <summary>Resolves an output URI exactly once into a physical datastore path.</summary>
+    /// <param name="uri">The URI accepted by <see cref="GetStream"/>.</param>
+    /// <returns>The resolved URI, physical path, and portable relative path.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the path escapes <see cref="BaseUri"/> or is empty.
+    /// </exception>
+    protected DataStorePath ResolvePath(Uri uri)
+        => DataStorePathResolver.Resolve(BaseUri, uri);
 
     [LoggerMessage(
         Level = LogLevel.Debug,
