@@ -4,6 +4,11 @@ using Sylvercode.StructDocExtractor.Metadatas;
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
 /// <summary>Abstract base for processor results, providing processor, metadata, URI translation, extraction outcome, and completion state.</summary>
+/// <param name="processor">The processor that produced the result.</param>
+/// <param name="resourceUriTranslaterToSet">The translater to apply to the tracked resource, if any.</param>
+/// <param name="isUnfinished">Whether another continuation step is required.</param>
+/// <param name="extractionState">The outcome represented by this result.</param>
+/// <param name="newMetadatas">Metadata discovered by this processing step.</param>
 /// <remarks>
 /// Concrete subclasses must implement <see cref="ContinueProcess"/>; the base class provides a default empty
 /// implementation for <see cref="GetResourceDependencies"/>.  When <see cref="IsUnfinished"/> is

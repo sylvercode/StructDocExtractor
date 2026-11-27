@@ -7,6 +7,9 @@ using Sylvercode.SiteExtractor.Resources.Processors;
 namespace Sylvercode.SiteExtractor;
 
 /// <summary>Main <see cref="ISiteExtractor"/> implementation that orchestrates site extraction through a two-phase resource processing pipeline.</summary>
+/// <param name="processorProvider">Resolves processors for discovered resource URIs.</param>
+/// <param name="extractionObservers">Observers notified synchronously about extraction lifecycle and result events.</param>
+/// <param name="logger">Optional logger for queue and processing diagnostics.</param>
 /// <remarks>
 /// Accepts a seed URI, resolves an <see cref="IResourceProcessor"/> for it via <see cref="IResourceProcessorProvider"/>,
 /// then drives a queue-based loop: each dequeued resource is processed, its dependencies enqueued, and any metadata or

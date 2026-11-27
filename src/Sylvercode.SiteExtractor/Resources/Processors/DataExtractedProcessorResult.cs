@@ -12,6 +12,12 @@ namespace Sylvercode.SiteExtractor.Resources.Processors;
 /// the extracted nodes.  <see cref="GetResourceDependencies"/> returns the URIs of all referenced nodes so they can
 /// be enqueued for further processing.
 /// </remarks>
+/// <param name="processor">The extractor processor that will continue this result.</param>
+/// <param name="resourceRepository">The resource graph available while references are updated.</param>
+/// <param name="result">The structural extraction result to serialize.</param>
+/// <param name="resourceUriTranslaterToSet">The translater to apply to the tracked resource.</param>
+/// <param name="referencers">Reference nodes discovered during structural extraction.</param>
+/// <param name="newMetadatas">Metadata discovered for the tracked resource.</param>
 /// <typeparam name="TExtractionData">The raw data type provided by the site source during extraction.</typeparam>
 public class DataExtractedProcessorResult<TExtractionData>(
     ResourceDataExtractor<TExtractionData> processor,

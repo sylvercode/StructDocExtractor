@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Sylvercode.SiteExtractor.Observation;
 
 /// <summary>Applies URI translators returned by resource processing to their resource.</summary>
+/// <param name="logger">Optional logger for translator-assignment diagnostics.</param>
 public sealed partial class ExtractionUriTranslaterHandler(
     ILogger<ExtractionUriTranslaterHandler>? logger = null) : IExtractionObserver
 {

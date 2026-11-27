@@ -1,6 +1,9 @@
 namespace Sylvercode.SiteExtractor.Resources.Processors;
 
 /// <summary>Processor result indicating the resource has been fully processed with no further steps required.</summary>
+/// <param name="processor">The processor that completed the work.</param>
+/// <param name="resourceUriTranslaterToSet">The output translater to apply to the tracked resource.</param>
+/// <param name="extractionState">The completed extraction outcome.</param>
 public class FinishedProcessResult(
     IResourceProcessor processor,
     IResourceUriTranslater? resourceUriTranslaterToSet = null,

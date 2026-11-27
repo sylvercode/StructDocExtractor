@@ -113,6 +113,7 @@ public partial class ResourceDataExtractor<TExtractionData>(
 
     /// <summary>Performs the second processing phase: updates URI references and serializes the extracted document tree to the data store.</summary>
     /// <param name="lastResult">The unfinished result from the first <see cref="Extract"/> call.</param>
+    /// <param name="resource">The tracked resource whose continuation is completing.</param>
     /// <returns>A finished <see cref="FinishedProcessResult"/> once serialization is complete.</returns>
     public IResourceProcessorResult ContinueExtraction(
         DataExtractedProcessorResult<TExtractionData> lastResult,

@@ -4,6 +4,8 @@ using Sylvercode.StructDocExtractor.Metadatas;
 namespace Sylvercode.SiteExtractor.Resources;
 
 /// <summary>Represents a site resource (page or asset) identified by its source URI, tracking pull state, URI translation, and attached metadata.</summary>
+/// <param name="sourceUri">The fragment-free source URI identifying the resource.</param>
+/// <param name="isPullable">Whether a matching processor requires this resource to be processed.</param>
 /// <remarks>
 /// A resource is considered pullable when it requires downloading; non-pullable resources (e.g. external links
 /// that are only referenced) are tracked but never pulled.  URI translation is delegated to the assigned
@@ -55,6 +57,7 @@ public class Resource(Uri sourceUri, bool isPullable = false)
         => State = State.AsPulling();
 
     /// <summary>Transitions the resource to pulled while recording the completed extraction outcome.</summary>
+    /// <param name="extractionState">The outcome produced by the completed processing.</param>
     public void MarkAsPulled(ResourceExtractionState extractionState)
         => State = State.AsPulled(extractionState);
 

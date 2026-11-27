@@ -5,8 +5,9 @@ namespace Sylvercode.SiteExtractor.Resources.Processors;
 /// <summary>Contract for the outcome produced by an <see cref="IResourceProcessor"/> after processing a resource.</summary>
 /// <remarks>
 /// A result may be unfinished (<see cref="IsUnfinished"/> is <see langword="true"/>), meaning the pipeline must call
-/// <see cref="ContinueProcess"/> to complete post-processing steps such as serializing extracted nodes and updating
-/// URI references.  <see cref="GetResourceDependencies"/> exposes any child resource URIs discovered during processing.
+/// <see cref="ContinueProcess"/> with the tracked <see cref="Resource"/> to complete post-processing steps such as
+/// serializing extracted nodes and updating URI references. The result itself is deliberately resource-independent;
+/// its <see cref="ExtractionState"/> is applied by the orchestrator when the step is complete.
 /// </remarks>
 public interface IResourceProcessorResult
 {
@@ -19,7 +20,8 @@ public interface IResourceProcessorResult
     /// <summary>Gets the <see cref="IResourceUriTranslater"/> to assign to the resource after processing, or <see langword="null"/> if no change is needed.</summary>
     IResourceUriTranslater? ResourceUriTranslaterToSet { get; }
 
-    /// <summary>Gets the extraction outcome produced by this processing step.</summary>
+    /// <summary>Gets the extraction outcome produced by this completed processing step.</summary>
+    /// <remarks><see cref="ResourceExtractionState.NotProcessed"/> is used by unfinished results.</remarks>
     ResourceExtractionState ExtractionState { get; }
 
     /// <summary>Gets a value indicating whether further post-processing is required via <see cref="ContinueProcess"/>.</summary>

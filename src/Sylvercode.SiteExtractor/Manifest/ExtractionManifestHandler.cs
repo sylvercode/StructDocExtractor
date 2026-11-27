@@ -6,6 +6,13 @@ using Sylvercode.SiteExtractor.Store;
 namespace Sylvercode.SiteExtractor.Manifest;
 
 /// <summary>Handles validation, loading, and persistence of extraction manifests.</summary>
+/// <param name="options">The configured current extraction roots.</param>
+/// <param name="manifestStore">The store used for linked and current manifests.</param>
+/// <param name="catalog">The linked-manifest catalog retained for later resolution.</param>
+/// <remarks>
+/// This observer is stateless between extraction calls. It derives both current roots from
+/// <see cref="IOptions{TOptions}.Value"/> for every lifecycle event.
+/// </remarks>
 public sealed class ExtractionManifestHandler(
     IOptions<SiteExtractorOptions> options,
     IExtractionManifestStore manifestStore,

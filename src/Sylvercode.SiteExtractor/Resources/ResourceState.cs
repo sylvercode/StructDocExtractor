@@ -1,6 +1,7 @@
 namespace Sylvercode.SiteExtractor.Resources;
 
 /// <summary>Immutable value type tracking processing progress and extraction outcome for one resource.</summary>
+/// <param name="isPullable">Whether a processor is available and processing should be scheduled.</param>
 /// <remarks>
 /// Pull progress answers whether a processor ran. Extraction state answers what that processing produced.
 /// Instances are created via factory methods <see cref="AsPulling"/> and <see cref="AsPulled"/>; each call
@@ -28,16 +29,16 @@ public struct ResourceState(bool isPullable)
     /// <summary>Gets a value indicating whether this resource requires downloading.</summary>
     public readonly bool IsPullable => isPullable;
 
-    /// <summary>Gets a value indicating whether the resource still needs to be pulled (pullable and not yet pulled).</summary>
+    /// <summary>Gets a value indicating whether the resource still needs processing (pullable and not yet completed).</summary>
     public readonly bool IsPullNeeded => isPullable && _state != ResourcePullState.Pulled;
 
-    /// <summary>Gets a value indicating whether the resource is currently being downloaded.</summary>
+    /// <summary>Gets a value indicating whether the resource is currently being processed.</summary>
     public readonly bool IsPulling => isPullable && _state == ResourcePullState.Pulling;
 
-    /// <summary>Gets a value indicating whether the resource has been fully downloaded (or never required pulling).</summary>
+    /// <summary>Gets a value indicating whether processing is complete, or processing was never required.</summary>
     public readonly bool IsPulled => !isPullable || _state == ResourcePullState.Pulled;
 
-    /// <summary>Gets the completed extraction outcome.</summary>
+    /// <summary>Gets the current extraction outcome, including skipped or not-yet-processed states.</summary>
     public readonly ResourceExtractionState ExtractionState => _extractionState;
 
     /// <summary>Returns a new <see cref="ResourceState"/> in the <see cref="ResourcePullState.Pulling"/> state.</summary>
@@ -55,6 +56,7 @@ public struct ResourceState(bool isPullable)
     }
 
     /// <summary>Returns a new <see cref="ResourceState"/> in the <see cref="ResourcePullState.Pulled"/> state.</summary>
+    /// <param name="extractionState">The outcome produced by the completed processing step.</param>
     /// <returns>A new <see cref="ResourceState"/> marked as pulled.</returns>
     /// <exception cref="InvalidOperationException">Thrown when the resource is not pullable or has already been pulled.</exception>
     public readonly ResourceState AsPulled(
@@ -70,6 +72,7 @@ public struct ResourceState(bool isPullable)
     }
 
     /// <summary>Marks the current processing attempt as failed.</summary>
+    /// <returns>A new <see cref="ResourceState"/> retaining pull progress and marked as failed.</returns>
     public readonly ResourceState AsFailed()
         => new(isPullable, _state, ResourceExtractionState.Failed);
 }

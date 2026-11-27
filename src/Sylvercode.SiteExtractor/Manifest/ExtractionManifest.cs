@@ -3,9 +3,10 @@ using System.Text.Json.Serialization;
 namespace Sylvercode.SiteExtractor.Manifest;
 
 /// <summary>Describes the exact source-to-output mapping produced by one extraction.</summary>
-/// <remarks>Initializes a new extraction manifest.</remarks>
+/// <param name="schemaVersion">The manifest schema version.</param>
+/// <param name="sourceBaseUri">The source base represented by this manifest.</param>
+/// <param name="entries">The exact source-to-output mappings produced.</param>
 [method: JsonConstructor]
-/// <summary>Describes the exact source-to-output mapping produced by one extraction.</summary>
 public sealed class ExtractionManifest(
     int schemaVersion,
     Uri sourceBaseUri,
@@ -28,9 +29,9 @@ public sealed class ExtractionManifest(
 }
 
 /// <summary>Maps one absolute source URI to a file below an extraction output root.</summary>
-/// <remarks>Initializes a new extraction manifest entry.</remarks>
+/// <param name="sourceUri">The absolute, fragment-free source URI.</param>
+/// <param name="outputFile">The portable path relative to the extraction output root.</param>
 [method: JsonConstructor]
-/// <summary>Maps one absolute source URI to a file below an extraction output root.</summary>
 public sealed class ExtractionManifestEntry(Uri sourceUri, string outputFile)
 {
 

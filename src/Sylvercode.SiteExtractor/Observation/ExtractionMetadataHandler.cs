@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 namespace Sylvercode.SiteExtractor.Observation;
 
 /// <summary>Applies metadata returned by resource processing to its resource.</summary>
+/// <param name="logger">Optional logger for trace-level metadata diagnostics.</param>
 public sealed partial class ExtractionMetadataHandler(
     ILogger<ExtractionMetadataHandler>? logger = null) : IExtractionObserver
 {

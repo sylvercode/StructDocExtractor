@@ -7,8 +7,8 @@ namespace Sylvercode.SiteExtractor.Resources;
 /// <summary>Default implementation of <see cref="IReferencerUpdater"/> that rewrites each reference URI to its translated output path by looking it up in the resource repository.</summary>
 /// <remarks>
 /// For each <see cref="IStructDocReferencer"/> node, the updater resolves the resource from the repository
-/// and calls <see cref="Resource.TranslateUri"/> to obtain the final output URI.  References that cannot
-/// be resolved are logged at <see cref="LogLevel.Debug"/> and left unchanged.
+/// and calls <see cref="Resource.TranslateUri"/> only when that resource produced an output in the current
+/// extraction. Missing resources and resources with any other extraction outcome are left unchanged.
 /// </remarks>
 public partial class ReferencerUpdater(ILogger<ReferencerUpdater>? logger = null) : IReferencerUpdater
 {
