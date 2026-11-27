@@ -6,6 +6,13 @@ public static class ExtractionManifestValidator
     /// <summary>The manifest filename reserved below every extraction output root.</summary>
     public const string ManifestFileName = "extraction-manifest.json";
 
+    /// <summary>Returns whether an output path is the reserved root manifest filename.</summary>
+    public static bool IsReservedManifestFile(string outputFile)
+        => string.Equals(
+            outputFile,
+            ManifestFileName,
+            StringComparison.OrdinalIgnoreCase);
+
     /// <summary>Returns a canonical absolute output root.</summary>
     public static string GetCanonicalOutputRoot(string outputDirectory, string field)
     {
@@ -67,7 +74,7 @@ public static class ExtractionManifestValidator
             throw ExtractionManifestErrors.InvalidManifest(outputRoot, field, "The output path is not normalized.");
         if (segments.Any(segment => segment is "." or ".."))
             throw ExtractionManifestErrors.InvalidManifest(outputRoot, field, "The output path cannot contain '.' or '..' traversal.");
-        if (string.Equals(outputFile, ManifestFileName, StringComparison.OrdinalIgnoreCase))
+        if (IsReservedManifestFile(outputFile))
             throw ExtractionManifestErrors.InvalidManifest(outputRoot, field, $"The output path '{ManifestFileName}' is reserved.");
 
         string normalized = string.Join('/', segments);

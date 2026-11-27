@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using Sylvercode.SiteExtractor.Manifest;
 
 namespace Sylvercode.SiteExtractor.Store;
 
@@ -29,21 +30,38 @@ public abstract partial class BaseDataStore(
     /// <summary>Resolves a potentially relative URI to an absolute URI rooted at <see cref="BaseUri"/>.</summary>
     /// <param name="uri">The URI to resolve; may be relative or already absolute.</param>
     /// <returns>The fully resolved absolute URI under <see cref="BaseUri"/>.</returns>
-    /// <exception cref="ArgumentException">Thrown when the resolved URI is not a child of <see cref="BaseUri"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the resolved URI is not a child of <see cref="BaseUri"/>, or when it targets
+    /// the reserved root manifest file <see cref="ExtractionManifestValidator.ManifestFileName"/>.
+    /// </exception>
     protected Uri GetCompleteUri(Uri uri)
     {
+        Uri completeUri;
         if (uri.IsAbsoluteUri
             && BaseUri.IsBaseOf(uri))
         {
             LogUriAlreadyComplete(uri);
-            return uri;
+            completeUri = uri;
+        }
+        else
+        {
+            completeUri = new(BaseUri, uri);
+            if (!BaseUri.IsBaseOf(completeUri))
+                throw new ArgumentException("Uri is not a child of the base uri", nameof(uri));
+
+            LogUriCompleted(uri, completeUri);
         }
 
-        Uri completeUri = new(BaseUri, uri);
-        if (!BaseUri.IsBaseOf(completeUri))
-            throw new ArgumentException("Uri is not a child of the base uri", nameof(uri));
+        Uri relativeUri = BaseUri.MakeRelativeUri(completeUri);
+        string relativePath = Uri.UnescapeDataString(
+            relativeUri.OriginalString.Split('?', '#')[0]);
+        if (ExtractionManifestValidator.IsReservedManifestFile(relativePath))
+        {
+            throw new ArgumentException(
+                $"The output path '{ExtractionManifestValidator.ManifestFileName}' is reserved.",
+                nameof(uri));
+        }
 
-        LogUriCompleted(uri, completeUri);
         return completeUri;
     }
 
