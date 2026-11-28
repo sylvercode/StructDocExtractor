@@ -118,6 +118,25 @@ public class DirectoryDataStoreTests
     }
 
     [Fact]
+    public void GetStream_EncodedHash_WritesDecodedFileName()
+    {
+        string root = NewRoot();
+        try
+        {
+            DirectoryDataStore store = NewStore(root);
+            using Stream stream = store.GetStream(
+                new Uri("report%23a.md", UriKind.Relative));
+
+            Assert.True(File.Exists(Path.Combine(root, "report#a.md")));
+            Assert.True(stream.CanWrite);
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [Fact]
     public void GetStream_FileNameContainingDoubleDots_IsAllowed()
     {
         string root = NewRoot();

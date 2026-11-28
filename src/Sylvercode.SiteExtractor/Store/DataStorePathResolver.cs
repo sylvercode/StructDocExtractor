@@ -30,7 +30,7 @@ public static class DataStorePathResolver
             EnsureNoDotSegments(decodedRelativePath, uri);
             completeUri = new Uri(
                 baseUri,
-                new Uri(decodedRelativePath, UriKind.Relative));
+                new Uri(relative, UriKind.Relative));
         }
 
         if (!baseUri.IsBaseOf(completeUri))
