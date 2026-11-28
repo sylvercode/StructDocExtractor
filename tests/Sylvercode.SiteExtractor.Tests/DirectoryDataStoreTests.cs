@@ -117,6 +117,55 @@ public class DirectoryDataStoreTests
         }
     }
 
+    [Fact]
+    public void GetStream_FileNameContainingDoubleDots_IsAllowed()
+    {
+        string root = NewRoot();
+        try
+        {
+            DirectoryDataStore store = NewStore(root);
+            using (StreamWriter writer = store.GetStreamWriter(
+                new Uri("file..md", UriKind.Relative)))
+            {
+                writer.Write("content");
+            }
+
+            Assert.Equal("content", File.ReadAllText(Path.Combine(root, "file..md")));
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [Theory]
+    [InlineData("./extraction-manifest.json")]
+    [InlineData("nested/../extraction-manifest.json")]
+    [InlineData("%2e/extraction-manifest.json")]
+    [InlineData("nested/%2e%2e/extraction-manifest.json")]
+    public void GetStream_DotSegmentManifestAlias_IsRejected(string outputUri)
+    {
+        string root = NewRoot();
+        string manifestPath = Path.Combine(
+            root,
+            ExtractionManifestValidator.ManifestFileName);
+        string original = "existing manifest";
+        File.WriteAllText(manifestPath, original);
+        try
+        {
+            DirectoryDataStore store = NewStore(root);
+
+            Assert.Throws<ArgumentException>(
+                () => store.GetStream(
+                    new Uri(outputUri, UriKind.Relative)));
+            Assert.Equal(original, File.ReadAllText(manifestPath));
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
     private static string NewRoot()
     {
         string root = Path.Combine(

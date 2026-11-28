@@ -27,6 +27,7 @@ public static class DataStorePathResolver
             if (suffixIndex >= 0)
                 relative = relative[..suffixIndex];
             decodedRelativePath = Uri.UnescapeDataString(relative);
+            EnsureNoDotSegments(decodedRelativePath, uri);
             completeUri = new Uri(
                 baseUri,
                 new Uri(decodedRelativePath, UriKind.Relative));
@@ -69,5 +70,16 @@ public static class DataStorePathResolver
         return new(
             completeUri,
             relativePath);
+    }
+
+    private static void EnsureNoDotSegments(string relativePath, Uri uri)
+    {
+        if (relativePath.Split('/', '\\').Any(
+            segment => segment is "." or ".."))
+        {
+            throw new ArgumentException(
+                "Uri output paths cannot contain '.' or '..' segments.",
+                nameof(uri));
+        }
     }
 }
