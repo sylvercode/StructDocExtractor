@@ -13,6 +13,7 @@ namespace Sylvercode.SiteExtractor.Resources.Processors;
 /// <see cref="StaticDirUriTranslater"/> is used; otherwise a <see cref="RelativeUriTranslater"/> resolves
 /// the path relative to the source base URI.  The resolved <see cref="ResourceUriTranslater"/> is applied
 /// to the resource so that subsequent URI-translation calls reflect the copied output location.
+/// The query identity filter is applied to destination translation, not to the URI used for downloading.
 /// </remarks>
 public partial class ResourceCopier : IResourceCopiler
 {
@@ -22,21 +23,26 @@ public partial class ResourceCopier : IResourceCopiler
 
     private readonly IUriTranslater _uriTranslater;
 
+    private readonly IUriQueryIdentityFilter _queryIdentityFilter;
+
     private readonly ResourceUriTranslater _resourceUriTranslater;
 
     /// <summary>Initializes a new instance of <see cref="ResourceCopier"/>.</summary>
     /// <param name="siteSource">The binary site source used to fetch raw resource bytes.</param>
     /// <param name="dataStore">The data store where copied bytes are written.</param>
     /// <param name="options">Options controlling the output path and whether it is absolute or relative.</param>
+    /// <param name="queryIdentityFilter">The policy used to canonicalize query identity for output destinations.</param>
     /// <param name="loggerFactory">Optional factory used to create loggers for URI translater components.</param>
     public ResourceCopier(
         ISiteSource<byte[]> siteSource,
         IDataStore dataStore,
         IOptions<ResourceCopierOptions> options,
+        IUriQueryIdentityFilter queryIdentityFilter,
         ILoggerFactory? loggerFactory = null)
     {
         _siteSource = siteSource;
         _dataStore = dataStore;
+        _queryIdentityFilter = queryIdentityFilter;
         _uriTranslater = NewUriTranslater(options.Value, siteSource.BaseUri, loggerFactory);
         _resourceUriTranslater = new(_uriTranslater);
     }
@@ -46,7 +52,8 @@ public partial class ResourceCopier : IResourceCopiler
     public void Download(Uri uri)
     {
         byte[] file = _siteSource.GetData(uri);
-        using var stream = _dataStore.GetStream(_uriTranslater.Translate(uri));
+        using var stream = _dataStore.GetStream(
+            _uriTranslater.Translate(_queryIdentityFilter.Filter(uri)));
         stream.Write(file);
     }
 

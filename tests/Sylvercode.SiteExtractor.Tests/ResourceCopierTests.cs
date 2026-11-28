@@ -6,6 +6,7 @@ using Sylvercode.SiteExtractor.Resources;
 using Sylvercode.SiteExtractor.Resources.Processors;
 using Sylvercode.SiteExtractor.Sources;
 using Sylvercode.SiteExtractor.Store;
+using Sylvercode.SiteExtractor.UriUtils;
 
 namespace Sylvercode.SiteExtractor.Tests;
 
@@ -33,6 +34,7 @@ public class ResourceCopierTests_Download
             services.AddMemorySiteSource<byte[]>();
 
             services.AddMemoryDataStore();
+            services.AddSingleton<IUriQueryIdentityFilter, RemoveAllUriQueryIdentityFilter>();
 
             services.AddOptions<ResourceCopierOptions>().Configure((options) =>
             {

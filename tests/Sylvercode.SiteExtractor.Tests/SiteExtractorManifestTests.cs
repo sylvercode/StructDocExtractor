@@ -3,6 +3,8 @@ using Microsoft.Extensions.Hosting;
 using Sylvercode.SiteExtractor.Manifest;
 using Sylvercode.SiteExtractor.Observation;
 using Sylvercode.SiteExtractor.Resources;
+using Sylvercode.SiteExtractor.Resources.Processors;
+using Sylvercode.SiteExtractor.Sources;
 using Sylvercode.SiteExtractor.Store;
 using Sylvercode.SiteExtractor.Tests.Mocks;
 using Sylvercode.SiteExtractor.UriUtils;
@@ -229,6 +231,59 @@ public class SiteExtractorManifestTests
             entry => Assert.Equal("images/logo.png", entry.OutputFile));
     }
 
+    [Theory]
+    [InlineData(false, "assets/logo.png")]
+    [InlineData(true, "logo.png")]
+    public void Extract_CopiedAsset_UsesSameDestinationForCopyTranslationAndManifest(
+        bool preserveQuery,
+        string expectedOutput)
+    {
+        Uri sourceUri = new("https://example.com/docs/logo.png?token=a/b");
+        CaptureCompletedResources observer = new();
+        using IHost host = Host.CreateDefaultBuilder()
+            .ConfigureServices(services =>
+            {
+                services.Configure<SiteExtractorOptions>(options =>
+                {
+                    options.SourceAuthority = "https://example.com";
+                    options.SourceBasePath = "/docs";
+                    options.OutputDirectory = "memory://output/";
+                });
+                services.Configure<MemorySiteSource<byte[]>.Options>(options =>
+                    options.BaseUri = new Uri("https://example.com/docs/"));
+                services.AddMemorySiteSource<byte[]>();
+                services.AddMemoryDataStore();
+                services.AddMemoryExtractionManifestStore();
+                services.Configure<ResourceCopierOptions>(options =>
+                {
+                    options.IsOutputPathAbsolute = false;
+                    options.OutputPath = "assets";
+                });
+                if (preserveQuery)
+                    services.AddSingleton<IUriQueryIdentityFilter, PreserveAllUriQueryIdentityFilter>();
+                services.AddImageCopierProcessor();
+                services.AddResourceProcessorProvider();
+                services.AddSingleton<IExtractionObserver>(observer);
+                services.AddSiteExtractor();
+            })
+            .Build();
+        host.Services.GetRequiredService<MemorySiteSource<byte[]>>().Add(sourceUri, [1, 2, 3]);
+
+        host.Services.GetRequiredService<SiteExtractor>().Extract(sourceUri);
+
+        MemoryDataStore dataStore = host.Services.GetRequiredService<MemoryDataStore>();
+        MemoryStream copied = Assert.Single(dataStore).Value;
+        Assert.Equal(new byte[] { 1, 2, 3 }, copied.ToArray());
+        Assert.Equal(expectedOutput, DataStorePathResolver.Resolve(dataStore.BaseUri, Assert.Single(dataStore).Key).RelativePath);
+        Resource resource = Assert.Single(observer.Resources!);
+        Assert.Equal(expectedOutput, DataStorePathResolver.Resolve(dataStore.BaseUri, resource.TranslatedResourceUri).RelativePath);
+        Uri link = resource.TranslateUri(new Uri(sourceUri.AbsoluteUri + "#detail"));
+        Assert.Equal(expectedOutput, DataStorePathResolver.Resolve(dataStore.BaseUri, link).RelativePath);
+        ExtractionManifest manifest = Assert.Single(
+            host.Services.GetRequiredService<MemoryExtractionManifestStore>().Manifests).Value;
+        Assert.Equal(expectedOutput, Assert.Single(manifest.Entries).OutputFile);
+    }
+
     [Fact]
     public void Extract_MissingLinkedManifestFailsBeforeProcessorRuns()
     {
@@ -398,6 +453,17 @@ public class SiteExtractorManifestTests
         {
             if (value is ExtractionCompleted)
                 throw new InvalidOperationException("Completion observer failed.");
+        }
+    }
+
+    private sealed class CaptureCompletedResources : IExtractionObserver
+    {
+        public IReadOnlyResourceRepository? Resources { get; private set; }
+
+        public void OnNext(ExtractionEvent value)
+        {
+            if (value is ExtractionCompleted completed)
+                Resources = completed.Resources;
         }
     }
 
