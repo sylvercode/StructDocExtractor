@@ -4,6 +4,8 @@ using Sylvercode.StructDocExtractor.Metadatas;
 namespace Sylvercode.SiteExtractor.Resources;
 
 /// <summary>Represents a site resource (page or asset) identified by its source URI, tracking pull state, URI translation, and attached metadata.</summary>
+/// <param name="sourceUri">The fragment-free source URI identifying the resource.</param>
+/// <param name="isPullable">Whether a matching processor requires this resource to be processed.</param>
 /// <remarks>
 /// A resource is considered pullable when it requires downloading; non-pullable resources (e.g. external links
 /// that are only referenced) are tracked but never pulled.  URI translation is delegated to the assigned
@@ -17,6 +19,9 @@ public class Resource(Uri sourceUri, bool isPullable = false)
 
     /// <summary>Gets the current pull state of this resource.</summary>
     public ResourceState State { get; private set; } = new(isPullable);
+
+    /// <summary>Gets the kind of output associated with this resource.</summary>
+    public ResourceOutputKind OutputKind { get; private set; } = ResourceOutputKind.None;
 
     /// <summary>Gets or sets the URI translater used to compute the output path for this resource.</summary>
     public IResourceUriTranslater UriTranslater { get; set; } = ResourceUriTranslater.NoopInstance;
@@ -54,7 +59,24 @@ public class Resource(Uri sourceUri, bool isPullable = false)
     public void MarkAsPulling()
         => State = State.AsPulling();
 
-    /// <summary>Transitions the resource state to <see cref="ResourcePullState.Pulled"/>.</summary>
-    public void MarkAsPulled()
-        => State = State.AsPulled();
+    /// <summary>Transitions the resource to pulled while recording the completed extraction outcome.</summary>
+    /// <param name="extractionState">The outcome produced by the completed processing.</param>
+    /// <param name="outputKind">The kind of output produced by the processing.</param>
+    public void MarkAsPulled(
+        ResourceExtractionState extractionState)
+        => State = State.AsPulled(extractionState);
+
+    /// <summary>Records that initial extraction has prepared a usable output destination.</summary>
+    public void MarkAsExtractionPrepared()
+        => State = State.WithExtractionPrepared();
+
+    internal void SetOutputKind(ResourceOutputKind outputKind)
+        => OutputKind = outputKind;
+
+    /// <summary>Marks the current processing attempt as failed.</summary>
+    public void MarkAsFailed()
+        => State = State.AsFailed();
+
+    internal void SetUriTranslater(IResourceUriTranslater translater)
+        => UriTranslater = translater;
 }

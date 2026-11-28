@@ -1,14 +1,14 @@
 namespace Sylvercode.SiteExtractor.Resources;
 
-/// <summary>Defines the possible states a resource can be in during the download/copy cycle.</summary>
+/// <summary>Defines the possible states of the resource processing cycle.</summary>
 public enum ResourcePullState
 {
-    /// <summary>The resource has been discovered but not yet downloaded.</summary>
+    /// <summary>The resource has been discovered but processing has not started.</summary>
     Pending,
 
-    /// <summary>The resource download is currently in progress.</summary>
+    /// <summary>A processor is currently handling the resource.</summary>
     Pulling,
 
-    /// <summary>The resource has been successfully downloaded and stored.</summary>
+    /// <summary>The resource processing cycle has completed.</summary>
     Pulled
 }

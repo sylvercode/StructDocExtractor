@@ -32,6 +32,13 @@ public class SiteExtractorOptions
         set => field = value.AsDirPath();
     } = string.Empty;
 
+    /// <summary>Gets or sets the output roots of previously completed extractions whose manifests are required.</summary>
+    /// <remarks>
+    /// Each root identifies an earlier extraction through its existing <c>extraction-manifest.json</c>.
+    /// Linked roots are not crawled or extracted again; their manifests are loaded and retained for catalog validation.
+    /// </remarks>
+    public IList<LinkedExtractionOptions> LinkedExtractions { get; set; } = [];
+
     /// <summary>Returns the absolute source base <see cref="Uri"/> combining <see cref="SourceAuthority"/> and <see cref="SourceBasePath"/>.</summary>
     /// <exception cref="InvalidOperationException"><see cref="SourceAuthority"/> has not been set.</exception>
     public Uri GetSourceBaseUri()
@@ -46,4 +53,12 @@ public class SiteExtractorOptions
 
     /// <summary>Returns a <see cref="Uri"/> representing the configured <see cref="OutputDirectory"/>.</summary>
     public Uri GetOutputUri() => new(OutputDirectory, UriKind.RelativeOrAbsolute);
+}
+
+/// <summary>Identifies the output root of a previously completed extraction through its persisted manifest.</summary>
+public class LinkedExtractionOptions
+{
+    /// <summary>Gets or sets the prior extraction output directory containing a valid <c>extraction-manifest.json</c>.</summary>
+    /// <remarks>The directory is inspected for its manifest only; it is not used as a new extraction source or output.</remarks>
+    public string OutputDirectory { get; set; } = string.Empty;
 }

@@ -14,11 +14,7 @@ public class ResourceProcessorMock(bool returnsFinishedResultByDefault = true) :
 
     /// <inheritdoc/>
     public IResourceProcessorResult Process(Resource resource, IReadOnlyResourceRepository resourceRepository)
-        => (_results.Count > 0)
-            ? _results.Dequeue().Invoke(this, resource)
-            : returnsFinishedResultByDefault
-                ? new ResourceProcessorResultMock(this, resource)
-                : throw new InvalidOperationException($"No result for: {resource.Uri}");
+        => ProcessResult(resource, resourceRepository);
 
     /// <summary>Enqueues a result factory to be returned on the next <see cref="Process"/> call.</summary>
     /// <param name="result">A factory that receives the processor and resource and returns the configured result.</param>
@@ -27,4 +23,19 @@ public class ResourceProcessorMock(bool returnsFinishedResultByDefault = true) :
 
     /// <summary>Gets a value indicating whether any pre-configured results remain in the queue.</summary>
     public bool HasResults => _results.Count > 0;
+
+    /// <summary>Gets the number of resources processed by this mock.</summary>
+    public int ProcessCount { get; private set; }
+
+    private IResourceProcessorResult ProcessResult(
+        Resource resource,
+        IReadOnlyResourceRepository resourceRepository)
+    {
+        ProcessCount++;
+        return (_results.Count > 0)
+            ? _results.Dequeue().Invoke(this, resource)
+            : returnsFinishedResultByDefault
+                ? new ResourceProcessorResultMock(this, resource)
+                : throw new InvalidOperationException($"No result for: {resource.Uri}");
+    }
 }

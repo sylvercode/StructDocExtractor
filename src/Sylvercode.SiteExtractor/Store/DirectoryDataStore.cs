@@ -35,16 +35,20 @@ public partial class DirectoryDataStore(
     /// <returns>A <see cref="Stream"/> open for writing to the resolved file path.</returns>
     public override Stream GetStream(Uri uri)
     {
-        Uri completeUri = GetCompleteUri(uri);
-        EnsureDirectoryExists(completeUri);
-        LogOpenFile(completeUri);
-        return File.OpenWrite(Path.GetFullPath(Uri.UnescapeDataString(completeUri.LocalPath)));
+        GetCompleteUri(uri);
+        DataStorePath path = ResolvePath(uri);
+        string physicalPath = Path.GetFullPath(Path.Combine(
+            BaseUri.LocalPath,
+            path.RelativePath.Replace('/', Path.DirectorySeparatorChar)));
+        EnsureDirectoryExists(physicalPath);
+        LogOpenFile(path.Uri);
+        return File.OpenWrite(physicalPath);
     }
 
-    private void EnsureDirectoryExists(Uri uri)
+    private void EnsureDirectoryExists(string physicalPath)
     {
-        string path = Path.GetDirectoryName(uri.LocalPath) ?? throw new InvalidOperationException("Destionation is not a directory");
-        path = Uri.UnescapeDataString(path);
+        string path = Path.GetDirectoryName(physicalPath)
+            ?? throw new InvalidOperationException("Destionation is not a directory");
         if (!Directory.Exists(path))
         {
             Directory.CreateDirectory(path);

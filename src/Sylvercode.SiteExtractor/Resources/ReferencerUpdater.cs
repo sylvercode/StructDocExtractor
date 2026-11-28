@@ -7,8 +7,8 @@ namespace Sylvercode.SiteExtractor.Resources;
 /// <summary>Default implementation of <see cref="IReferencerUpdater"/> that rewrites each reference URI to its translated output path by looking it up in the resource repository.</summary>
 /// <remarks>
 /// For each <see cref="IStructDocReferencer"/> node, the updater resolves the resource from the repository
-/// and calls <see cref="Resource.TranslateUri"/> to obtain the final output URI.  References that cannot
-/// be resolved are logged at <see cref="LogLevel.Debug"/> and left unchanged.
+/// and calls <see cref="Resource.TranslateUri"/> only when that resource produced an output in the current
+/// extraction. Missing resources and resources with any other extraction outcome are left unchanged.
 /// </remarks>
 public partial class ReferencerUpdater(ILogger<ReferencerUpdater>? logger = null) : IReferencerUpdater
 {
@@ -22,10 +22,21 @@ public partial class ReferencerUpdater(ILogger<ReferencerUpdater>? logger = null
         foreach (var referencer in referencers)
         {
             Uri refUri = new(referencer.GetReference());
-            if (resourceRepository.TryGetResourceForUri(refUri, out var resource))
-                referencer.UpdateReference(resource.TranslateUri(refUri).ToString());
-            else
+            if (!resourceRepository.TryGetResourceForUri(refUri, out var resource))
+            {
                 LogNotFoundReference(refUri);
+                continue;
+            }
+
+            if (resource.State.ExtractionState is not
+                ResourceExtractionState.ExtractionPrepared and not
+                ResourceExtractionState.OutputProduced)
+            {
+                LogReferenceWithoutKnownDestination(refUri, resource.State.ExtractionState);
+                continue;
+            }
+
+            referencer.UpdateReference(resource.TranslateUri(refUri).ToString());
         }
     }
 
@@ -33,4 +44,11 @@ public partial class ReferencerUpdater(ILogger<ReferencerUpdater>? logger = null
         Level = LogLevel.Debug,
         Message = "Referenced Uri not found in tracked resources: {RefUri}")]
     private partial void LogNotFoundReference(Uri refUri);
+
+    [LoggerMessage(
+        Level = LogLevel.Debug,
+        Message = "Referenced resource has no known output destination: {RefUri} ({ExtractionState})")]
+    private partial void LogReferenceWithoutKnownDestination(
+        Uri refUri,
+        ResourceExtractionState extractionState);
 }

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using Sylvercode.SiteExtractor.Manifest;
 
 namespace Sylvercode.SiteExtractor.Store;
 
@@ -29,23 +30,46 @@ public abstract partial class BaseDataStore(
     /// <summary>Resolves a potentially relative URI to an absolute URI rooted at <see cref="BaseUri"/>.</summary>
     /// <param name="uri">The URI to resolve; may be relative or already absolute.</param>
     /// <returns>The fully resolved absolute URI under <see cref="BaseUri"/>.</returns>
-    /// <exception cref="ArgumentException">Thrown when the resolved URI is not a child of <see cref="BaseUri"/>.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the resolved URI is not a child of <see cref="BaseUri"/>, or when it targets
+    /// the reserved root manifest file <see cref="ExtractionManifestValidator.ManifestFileName"/>.
+    /// </exception>
     protected Uri GetCompleteUri(Uri uri)
     {
         if (uri.IsAbsoluteUri
             && BaseUri.IsBaseOf(uri))
         {
             LogUriAlreadyComplete(uri);
-            return uri;
+        }
+        else
+        {
+            Uri completeUri = new(BaseUri, uri);
+            if (!BaseUri.IsBaseOf(completeUri))
+                throw new ArgumentException("Uri is not a child of the base uri", nameof(uri));
+
+            LogUriCompleted(uri, completeUri);
         }
 
-        Uri completeUri = new(BaseUri, uri);
-        if (!BaseUri.IsBaseOf(completeUri))
-            throw new ArgumentException("Uri is not a child of the base uri", nameof(uri));
+        DataStorePath path = ResolvePath(uri);
+        string relativePath = path.RelativePath;
+        if (ExtractionManifestValidator.IsReservedManifestFile(relativePath))
+        {
+            throw new ArgumentException(
+                $"The output path '{ExtractionManifestValidator.ManifestFileName}' is reserved.",
+                nameof(uri));
+        }
 
-        LogUriCompleted(uri, completeUri);
-        return completeUri;
+        return path.Uri;
     }
+
+    /// <summary>Resolves an output URI exactly once into a physical datastore path.</summary>
+    /// <param name="uri">The URI accepted by <see cref="GetStream"/>.</param>
+    /// <returns>The resolved URI, physical path, and portable relative path.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the path escapes <see cref="BaseUri"/> or is empty.
+    /// </exception>
+    protected DataStorePath ResolvePath(Uri uri)
+        => DataStorePathResolver.Resolve(BaseUri, uri);
 
     [LoggerMessage(
         Level = LogLevel.Debug,

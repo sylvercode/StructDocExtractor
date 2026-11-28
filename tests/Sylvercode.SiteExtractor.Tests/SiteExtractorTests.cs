@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Sylvercode.SiteExtractor.Observation;
 using Sylvercode.SiteExtractor.Resources.Processors;
 using Sylvercode.SiteExtractor.Tests.Mocks;
 using Sylvercode.SiteExtractor.UriUtils;
@@ -21,7 +22,7 @@ public class SiteExtractorTests_Extract
                     resourceProcessor,
                     new UriMatcherByBase(new Uri("https://example.com")));
                 services.AddResourceProcessorProvider();
-                services.AddSingleton<SiteExtractor>();
+                services.AddSiteExtractor();
             })
             .Build();
     }
@@ -125,5 +126,75 @@ public class SiteExtractorTests_Extract
             call => Assert.Equal(nameof(IResourceProcessorResult.ContinueProcess), call.MethodName),
             call => Assert.Equal(nameof(IResourceProcessorResult.ContinueProcess), call.MethodName),
             call => Assert.Equal(nameof(IResourceProcessorResult.ContinueProcess), call.MethodName));
+    }
+
+    /// <summary>Verifies that a custom observer receives the extraction lifecycle in order.</summary>
+    [Fact]
+    public void CustomObserver_ReceivesLifecycleEvents()
+    {
+        ResourceProcessorMock resourceProcessor = new();
+        RecordingObserver observer = new();
+        IHost host = Host.CreateDefaultBuilder()
+            .ConfigureServices((_, services) =>
+            {
+                services.AddResourceProcessor(
+                    resourceProcessor,
+                    new UriMatcherByBase(new Uri("https://example.com")));
+                services.AddResourceProcessorProvider();
+                services.AddSingleton<IExtractionObserver>(observer);
+                services.AddSiteExtractor();
+            })
+            .Build();
+
+        host.Services.GetRequiredService<SiteExtractor>().Extract(
+            new Uri("https://example.com/test"));
+
+        Assert.Collection(
+            observer.Events,
+            @event => Assert.IsType<ExtractionStarted>(@event),
+            @event => Assert.IsType<ResourceProcessed>(@event),
+            @event => Assert.IsType<ExtractionCompleted>(@event));
+    }
+
+    /// <summary>Verifies that observer error notifications do not replace the original processing exception.</summary>
+    [Fact]
+    public void CustomObserver_ReceivesFailureEvent()
+    {
+        ResourceProcessorMock resourceProcessor = new(returnsFinishedResultByDefault: false);
+        resourceProcessor.AddResult(
+            (_, _) => throw new InvalidOperationException("Processing failed."));
+        RecordingObserver observer = new();
+        IHost host = Host.CreateDefaultBuilder()
+            .ConfigureServices((_, services) =>
+            {
+                services.AddResourceProcessor(
+                    resourceProcessor,
+                    new UriMatcherByBase(new Uri("https://example.com")));
+                services.AddResourceProcessorProvider();
+                services.AddSingleton<IExtractionObserver>(observer);
+                services.AddSiteExtractor();
+            })
+            .Build();
+
+        Assert.Throws<InvalidOperationException>(
+            () => host.Services.GetRequiredService<SiteExtractor>().Extract(
+                new Uri("https://example.com/test")));
+
+        Assert.Collection(
+            observer.Events,
+            @event => Assert.IsType<ExtractionStarted>(@event),
+            @event => Assert.IsType<ExtractionFailed>(@event));
+        Assert.True(observer.Errored);
+    }
+
+    private sealed class RecordingObserver : IExtractionObserver
+    {
+        public List<ExtractionEvent> Events { get; } = [];
+
+        public bool Errored { get; private set; }
+
+        public void OnNext(ExtractionEvent value) => Events.Add(value);
+
+        public void OnError(Exception error) => Errored = true;
     }
 }

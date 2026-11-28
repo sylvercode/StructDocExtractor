@@ -235,6 +235,16 @@ types), register AngleSharp factories for them, and register Markdown serializer
 `ISiteExtractor` turns single‑document extraction into a full crawl. Given a seed URI it runs
 a **two‑phase loop**:
 
+Each `ResourceState` keeps two independent dimensions. `IsPullable`/`ResourcePullState`
+describe whether and where the processing cycle runs, while `ResourceExtractionState` describes
+its outcome (`Skipped`, `NoSourceData`, `NoOutput`, `OutputProduced`, or `Failed`). Completing a pull
+therefore does not imply that an output file was generated.
+
+`SiteExtractor` publishes a synchronous stream of typed `IExtractionObserver` events. The default
+metadata and URI-translater observers apply side effects returned by each processor result, while
+optional observers can add behavior without changing the crawl loop. The optional
+`ExtractionManifestHandler` consumes extraction-start and extraction-complete events.
+
 **Phase 1 — primary processing**
 
 1. `ResourcesTracker` records the seed as a `Resource` and, via
@@ -250,6 +260,22 @@ a **two‑phase loop**:
 **Phase 2 — post‑processing**
 
 Unfinished results are resumed once Phase 1's queue is drained. `ResourceDataExtractor.ContinueExtraction()` first calls `IReferencerUpdater` (e.g. `MarkdownReferencerUpdater`) to rewrite each `IStructDocReferencer` URI to the correct output file (now that all output paths are known), then serializes the node graph and writes it to `IDataStore`.
+
+After both phases finish, `SiteExtractor` publishes `ExtractionCompleted`.
+`ExtractionManifestHandler` reads `TranslatedResourceUri` from each resource whose extraction
+state is `OutputProduced` and writes `extraction-manifest.json` below the output root. At this
+point all metadata and URI translation are final, so no separate frozen copy is retained.
+Schema version 1 contains `schemaVersion`, `sourceBaseUri`, and deterministic
+`sourceUri`/`outputFile` entries. The source identities are absolute and fragment-free (with
+queries preserved); output files are portable relative paths using `/`. A failed extraction
+does not create or replace the existing manifest.
+
+When manifest support is enabled, `ExtractionManifestHandler` validates `LinkedExtractions` on
+`ExtractionStarted` and stores their validated manifests in `IExtractionManifestCatalog`. Their roots must
+contain valid manifests, and current/linked roots, source bases, and mappings may not overlap
+or duplicate one another. The catalog retains those manifests for later cross-extraction work,
+but Epic 1 does not seed the crawler or alter link rewriting from them. The handler keeps no
+per-run state; it derives the current roots from immutable options at each lifecycle event.
 
 Sources are pluggable through `ISiteSource`: `AngleSharpWebSource` fetches live pages,
 `AngleSharpProxySource` parses HTML delivered by another source, and `MemorySiteSource`
@@ -311,11 +337,14 @@ extension points and their registration helpers:
 | Resource processors | `IResourceProcessor`, `IResourceProcessorProvider` | `AddResourceProcessorProvider()`, `AddResourceDataExtractorProcessor<T>()`, `AddImageCopierProcessor()` |
 | Dependency filtering | `IResourceDependancyFilter` | `AddHtmlResourceDependencyFilter()` |
 | Storage | `IDataStore` | `AddDirectoryDataStore()`, `AddMemoryDataStore()` |
+| Manifest storage | `IExtractionManifestStore` | `AddDirectoryExtractionManifestStore()`, `AddMemoryExtractionManifestStore()` |
+| Extraction observers | `IExtractionObserver`, `ExtractionEvent` | Registered through `AddSiteExtractor()` and manifest-store helpers |
 | URI redirects | `IUriRedirector`, `HttpUriRedirector` | `AddHttpUriRedirector()` |
 | Downloading | `HttpDownloader` | `AddHttpDownloader()` |
 
 Configuration is bound through the options pattern. `SiteExtractorOptions` (bound from the
-`"SiteExtractor"` section) supplies `SourceAuthority`, `SourceBasePath`, and `OutputDirectory`;
+`"SiteExtractor"` section) supplies `SourceAuthority`, `SourceBasePath`, `OutputDirectory`, and
+optional `LinkedExtractions`;
 `HtmlResourceDependencyFilterOptions` and `ResourceCopierOptions` tune crawl and asset
 behaviour.
 
@@ -384,8 +413,10 @@ order described above.
 |---|---|---|
 | `.UriUtils` | `IUriMatcher`, `IUriTranslater`, `IUriRedirector`, `HttpUriRedirector`, `ImageUriMatcher`, `UriMatcherByBase`, `UriBaseTranslater`, `RelativeUriTranslater`, `StaticDirUriTranslater`, `UriRelativeFromBaseTranslater`, `NoopUriTranslater`, `HttpUriRedirector(Extentions)`, `UriExtentions` | URI matching, translation, and server redirect resolution helpers. |
 | `.Sources` | `ISiteSource`, `ISiteSourceProvider`, `MemorySiteSource(Extensions)` | Fetch raw document content by URI; in‑memory source for tests. |
-| `.Store` | `IDataStore`, `BaseDataStore`, `MemoryDataStore`, `DirectoryDataStore` (+ their `*Extensions`) | Persist extracted output to memory or disk. |
-| `.Resources` | `Resource`, `ResourceState`, `ResourcePullState`, `ResourceQueue`, `ResourceRepository`, `IReadOnlyResourceRepository`, `ResourcesTracker`, `IReferencerUpdater`/`ReferencerUpdater`, `IResourceUriTranslater`/`ResourceUriTranslater` | Resource model, tracking/dedup, and reference/URI updating. |
+| `.Store` | `IDataStore`, `BaseDataStore`, `MemoryDataStore`, `DirectoryDataStore`, `IExtractionManifestStore`, `DirectoryExtractionManifestStore`, `MemoryExtractionManifestStore` (+ their `*Extensions`) | Persist extracted output and strict versioned manifests to memory or disk. |
+| `.Manifest` | `ExtractionManifest`, `ExtractionManifestEntry`, `ExtractionManifestHandler`, `IExtractionManifestCatalog`, `ExtractionManifestValidator` | Validate, retain, and persist exact source-to-output catalogs. |
+| `.Observation` | `IExtractionObserver`, `ExtractionEvent`, `ExtractionStarted`, `ResourceProcessed`, `ExtractionCompleted`, `ExtractionFailed`, metadata/URI handlers | Publish and consume synchronous extraction lifecycle and result events. |
+| `.Resources` | `Resource`, `ResourceState`, `ResourcePullState`, `ResourceExtractionState`, `ResourceQueue`, `ResourceRepository`, `IReadOnlyResourceRepository`, `ResourcesTracker`, `IReferencerUpdater`/`ReferencerUpdater`, `IResourceUriTranslater`/`ResourceUriTranslater` | Resource model, processing/extraction states, tracking/dedup, and reference/URI updating. |
 | `.Resources.Processors` | `IResourceProcessor(Provider)`, `IResourceProcessorResult`, `IResourceCopiler`, `IResourceDataExtractor`, `IResourceDependancyFilter`, `ResourceCopier(Options)`, `ResourceDataExtractor`, `ResourceProcessorProvider`, `DataExtractedProcessorResult`, `NoPostProcessResult`, `ResourceProcessorExtentions` | Pluggable per‑resource processing (extract, copy) and processor routing. |
 | `.Downloader.Http` | `HttpDownloader(Extentions)` | Download resources over HTTP into the store. |
 | (root) | `ISiteExtractor`, `SiteExtractor`, `SiteExtractorOptions`, `SiteExtractorExtensions` | Top‑level two‑phase crawl orchestration and its options. |

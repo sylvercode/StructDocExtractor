@@ -1,22 +1,28 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using Sylvercode.SiteExtractor.Observation;
 using Sylvercode.SiteExtractor.Resources;
 using Sylvercode.SiteExtractor.Resources.Processors;
 
 namespace Sylvercode.SiteExtractor;
 
 /// <summary>Main <see cref="ISiteExtractor"/> implementation that orchestrates site extraction through a two-phase resource processing pipeline.</summary>
+/// <param name="processorProvider">Resolves processors for discovered resource URIs.</param>
+/// <param name="extractionObservers">Observers notified synchronously about extraction lifecycle and result events.</param>
+/// <param name="logger">Optional logger for queue and processing diagnostics.</param>
 /// <remarks>
 /// Accepts a seed URI, resolves an <see cref="IResourceProcessor"/> for it via <see cref="IResourceProcessorProvider"/>,
 /// then drives a queue-based loop: each dequeued resource is processed, its dependencies enqueued, and any metadata or
 /// URI translaters returned by the processor are applied. Resources that report <c>IsUnfinished</c> are collected and
-/// retried in subsequent batches until all resources are fully extracted.
+/// retried in subsequent batches until all resources are fully extracted. Extraction observers receive lifecycle
+/// and result events to apply concerns such as metadata, URI translation, and manifest persistence.
 /// </remarks>
 public partial class SiteExtractor(
     IResourceProcessorProvider processorProvider,
+    IEnumerable<IExtractionObserver> extractionObservers,
     ILogger<SiteExtractor>? logger = null) : ISiteExtractor
 {
-    private readonly ResourcesTracker _resourcesTracker = new(processorProvider);
+    private readonly IExtractionObserver[] _extractionObservers = [.. extractionObservers];
 
     private readonly ILogger<SiteExtractor> _logger = logger ?? NullLogger<SiteExtractor>.Instance;
 
@@ -27,105 +33,193 @@ public partial class SiteExtractor(
     /// </exception>
     public void Extract(Uri uri)
     {
-        _resourcesTracker.AddResource(uri, out bool hasResourceProcessor);
-        if (!hasResourceProcessor)
-            throw new InvalidOperationException("No resource processor found for the given URI.");
-
-        List<IResourceProcessorResult> unfinishedProcesses = [];
-
-        while (_resourcesTracker.ResourceQueue.HasQueuedResources)
+        Resource? activeResource = null;
+        string operation = nameof(Extract);
+        try
         {
-            var (resource, processor) = _resourcesTracker.ResourceQueue.Dequeue();
+            Notify(new ExtractionStarted(uri));
+            var resourcesTracker = new ResourcesTracker(processorProvider);
 
-            KeyValuePair<string, object?>[] pullScopeState =
-            [
-                new("Uri", resource.Uri),
-                new("Processor", processor.GetType().Name),
-            ];
-            using var logScope = _logger.BeginScope(pullScopeState);
+            resourcesTracker.AddResource(uri, out bool hasResourceProcessor);
+            if (!hasResourceProcessor)
+                throw new InvalidOperationException("No resource processor found for the given URI.");
 
-            LogPullingResource();
-            resource.MarkAsPulling();
+            List<PendingProcess> unfinishedProcesses = [];
 
-            IResourceProcessorResult result = processor.Process(resource, _resourcesTracker.Resources);
+            while (resourcesTracker.ResourceQueue.HasQueuedResources)
+            {
+                var (resource, processor) = resourcesTracker.ResourceQueue.Dequeue();
+                activeResource = resource;
+                operation = nameof(Process);
 
+                KeyValuePair<string, object?>[] pullScopeState =
+                [
+                    new("Uri", resource.Uri),
+                    new("Processor", processor.GetType().Name),
+                ];
+                using var logScope = _logger.BeginScope(pullScopeState);
+
+                LogPullingResource();
+                resource.MarkAsPulling();
+
+                IResourceProcessorResult result =
+                    Process(processor, resource, resourcesTracker.Resources);
+
+                ApplyResult(
+                    resource,
+                    result,
+                    unfinishedProcesses,
+                    resourcesTracker);
+            }
+
+            while (unfinishedProcesses.Count != 0)
+            {
+                LogBeggingUnfinishProcessBatch();
+                List<PendingProcess> unfinishedProcessesNext = [];
+
+                foreach (PendingProcess pendingProcess in unfinishedProcesses)
+                {
+                    Resource resource = pendingProcess.Resource;
+                    IResourceProcessorResult result = pendingProcess.Result;
+                    activeResource = resource;
+                    operation = nameof(ContinueProcess);
+                    KeyValuePair<string, object?>[] continueScopeState =
+                    [
+                        new("Uri", resource.Uri),
+                        new("Processor", result.Processor.GetType().Name),
+                    ];
+                    using var logScope = _logger.BeginScope(continueScopeState);
+
+                    LogContinueProcess();
+
+                    IResourceProcessorResult nextResult = ContinueProcess(resource, result);
+                    ApplyResult(
+                        resource,
+                        nextResult,
+                        unfinishedProcessesNext);
+                }
+
+                unfinishedProcesses = unfinishedProcessesNext;
+            }
+
+            activeResource = null;
+            operation = nameof(ExtractionCompleted);
+            ExtractionCompleted completed = new(resourcesTracker.Resources);
+            Notify(completed);
+            completed.Commit();
+        }
+        catch (Exception exception)
+        {
+            activeResource?.MarkAsFailed();
+            NotifyFailureSafely(exception, activeResource, operation);
+            throw;
+        }
+    }
+
+    private IResourceProcessorResult Process(
+        IResourceProcessor processor,
+        Resource resource,
+        IReadOnlyResourceRepository resources)
+    {
+        try
+        {
+            return processor.Process(resource, resources);
+        }
+        catch (Exception exception)
+        {
+            resource.MarkAsFailed();
+            LogResourceProcessFailed(exception, resource.Uri, nameof(Process));
+            throw;
+        }
+    }
+
+    private IResourceProcessorResult ContinueProcess(
+        Resource resource,
+        IResourceProcessorResult result)
+    {
+        try
+        {
+            return result.ContinueProcess(resource);
+        }
+        catch (Exception exception)
+        {
+            resource.MarkAsFailed();
+            LogResourceProcessFailed(exception, resource.Uri, nameof(ContinueProcess));
+            throw;
+        }
+    }
+
+    private void ApplyResult(
+        Resource resource,
+        IResourceProcessorResult result,
+        List<PendingProcess> unfinishedProcesses,
+        ResourcesTracker? resourcesTracker = null)
+    {
+        if (resourcesTracker is null && result.GetResourceDependencies().Any())
+        {
+            throw new InvalidOperationException(
+                "Resource dependencies are not allowed in the continue process.");
+        }
+
+        if (resourcesTracker is not null)
+        {
             foreach (Uri dependency in result.GetResourceDependencies())
             {
                 LogAddDependency(dependency);
-                _resourcesTracker.AddResource(dependency);
-            }
-
-            if (result.NewMetadata.Count != 0)
-            {
-                if (_logger.IsEnabled(LogLevel.Trace))
-                {
-                    foreach (var (name, metadata) in result.NewMetadata)
-                    {
-                        string? metadataValue = metadata.GetStrValue();
-                        LogNewMetadata(name, metadataValue);
-                    }
-                }
-
-                resource.Metadata.CopyMetadataFrom(result.NewMetadata);
-            }
-
-            if (result.ResourceUriTranslaterToSet != null)
-            {
-                if (_logger.IsEnabled(LogLevel.Debug))
-                {
-                    string uriTranslaterType = result.ResourceUriTranslaterToSet.GetType().Name;
-                    LogUriTranslaterToSet(uriTranslaterType);
-                }
-
-                resource.UriTranslater = result.ResourceUriTranslaterToSet;
-            }
-
-            if (result.IsUnfinished)
-            {
-                LogUnfinishedProcess();
-                unfinishedProcesses.Add(result);
-            }
-            else
-            {
-                LogRessourcePulled();
-                resource.MarkAsPulled();
+                resourcesTracker.AddResource(dependency);
             }
         }
 
-        while (unfinishedProcesses.Count != 0)
+        Notify(new ResourceProcessed(resource, result));
+        resource.SetOutputKind(result.OutputKind);
+
+        if (result.ExtractionState == ResourceExtractionState.ExtractionPrepared)
+            resource.MarkAsExtractionPrepared();
+
+        if (result.IsUnfinished)
         {
-            LogBeggingUnfinishProcessBatch();
-            List<IResourceProcessorResult> unfinishedProcessesNext = [];
+            LogUnfinishedProcess();
+            unfinishedProcesses.Add(new PendingProcess(resource, result));
+        }
+        else
+        {
+            LogRessourcePulled();
+            resource.MarkAsPulled(result.ExtractionState);
+        }
+    }
 
-            foreach (IResourceProcessorResult result in unfinishedProcesses)
+    private sealed class PendingProcess(
+        Resource resource,
+        IResourceProcessorResult result)
+    {
+        public Resource Resource { get; } = resource;
+
+        public IResourceProcessorResult Result { get; } = result;
+    }
+
+    private void Notify(ExtractionEvent extractionEvent)
+    {
+        foreach (IExtractionObserver observer in _extractionObservers)
+            observer.OnNext(extractionEvent);
+    }
+
+    private void NotifyFailureSafely(
+        Exception exception,
+        Resource? resource,
+        string operation)
+    {
+        ExtractionFailed failure = new(exception, resource, operation);
+        foreach (IExtractionObserver observer in _extractionObservers)
+        {
+            try
             {
-                KeyValuePair<string, object?>[] continueScopeState =
-                [
-                    new("Uri", result.Resource.Uri),
-                    new("Processor", result.Processor.GetType().Name),
-                ];
-                using var logScope = _logger.BeginScope(continueScopeState);
-
-                LogContinueProcess();
-
-                IResourceProcessorResult nextResult = result.ContinueProcess();
-
-                if (nextResult.GetResourceDependencies().Any())
-                    throw new InvalidOperationException("Resource dependencies are not allowed in the continue process.");
-
-                if (nextResult.IsUnfinished)
-                {
-                    LogUnfinishedProcess();
-                    unfinishedProcessesNext.Add(nextResult);
-                }
-                else
-                {
-                    LogRessourcePulled();
-                    result.Resource.MarkAsPulled();
-                }
+                observer.OnNext(failure);
+                observer.OnError(exception);
             }
-
-            unfinishedProcesses = unfinishedProcessesNext;
+            catch (Exception observerException)
+            {
+                LogObserverFailure(observerException, observer.GetType().Name);
+            }
         }
     }
 
@@ -135,19 +229,19 @@ public partial class SiteExtractor(
     private partial void LogPullingResource();
 
     [LoggerMessage(
+        Level = LogLevel.Error,
+        Message = "Resource {Uri} failed during {Operation}.")]
+    private partial void LogResourceProcessFailed(Exception exception, Uri uri, string operation);
+
+    [LoggerMessage(
+        Level = LogLevel.Error,
+        Message = "Extraction observer {Observer} failed while handling an extraction failure.")]
+    private partial void LogObserverFailure(Exception exception, string observer);
+
+    [LoggerMessage(
         Level = LogLevel.Debug,
         Message = "Adding dependency: {Dependency}")]
     private partial void LogAddDependency(Uri dependency);
-
-    [LoggerMessage(
-        Level = LogLevel.Trace,
-        Message = "New metadata: {Name} = {Value}")]
-    private partial void LogNewMetadata(string name, string? value);
-
-    [LoggerMessage(
-        Level = LogLevel.Debug,
-        Message = "Setting UriTranslater: {UriTranslater}")]
-    private partial void LogUriTranslaterToSet(string uriTranslater);
 
     [LoggerMessage(
         Level = LogLevel.Debug,

@@ -66,7 +66,7 @@ public class ResourceDataExtractorTests_Extract
         Uri input = new("test://mock-input");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input), new ResourceRepository());
+        IResourceProcessorResult result = extractor.Extract(new Resource(input, isPullable: true), new ResourceRepository());
 
         // Then
         var dataResult = Assert.IsType<DataExtractedProcessorResult<Uri>>(result);
@@ -100,11 +100,12 @@ public class ResourceDataExtractorTests_Extract
         Uri input = new("test://mock-input");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input), new ResourceRepository());
+        IResourceProcessorResult result = extractor.Extract(new Resource(input, isPullable: true), new ResourceRepository());
 
         // Then
         Assert.False(result.IsUnfinished);
         Assert.Null(result.ResourceUriTranslaterToSet);
+        Assert.Equal(ResourceExtractionState.NoSourceData, result.ExtractionState);
 
         Assert.Collection(callTracker.Calls,
             call =>
@@ -125,11 +126,12 @@ public class ResourceDataExtractorTests_Extract
         Uri input = new("test://mock-input");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input), new ResourceRepository());
+        IResourceProcessorResult result = extractor.Extract(new Resource(input, isPullable: true), new ResourceRepository());
 
         // Then
         Assert.False(result.IsUnfinished);
         Assert.Null(result.ResourceUriTranslaterToSet);
+        Assert.Equal(ResourceExtractionState.NoOutput, result.ExtractionState);
 
         Assert.Collection(callTracker.Calls,
             call =>
@@ -155,13 +157,14 @@ public class ResourceDataExtractorTests_Extract
         Uri input = new("test://mock-input?referencer1=foo&referencer2=bar");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input), new ResourceRepository());
+        IResourceProcessorResult result = extractor.Extract(new Resource(input, isPullable: true), new ResourceRepository());
 
         // Then
         var dataResult = Assert.IsType<DataExtractedProcessorResult<Uri>>(result);
         var resultNode = Assert.IsType<UriNode>(Assert.Single(dataResult.Result.StructDocNodes));
         Assert.Equal(input.ToString(), resultNode.Uri.ToString());
         Assert.NotNull(dataResult.ResourceUriTranslaterToSet);
+        Assert.Equal(ResourceExtractionState.ExtractionPrepared, dataResult.ExtractionState);
         Assert.Collection(dataResult.Referencers,
             referencer => Assert.Equal("test://mock-input/foo", referencer.GetReference()),
             referencer => Assert.Equal("test://mock-input/bar", referencer.GetReference()));
@@ -193,7 +196,7 @@ public class ResourceDataExtractorTests_Extract
         var extractor = host.Services.GetRequiredService<IResourceDataExtractor<Uri>>();
         Uri input = new("https://example.test/page?referencer1=old&referencer2=unchanged");
 
-        IResourceProcessorResult result = extractor.Extract(new Resource(input), new ResourceRepository());
+        IResourceProcessorResult result = extractor.Extract(new Resource(input, isPullable: true), new ResourceRepository());
 
         var dataResult = Assert.IsType<DataExtractedProcessorResult<Uri>>(result);
         Assert.Collection(dataResult.Referencers,
@@ -225,7 +228,7 @@ public class ResourceDataExtractorTests_Extract
         Uri input = new($"test://mock-input?{ExtractorMock.MetaKey}1=data1&{ExtractorMock.MetaKey}2=data2");
 
         // When
-        IResourceProcessorResult result = extractor.Extract(new Resource(input), new ResourceRepository());
+        IResourceProcessorResult result = extractor.Extract(new Resource(input, isPullable: true), new ResourceRepository());
 
         // Then
         Assert.Collection(result.NewMetadata,
@@ -257,11 +260,12 @@ public class ResourceDataExtractorTests_ContinueProcess
         IHost host = ResourceDataExtractorTests_Extract.GetDefaultHost(calTracker);
         var extractor = host.Services.GetRequiredService<IResourceDataExtractor<Uri>>();
         Uri input = new("test://mock-input");
-        var result = (DataExtractedProcessorResult<Uri>)extractor.Extract(new Resource(input), new ResourceRepository());
+        Resource resource = new(input, isPullable: true);
+        var result = (DataExtractedProcessorResult<Uri>)extractor.Extract(resource, new ResourceRepository());
         calTracker.Calls.Clear();
 
         // When
-        IResourceProcessorResult subResult = result.ContinueProcess();
+        IResourceProcessorResult subResult = result.ContinueProcess(resource);
 
         // Then
         Assert.False(subResult.IsUnfinished);
