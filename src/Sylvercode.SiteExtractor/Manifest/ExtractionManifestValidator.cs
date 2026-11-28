@@ -24,6 +24,17 @@ public static class ExtractionManifestValidator
 
         try
         {
+            if (Uri.TryCreate(outputDirectory, UriKind.Absolute, out Uri? outputUri)
+                && !outputUri.IsFile)
+            {
+                UriBuilder builder = new(outputUri);
+                if (!builder.Path.EndsWith('/'))
+                    builder.Path += "/";
+                builder.Query = string.Empty;
+                builder.Fragment = string.Empty;
+                return builder.Uri.AbsoluteUri;
+            }
+
             return Path.TrimEndingDirectorySeparator(Path.GetFullPath(outputDirectory));
         }
         catch (Exception exception) when (exception is ArgumentException or NotSupportedException or PathTooLongException)
@@ -80,6 +91,12 @@ public static class ExtractionManifestValidator
             throw ExtractionManifestErrors.InvalidManifest(outputRoot, field, $"The output path '{ManifestFileName}' is reserved.");
 
         string normalized = string.Join('/', segments);
+        if (Uri.TryCreate(outputRoot, UriKind.Absolute, out Uri? rootUri)
+            && !rootUri.IsFile)
+        {
+            return normalized;
+        }
+
         string combined = Path.GetFullPath(Path.Combine(outputRoot, normalized.Replace('/', Path.DirectorySeparatorChar)));
         if (!IsOutputRootOf(outputRoot, combined) || string.Equals(combined, outputRoot, StringComparison.Ordinal))
             throw ExtractionManifestErrors.InvalidManifest(outputRoot, field, "The output path escapes its root.");
@@ -148,7 +165,17 @@ public static class ExtractionManifestValidator
 
     /// <summary>Returns whether one canonical output root equals or contains another.</summary>
     public static bool OutputRootsOverlap(string left, string right)
-        => IsOutputRootOf(left, right) || IsOutputRootOf(right, left);
+    {
+        if (Uri.TryCreate(left, UriKind.Absolute, out Uri? leftUri)
+            && !leftUri.IsFile
+            && Uri.TryCreate(right, UriKind.Absolute, out Uri? rightUri)
+            && !rightUri.IsFile)
+        {
+            return leftUri.IsBaseOf(rightUri) || rightUri.IsBaseOf(leftUri);
+        }
+
+        return IsOutputRootOf(left, right) || IsOutputRootOf(right, left);
+    }
 
     /// <summary>Returns whether source bases overlap at the same or a descendant URI.</summary>
     public static bool SourceBasesOverlap(Uri left, Uri right)
@@ -174,20 +201,20 @@ public static class ExtractionManifestValidator
     }
 
     /// <summary>Builds the portable path that the datastore resolves from an output URI.</summary>
-    /// <param name="outputRoot">The canonical root directory of the active datastore.</param>
+    /// <param name="outputBaseUri">The canonical base URI of the active datastore.</param>
     /// <param name="outputUri">The output URI passed to the datastore after resource translation.</param>
-    /// <returns>A normalized path relative to <paramref name="outputRoot"/>.</returns>
+    /// <returns>A normalized path relative to <paramref name="outputBaseUri"/>.</returns>
     /// <remarks>
     /// Query and fragment never identify a physical file and are removed regardless of the
     /// configurable source-identity policy.
     /// </remarks>
-    public static string GetRelativeOutputPath(string outputRoot, Uri outputUri)
+    public static string GetRelativeOutputPath(Uri outputBaseUri, Uri outputUri)
     {
+        string outputRoot = outputBaseUri.IsFile
+            ? outputBaseUri.LocalPath
+            : outputBaseUri.AbsoluteUri;
         try
         {
-            Uri outputBaseUri = new(
-                Path.TrimEndingDirectorySeparator(Path.GetFullPath(outputRoot))
-                + Path.DirectorySeparatorChar);
             return NormalizeOutputFile(
                 DataStorePathResolver.Resolve(outputBaseUri, outputUri).RelativePath,
                 "outputFile",

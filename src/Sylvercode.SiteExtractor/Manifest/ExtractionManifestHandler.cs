@@ -11,6 +11,7 @@ namespace Sylvercode.SiteExtractor.Manifest;
 /// <param name="manifestStore">The store used for linked and current manifests.</param>
 /// <param name="catalog">The linked-manifest catalog retained for later resolution.</param>
 /// <param name="queryIdentityFilter">The policy used to canonicalize persisted source identity.</param>
+/// <param name="dataStore">The active output datastore supplying the canonical output base URI.</param>
 /// <remarks>
 /// This observer is stateless between extraction calls. It derives both current roots from
 /// <see cref="IOptions{TOptions}.Value"/> for every lifecycle event.
@@ -19,7 +20,8 @@ public sealed class ExtractionManifestHandler(
     IOptions<SiteExtractorOptions> options,
     IExtractionManifestStore manifestStore,
     IExtractionManifestCatalog catalog,
-    IUriQueryIdentityFilter queryIdentityFilter) : IExtractionObserver
+    IUriQueryIdentityFilter queryIdentityFilter,
+    IDataStore dataStore) : IExtractionObserver
 {
     /// <inheritdoc/>
     public void OnNext(ExtractionEvent value)
@@ -37,7 +39,9 @@ public sealed class ExtractionManifestHandler(
 
     private void BeginExtraction(Uri seedUri)
     {
-        (string outputRoot, Uri sourceBaseUri) = GetConfiguredRoots();
+        ConfiguredRoots roots = GetConfiguredRoots();
+        string outputRoot = roots.OutputRoot;
+        Uri sourceBaseUri = roots.SourceBaseUri;
         ExtractionManifestValidator.EnsureSourceContained(
             sourceBaseUri,
             seedUri,
@@ -76,7 +80,10 @@ public sealed class ExtractionManifestHandler(
 
     private void CompleteExtraction(ExtractionCompleted completed)
     {
-        (string outputRoot, Uri sourceBaseUri) = GetConfiguredRoots();
+        ConfiguredRoots roots = GetConfiguredRoots();
+        string outputRoot = roots.OutputRoot;
+        Uri outputBaseUri = roots.OutputBaseUri;
+        Uri sourceBaseUri = roots.SourceBaseUri;
         List<ExtractionManifestEntry> entries = [];
         foreach (Resource resource in completed.Resources)
         {
@@ -95,7 +102,7 @@ public sealed class ExtractionManifestHandler(
                     outputRoot);
             }
             string outputFile = ExtractionManifestValidator.GetRelativeOutputPath(
-                outputRoot,
+                outputBaseUri,
                 resource.TranslatedResourceUri);
             entries.Add(new ExtractionManifestEntry(sourceUri, outputFile));
         }
@@ -110,11 +117,21 @@ public sealed class ExtractionManifestHandler(
         completed.AddCommitAction(() => manifestStore.Write(outputRoot, manifest));
     }
 
-    private (string OutputRoot, Uri SourceBaseUri) GetConfiguredRoots()
+    private ConfiguredRoots GetConfiguredRoots()
     {
         SiteExtractorOptions configuredOptions = options.Value;
+        Uri outputBaseUri = dataStore.BaseUri;
+        if (!outputBaseUri.IsAbsoluteUri)
+        {
+            outputBaseUri = new Uri(
+                Path.TrimEndingDirectorySeparator(
+                    Path.GetFullPath(outputBaseUri.OriginalString))
+                + Path.DirectorySeparatorChar);
+        }
         string outputRoot = ExtractionManifestValidator.GetCanonicalOutputRoot(
-            configuredOptions.OutputDirectory,
+            outputBaseUri.IsFile
+                ? outputBaseUri.LocalPath
+                : outputBaseUri.AbsoluteUri,
             nameof(SiteExtractorOptions.OutputDirectory));
         Uri sourceBaseUri;
         try
@@ -147,8 +164,17 @@ public sealed class ExtractionManifestHandler(
                 exception);
         }
 
-        return (outputRoot, sourceBaseUri);
+        return new ConfiguredRoots(outputRoot, outputBaseUri, sourceBaseUri);
     }
+
+    /// <summary>Represents the normalized roots required for one manifest lifecycle event.</summary>
+    /// <param name="OutputRoot">The canonical datastore root identifier used as manifest key.</param>
+    /// <param name="OutputBaseUri">The active datastore base URI used to resolve output identities.</param>
+    /// <param name="SourceBaseUri">The normalized source base URI used to validate documents.</param>
+    private sealed record ConfiguredRoots(
+        string OutputRoot,
+        Uri OutputBaseUri,
+        Uri SourceBaseUri);
 
     private List<string> GetConfiguredLinkedRoots(string outputRoot)
     {

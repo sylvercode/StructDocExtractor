@@ -126,6 +126,40 @@ public class ExtractionManifestHandlerTests_OnNext
         Assert.Empty(store.Manifests);
     }
 
+    [Fact]
+    public void ExtractionCompleted_WithUriBasedDataStore_WritesManifest()
+    {
+        SiteExtractorOptions options = new()
+        {
+            SourceAuthority = "https://example.com",
+            SourceBasePath = "/docs",
+            OutputDirectory = "memory://output",
+        };
+        IOptions<SiteExtractorOptions> siteOptions = Options.Create(options);
+        MemoryExtractionManifestStore store = new();
+        ExtractionManifestHandler handler = new(
+            siteOptions,
+            store,
+            new ExtractionManifestCatalog(),
+            new RemoveAllUriQueryIdentityFilter(),
+            new MemoryDataStore(siteOptions));
+        ResourceRepository resources = [];
+        Resource resource = resources.Add(
+            new Uri("https://example.com/docs/page")).resource;
+        resource.UriTranslater =
+            new AbsoluteTranslater("memory://output/page.md");
+        resource.MarkAsPulling();
+        resource.MarkAsPulled(ResourceExtractionState.OutputProduced);
+        ExtractionCompleted completed = new(resources);
+
+        handler.OnNext(completed);
+        completed.Commit();
+
+        ExtractionManifestEntry entry = Assert.Single(
+            Assert.Single(store.Manifests).Value.Entries);
+        Assert.Equal("page.md", entry.OutputFile);
+    }
+
     private static ExtractionManifestHandler CreateHandler(
         MemoryExtractionManifestStore store,
         ExtractionManifestCatalog catalog,
@@ -151,16 +185,24 @@ public class ExtractionManifestHandlerTests_OnNext
         foreach (LinkedExtractionOptions linkedExtraction in linkedExtractions)
             options.LinkedExtractions.Add(linkedExtraction);
 
+        IOptions<SiteExtractorOptions> siteOptions = Options.Create(options);
         return new ExtractionManifestHandler(
-            Options.Create(options),
+            siteOptions,
             store,
             catalog,
-            queryIdentityFilter);
+            queryIdentityFilter,
+            new MemoryDataStore(siteOptions));
     }
 
     private sealed class FixedTranslater(string outputFile) : IResourceUriTranslater
     {
         public Uri Translate(Resource resource, Uri uri)
             => new(outputFile, UriKind.Relative);
+    }
+
+    private sealed class AbsoluteTranslater(string outputUri) : IResourceUriTranslater
+    {
+        public Uri Translate(Resource resource, Uri uri)
+            => new(outputUri, UriKind.Absolute);
     }
 }

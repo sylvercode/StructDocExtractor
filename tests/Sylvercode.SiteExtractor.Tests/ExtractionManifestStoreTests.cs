@@ -177,7 +177,7 @@ public class ExtractionManifestStoreTests
     public void GetOutputFile_RemovesQueryAndFragment(string translatedPath)
     {
         string result = ExtractionManifestValidator.GetRelativeOutputPath(
-            "/output",
+            new Uri("file:///output/"),
             new Uri(translatedPath, UriKind.Relative));
 
         Assert.Equal("page.md", result);
@@ -187,7 +187,7 @@ public class ExtractionManifestStoreTests
     public void GetRelativeOutputPath_DecodesPhysicalFileNameOnce()
     {
         string result = ExtractionManifestValidator.GetRelativeOutputPath(
-            "/output",
+            new Uri("file:///output/"),
             new Uri("report%20final.md", UriKind.Relative));
 
         Assert.Equal("report final.md", result);
@@ -197,7 +197,7 @@ public class ExtractionManifestStoreTests
     public void GetRelativeOutputPath_DoesNotDoubleDecodeReservedName()
     {
         string result = ExtractionManifestValidator.GetRelativeOutputPath(
-            "/output",
+            new Uri("file:///output/"),
             new Uri("%2565xtraction-manifest.json", UriKind.Relative));
 
         Assert.Equal("%65xtraction-manifest.json", result);

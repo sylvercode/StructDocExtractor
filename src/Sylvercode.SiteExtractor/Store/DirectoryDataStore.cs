@@ -37,9 +37,12 @@ public partial class DirectoryDataStore(
     {
         GetCompleteUri(uri);
         DataStorePath path = ResolvePath(uri);
-        EnsureDirectoryExists(path.PhysicalPath);
+        string physicalPath = Path.GetFullPath(Path.Combine(
+            BaseUri.LocalPath,
+            path.RelativePath.Replace('/', Path.DirectorySeparatorChar)));
+        EnsureDirectoryExists(physicalPath);
         LogOpenFile(path.Uri);
-        return File.OpenWrite(path.PhysicalPath);
+        return File.OpenWrite(physicalPath);
     }
 
     private void EnsureDirectoryExists(string physicalPath)

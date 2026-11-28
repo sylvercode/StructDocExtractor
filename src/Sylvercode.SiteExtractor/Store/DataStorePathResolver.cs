@@ -11,6 +11,7 @@ public static class DataStorePathResolver
     public static DataStorePath Resolve(Uri baseUri, Uri uri)
     {
         Uri completeUri;
+        string? decodedRelativePath = null;
         if (uri.IsAbsoluteUri)
         {
             completeUri = new UriBuilder(uri)
@@ -25,32 +26,48 @@ public static class DataStorePathResolver
             int suffixIndex = relative.IndexOfAny(['?', '#']);
             if (suffixIndex >= 0)
                 relative = relative[..suffixIndex];
+            decodedRelativePath = Uri.UnescapeDataString(relative);
             completeUri = new Uri(
                 baseUri,
-                new Uri(relative, UriKind.Relative));
+                new Uri(decodedRelativePath, UriKind.Relative));
         }
 
         if (!baseUri.IsBaseOf(completeUri))
             throw new ArgumentException("Uri is not a child of the base uri", nameof(uri));
 
-        string physicalPath = Path.GetFullPath(
-            Uri.UnescapeDataString(completeUri.LocalPath));
-        string basePath = Path.GetFullPath(
-            Uri.UnescapeDataString(baseUri.LocalPath));
-        string relativePath = Path.GetRelativePath(basePath, physicalPath);
-        if (relativePath == "."
-            || Path.IsPathRooted(relativePath)
-            || relativePath == ".."
-            || relativePath.StartsWith(
-                ".." + Path.DirectorySeparatorChar,
-                StringComparison.Ordinal))
+        string relativePath;
+        if (baseUri.IsFile)
         {
-            throw new ArgumentException("Uri is not a child of the base uri", nameof(uri));
+            relativePath = decodedRelativePath
+                ?? Uri.UnescapeDataString(completeUri.AbsolutePath)[
+                    Uri.UnescapeDataString(baseUri.AbsolutePath).Length..].TrimStart('/');
+            if (relativePath == "."
+                || Path.IsPathRooted(relativePath)
+                || relativePath == ".."
+                || relativePath.StartsWith(
+                    ".." + Path.DirectorySeparatorChar,
+                    StringComparison.Ordinal))
+            {
+                throw new ArgumentException("Uri is not a child of the base uri", nameof(uri));
+            }
+
+            relativePath = relativePath.Replace(Path.DirectorySeparatorChar, '/');
+        }
+        else
+        {
+            relativePath = Uri.UnescapeDataString(
+                baseUri.MakeRelativeUri(completeUri).OriginalString);
+            if (string.IsNullOrEmpty(relativePath)
+                || relativePath == "."
+                || relativePath.StartsWith("../", StringComparison.Ordinal)
+                || Path.IsPathRooted(relativePath))
+            {
+                throw new ArgumentException("Uri is not a child of the base uri", nameof(uri));
+            }
         }
 
         return new(
             completeUri,
-            physicalPath,
-            relativePath.Replace(Path.DirectorySeparatorChar, '/'));
+            relativePath);
     }
 }
